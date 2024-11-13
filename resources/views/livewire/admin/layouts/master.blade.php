@@ -6,7 +6,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>Dairy Management System</title>
+    <title>
+        आदर्श डेरी
+        </title>
 
     <!-- vendor css -->
     <link href="{{ asset('backend_assets/lib/fontawesome-free/css/all.min.css') }}" rel="stylesheet">
@@ -38,8 +40,9 @@
     <div class="az-header" wire:ignore>
         <div class="container">
             <div class="az-header-left">
-                <a href="" class="az-logo"><span></span> <img src="{{ asset('backend_assets/img/logo.png') }}"
-                        alt="" height="55"></a>
+                <a href="" class="az-logo"><span style="color: #32705f">आदर्श डेरी</span> 
+                    
+                    </a>
                 <a href="" id="azMenuShow" class="az-header-menu-icon d-lg-none"><span></span></a>
             </div><!-- az-header-left -->
             <div class="az-header-menu">
@@ -52,21 +55,22 @@
                     <li class="nav-item {{ $page == 'dashboard' ? 'active' : '' }}">
                         <a href="{{ route('admin.home') }}" class="nav-link" id="dashboard-link">
                             <i class="typcn typcn-chart-area-outline"></i>
-                            Dashboard
+                            ड्यासबोर्ड
                         </a>
                     </li>
                     <li class="nav-item {{ $page == 'farmer' ? 'active' : '' }}">
                         <a href="" class="nav-link with-sub" id="farmer-link">
-                            <i class="typcn typcn-document"></i> Farmer
+                            <i class="typcn typcn-document"></i> किसान
                         </a>
                         <nav class="az-menu-sub">
                             <a href="{{ route('admin.farmer.milk.deposit') }}" class="nav-link"
-                                id="deposit-milk-link">Deposit Milk</a>
+                                id="deposit-milk-link">दूध संकलन</a>
                             <a href="{{ route('admin.farmer.create') }}" class="nav-link"
-                                id="create-farmer-link">Create
-                                Farmer</a>
+                                id="create-farmer-link">कृषक दर्ता</a>
                                 <a href="{{ route('admin.setup') }}" class="nav-link"
-                                id="setup-link">Setup</a>
+                                id="setup-link">सेटअप</a>
+                                <a href="{{ route('admin.setup') }}" class="nav-link"
+                                id="setup-link">दूध संकलन रिपोर्ट</a>
                         </nav>
                     </li>
                 </ul>
@@ -124,10 +128,7 @@
                         <div class="dropdown-footer"><a href="">View All Notifications</a></div>
                     </div><!-- dropdown-menu -->
                 </div><!-- az-header-notification -->
-                <div class="dropdown az-profile-menu">
-                    <button id="btn-en">English</button> |
-                    <button id="btn-ne">नेपाली</button>
-                </div>
+               
                 <div class="dropdown az-profile-menu">
                     <a href="" class="az-img-user"><img
                             src="{{ asset('backend_assets/img/faces/face5.jpg') }}" alt=""></a>
@@ -174,16 +175,7 @@
         </div><!-- az-content-body -->
     </div><!-- az-content -->
 
-    {{-- <div class="az-footer ht-40">
-        <div class="container ht-100p pd-t-0-f">
-            <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © bootstrapdash.com
-                2020</span>
-            <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center"> Free <a
-                    href="https://www.bootstrapdash.com/bootstrap-admin-template/" target="_blank">Bootstrap admin
-                    templates</a> from Bootstrapdash.com</span>
-        </div><!-- container -->
-    </div><!-- az-footer --> --}}
-
+    <div wire:ignore>
 
     <script src="{{ asset('backend_assets/lib/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('backend_assets/lib/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
@@ -203,55 +195,6 @@
 
     {{-- language switcher --}}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        // Define the translations for each language
-        const translations = {
-            en: {
-                dashboard: "Dashboard",
-                farmer: "Farmer",
-                depositMilk: "Deposit Milk",
-                createFarmer: "Create Farmer",
-                setup:'Setup'
-            },
-            ne: {
-                dashboard: "ड्यासबोर्ड",
-                farmer: "किसान",
-                depositMilk: "दूध संकलन",
-                createFarmer: "कृषक दर्ता",
-                setup:"सेटअप"
-            }
-        };
-
-        // Function to set the text based on the language
-        function setLanguage(lang) {
-            $("#dashboard-link").text(translations[lang].dashboard);
-            $("#farmer-link").text(translations[lang].farmer);
-            $("#deposit-milk-link").text(translations[lang].depositMilk);
-            $("#create-farmer-link").text(translations[lang].createFarmer);
-            $("#setup-link").text(translations[lang].setup);
-        }
-
-        // Function to switch the language and store it in localStorage
-        function switchLanguage(lang) {
-            localStorage.setItem("language", lang);
-            setLanguage(lang);
-        }
-
-        // Event listeners for the buttons
-        $("#btn-en").on("click", function() {
-            switchLanguage("en");
-        });
-
-        $("#btn-ne").on("click", function() {
-            switchLanguage("ne");
-        });
-
-        // Check localStorage for a saved language preference on page load
-        $(document).ready(function() {
-            const savedLanguage = localStorage.getItem("language") || "en";
-            setLanguage(savedLanguage);
-        });
-    </script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -283,6 +226,7 @@
         input.value = translatedValue;
     }
 </script>
+</div>
 <script>
     document.addEventListener('livewire:init', () => {
         // ========success message============
@@ -334,6 +278,7 @@
             });
         });
 </script>
+
 
     @toastifyJs
 

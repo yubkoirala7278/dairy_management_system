@@ -18,3 +18,8 @@ Route::middleware(['auth', 'auth.admin'])->prefix('admin')->name('admin.')->grou
     require __DIR__ . '/admin.php';
 });
 // ======== end of admin ====
+
+// Fallback route to handle unmatched URLs
+Route::fallback(function () {
+   return view('livewire.frontend.error.error-page');
+});

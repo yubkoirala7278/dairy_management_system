@@ -9,6 +9,7 @@ use App\Repositories\Interfaces\UserRepositoryInterface;
 use Livewire\WithPagination;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\View;
+use App\Helpers\NumberHelper;
 use App\Exports\MilkDepositsExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Livewire\Component;
@@ -34,10 +35,12 @@ class MilkDeposit extends Component
         $total_milk_price,
         $milk_deposit_date,
         $milk_deposit_time = 'बिहान';
-    public $entries = 20;
+    public $entries = 10;
     public $search = '';
     public $sortField = 'created_at';
     public $sortDirection = 'desc';
+    public $milk_deposit_id;
+    public $user_id;
 
     public function resetFields()
     {
@@ -46,7 +49,9 @@ class MilkDeposit extends Component
             'per_litre_commission',
             'milkQuantity',
             'milk_fat',
-            'milk_snf'
+            'milk_snf',
+            'milk_deposit_id',
+            'user_id'
         ]);
         $this->resetErrorBag();
     }
@@ -117,8 +122,13 @@ class MilkDeposit extends Component
     public function render()
     {
         $milkDeposits = $this->userRepository->getMilkDeposits($this->entries, $this->search, $this->sortField, $this->sortDirection, $this->milk_deposit_date, $this->milk_deposit_time, $this->milk_type);
+        $milkInfo = $this->userRepository->getTotalIncomeFromMilkOnSpecificDate($this->milk_deposit_date, $this->milk_deposit_time);
+        $totalDepositIncome = NumberHelper::toNepaliNumber($milkInfo['totalDepositIncome']);
+        $totalDepositedMilk = NumberHelper::toNepaliNumber($milkInfo['totalDepositedMilk']);
         return view('livewire.admin.dairy.milk-deposit', [
-            'milkDeposits' => $milkDeposits
+            'milkDeposits' => $milkDeposits,
+            'totalDepositIncome' => $totalDepositIncome,
+            'totalMilkQuantity' => $totalDepositedMilk
         ]);
     }
 
@@ -154,6 +164,11 @@ class MilkDeposit extends Component
         if (!$user) {
             $this->dispatch('warningMessage', title: "कृषक नम्बर {$this->farmernumber} दर्ता भएको छैन।");
             $this->resetFields();
+            return;
+        }
+        if ($this->milk_deposit_id) {
+            $this->user_id = $user->id;
+            $this->update();
             return;
         }
         try {
@@ -218,5 +233,79 @@ class MilkDeposit extends Component
     public function exportToExcel()
     {
         return Excel::download(new MilkDepositsExport, 'milk_deposits.xlsx');
+    }
+
+    // ============update===================
+
+    public function edit($id)
+    {
+        try {
+            $deposit = ModelsMilkDeposit::with('user')->find($id);
+            $this->milkQuantity = $deposit->milk_quantity;
+            $this->milk_fat = $deposit->milk_fat;
+            $this->milk_snf = $deposit->milk_snf;
+            $this->per_litre_price = $deposit->milk_price_per_ltr;
+            $this->per_litre_commission = $deposit->per_ltr_commission;
+            $this->total_milk_price = $deposit->milk_total_price;
+            $this->milk_deposit_date = $deposit->milk_deposit_date;
+            $this->milk_deposit_time = $deposit->milk_deposit_time;
+            $this->milk_type = $deposit->milk_type;
+            $this->farmernumber = $deposit->user->farmer_number;
+            $this->owner_name = $deposit->user->owner_name;
+            $this->location = $deposit->user->location;
+            $this->phone_number = $deposit->user->phone_number;
+            $this->milk_deposit_id = $id;
+        } catch (\Throwable $th) {
+            $this->dispatch('error', title: $th->getMessage());
+        }
+    }
+    public function update()
+    {
+        $milkDeposit = ModelsMilkDeposit::where('user_id', $this->user_id)->where('milk_deposit_date', $this->milk_deposit_date)->where('milk_deposit_time', $this->milk_deposit_time)->first();
+        if ($milkDeposit && $milkDeposit->id != $this->milk_deposit_id) {
+            $this->dispatch('warningMessage', title: 'यो दूधको अभिलेख पहिले नै राखिएको छ।');
+            $this->resetFields();
+            return;
+        }
+        $this->dispatch('warning');
+    }
+    public function confirmUpdate()
+    {
+        try {
+            $milkDeposit = ModelsMilkDeposit::where('id', $this->milk_deposit_id)->first();
+            $milkDeposit->update([
+                'user_id' => $this->user_id,
+                'milk_quantity' => $this->milkQuantity,
+                'milk_fat' => $this->milk_fat,
+                'milk_snf' => $this->milk_snf,
+                'milk_price_per_ltr' => $this->per_litre_price,
+                'per_ltr_commission' => $this->per_litre_commission,
+                'milk_per_ltr_price_with_commission' => $this->per_litre_price + $this->per_litre_commission,
+                'milk_total_price' => $this->total_milk_price,
+                'milk_deposit_date' => $this->milk_deposit_date,
+                'milk_deposit_time' => $this->milk_deposit_time,
+                'milk_type' => $this->milk_type
+            ]);
+            $this->resetFields();
+            $this->dispatch('success', title: 'डेटा सफलतापूर्वक सुरक्षित भयो।');
+        } catch (\Throwable $th) {
+            $this->dispatch('error', title: $th->getMessage());
+        }
+    }
+
+    // =========delete milk deposits=======
+    public function delete($id)
+    {
+        try {
+            $milkDeposit = ModelsMilkDeposit::where('id', $id)->first();
+            if (!$milkDeposit) {
+                $this->dispatch('warningMessage', title: "कृषक नम्बर {$this->farmernumber} दर्ता भएको छैन।");
+                return;
+            }
+            $milkDeposit->delete();
+            $this->dispatch('success', title: 'डाटा मेटाइएको छ।');
+        } catch (\Throwable $th) {
+            $this->dispatch('error', title: $th->getMessage());
+        }
     }
 }

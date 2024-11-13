@@ -136,7 +136,6 @@
                 <div class="mx-3">
                     <button class="btn btn-success mr-2" wire:click.prevent="register" style="font-size: 19px">पेश
                         गर्नुहोस्</button>
-                    <button class="btn btn-secondary " style="font-size: 19px">हटाउनुहोस्</button>
                 </div>
             </div>
         </div>
@@ -157,7 +156,8 @@
                             <option value="25">२५</option>
                             <option value="50">५०</option>
                             <option value="100">१००</option>
-                            <option value="all">सबै</option>
+                            <option value="200">२००</option>
+                            <option value="500">५००</option>
                         </select>
                         डेटा
                     </label>
@@ -175,7 +175,7 @@
                 </div>
 
             </div>
-            <table class="table table-bordered table-hover ml-4" style="font-size: 20px; min-width: 800px; width: 100%;">
+            <table class="table table-bordered table-hover ml-4 " style="font-size: 20px; min-width: 800px; width: 100%;">
                 <thead>
                     <tr class="table-secondary">
                         {{-- <th scope="col" style="font-size: 20px; white-space: nowrap;">मिति</th> --}}
@@ -187,8 +187,9 @@
                         <th scope="col" style="font-size: 20px; white-space: nowrap;">SNF</th>
                         {{-- <th scope="col" style="font-size: 20px; white-space: nowrap;">मूल्य</th> --}}
                         {{-- <th scope="col" style="font-size: 20px; white-space: nowrap;">कुल कमिशन</th> --}}
-                        <th scope="col" style="font-size: 20px; white-space: nowrap;">प्र.लि</th>
-                        <th scope="col" style="font-size: 20px; white-space: nowrap;">जम्मा</th>
+                        <th scope="col" style="font-size: 20px; white-space: nowrap;">प्र.लि(रु)</th>
+                        <th scope="col" style="font-size: 20px; white-space: nowrap;">जम्मा(रु)</th>
+                        <th scope="col" style="font-size: 20px; white-space: nowrap;">कार्य</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -205,9 +206,26 @@
                                 {{-- <td>{{$deposit->milk_price_per_ltr}}</td> --}}
                                 {{-- <td>{{$deposit->per_ltr_commission}}</td> --}}
                                 <td>{{ $deposit->milk_per_ltr_price_with_commission }}</td>
-                                <td><span class="badge badge-success">{{ $deposit->milk_total_price }}</span></td>
+                                <td>{{ $deposit->milk_total_price }}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-transparent py-0 px-1" data-toggle="tooltip"
+                                        data-placement="top" title="सुधार्नुहोस्"
+                                        wire:click="edit({{ $deposit->id }})">
+                                        <i class="fa-solid fa-pencil h5 text-warning"></i>
+                                    </button>
+
+                                    <button class="btn btn-sm btn-transparent py-0 px-1"
+                                        onclick="confirmDelete({{ $deposit->id }})" data-toggle="tooltip"
+                                        data-placement="top" title="मेटाउनुहोस्">
+                                        <i class="fa-solid fa-trash h5 text-danger"></i>
+                                    </button>
+                                </td>
                             </tr>
                         @endforeach
+                        <tr class="text-end text-white" style="background-color: #32705f">
+                            <td colspan="2" >कुल दूध संकलन: {{$totalMilkQuantity}} लिटर </td>
+                            <td colspan="20">कुल मूल्य: {{$totalDepositIncome}} रुपैया</td>
+                        </tr>
                     @endif
                     @if (count($milkDeposits) <= 0)
                         <tr class="text-center">
@@ -217,7 +235,7 @@
                 </tbody>
             </table>
             <div class="ml-4">
-                {{ $entries != 'all' ? $milkDeposits->links() : '' }}
+                {{$milkDeposits->links()}}
             </div>
         </div>
     </div>
@@ -283,5 +301,46 @@
                 });
             });
         });
+    </script>
+
+     <script>
+        document.addEventListener('livewire:init', () => {
+            Livewire.on('warning', (event) => {
+                Swal.fire({
+                    title: 'के तपाईं यसलाई सम्पादन गर्न निश्चित हुनुहुन्छ?',
+                    text: "यो क्रिया पुनः फर्काउन सकिने छैन!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "हो, सम्पादन गरौं!",
+                    cancelButtonText: "रद्द गर्नुहोस्"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        @this.call('confirmUpdate');
+                    }
+                });
+
+            });
+        });
+    </script>
+    <script>
+        function confirmDelete(depositId) {
+            Swal.fire({
+                title: "के तपाईं पक्का हुनुहुन्छ?",
+                text: "यो क्रिया पुनः फर्काउन सकिने छैन!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "हो, यसलाई मेटाउनुहोस्!",
+                cancelButtonText: "रद्द गर्नुहोस्"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    @this.call('delete', depositId);
+                }
+            });
+
+        }
     </script>
 @endpush

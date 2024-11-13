@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Models\MilkDeposit;
 use App\Models\User;
 use Carbon\Carbon;
+use App\Helpers\NumberHelper;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 
 class UserRepository implements UserRepositoryInterface
@@ -49,24 +50,19 @@ class UserRepository implements UserRepositoryInterface
     {
         // Start the query
         $query = MilkDeposit::with('user');
-        
+
         // Filter by date if provided, otherwise use today's date
         if (!$milk_deposit_date) {
             $query->whereDate('created_at', Carbon::today());
         } else {
             $query->where('milk_deposit_date', $milk_deposit_date);
         }
-    
-        // Filter by milk type if provided
-        if ($milk_type) {
-            $query->where('milk_type', $milk_type);
-        }
-    
+
         // Filter by milk deposit time if provided
         if ($milk_deposit_time) {
             $query->where('milk_deposit_time', $milk_deposit_time);
         }
-    
+
         // Apply search filter for specific fields
         if ($search) {
             $query->where(function ($query) use ($search) {
@@ -74,16 +70,57 @@ class UserRepository implements UserRepositoryInterface
                     $userQuery->where('farmer_number', 'like', "%{$search}%")
                         ->orWhere('owner_name', 'like', "%{$search}%");
                 })
-                ->orWhere('milk_type', 'like', "%{$search}%");
+                    ->orWhere('milk_type', 'like', "%{$search}%");
             });
         }
-    
+
         // Apply sorting
         $query->orderBy($sortField, $sortDirection);
-    
+
         // Paginate the results with the specified number of entries per page
-        return $query->paginate($entries);
+        if ($entries == 'all') {
+            // If 'all' is passed, get all results without pagination
+            $milkDeposits = $query->get();
+        } else {
+            // Otherwise, paginate the results
+            $milkDeposits = $query->paginate($entries);
+        }
+
+        // Convert the milk_price_per_ltr column to Nepali numerals
+        // Use the items() method on the paginator to access the collection
+        $milkDeposits->getCollection()->transform(function ($deposit) {
+            $deposit->milk_per_ltr_price_with_commission = NumberHelper::toNepaliNumber($deposit->milk_per_ltr_price_with_commission);
+            $deposit->milk_snf = NumberHelper::toNepaliNumber($deposit->milk_snf);
+            $deposit->milk_fat = NumberHelper::toNepaliNumber($deposit->milk_fat);
+            $deposit->milk_quantity = NumberHelper::toNepaliNumber($deposit->milk_quantity);
+            $deposit->milk_total_price = NumberHelper::toNepaliNumber($deposit->milk_total_price);
+            return $deposit;
+        });
+
+        return $milkDeposits;
     }
-    
+
+
+
+
     // ============end of getting milk deposits===========
+
+    // ==========get total money generated from milk on specific date==========
+    public function getTotalIncomeFromMilkOnSpecificDate($milk_deposit_date, $milk_deposit_time)
+    {
+        if (!$milk_deposit_date) {
+            $milk_deposit_date = Carbon::now();
+        }
+        $totalDepositIncome = MilkDeposit::where('milk_deposit_date', $milk_deposit_date)
+            ->where('milk_deposit_time', $milk_deposit_time)
+            ->sum('milk_total_price');
+        $totalDepositedMilk = MilkDeposit::where('milk_deposit_date', $milk_deposit_date)
+            ->where('milk_deposit_time', $milk_deposit_time)
+            ->sum('milk_quantity');
+        return [
+            'totalDepositIncome' => $totalDepositIncome,
+            'totalDepositedMilk' => $totalDepositedMilk
+        ];
+    }
+    // ==========end of getting total money generated from milk on specific date==========
 }
