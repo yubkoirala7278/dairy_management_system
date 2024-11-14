@@ -223,8 +223,8 @@
                             </tr>
                         @endforeach
                         <tr class="text-end text-white" style="background-color: #32705f">
-                            <td colspan="2" >कुल दूध संकलन: {{$totalMilkQuantity}} लिटर </td>
-                            <td colspan="20">कुल मूल्य: {{$totalDepositIncome}} रुपैया</td>
+                            <td colspan="2">कुल दूध संकलन: {{ $totalMilkQuantity }} लिटर </td>
+                            <td colspan="20">कुल मूल्य: {{ $totalDepositIncome }} रुपैया</td>
                         </tr>
                     @endif
                     @if (count($milkDeposits) <= 0)
@@ -235,7 +235,7 @@
                 </tbody>
             </table>
             <div class="ml-4">
-                {{$milkDeposits->links()}}
+                {{ $milkDeposits->links() }}
             </div>
         </div>
     </div>
@@ -303,8 +303,34 @@
         });
     </script>
 
-     <script>
+    <script>
         document.addEventListener('livewire:init', () => {
+            Livewire.on('success', (event) => {
+                Swal.fire({
+                    title: "जानकारी",
+                    text: event.title,
+                    icon: "success",
+                    iconColor: "#28a745", // Use a green color to match success theme
+                    background: "#f9f9f9",
+                    color: "#333", // Darker text color for readability
+                    showConfirmButton: true,
+                    confirmButtonColor: "#4CAF50", // Custom green button
+                    confirmButtonText: "ठीक छ",
+                    customClass: {
+                        popup: "swal-custom-popup",
+                        title: "swal-custom-title",
+                        confirmButton: "swal-custom-button"
+                    },
+                    didOpen: () => {
+                        // Adding a custom animation for the icon
+                        document.querySelector('.swal2-icon.swal2-success').classList.add(
+                            'swal-animate-icon');
+                    }
+                }).then(() => {
+                    document.getElementById('farmernumber').focus();
+                });
+
+            });
             Livewire.on('warning', (event) => {
                 Swal.fire({
                     title: 'के तपाईं यसलाई सम्पादन गर्न निश्चित हुनुहुन्छ?',

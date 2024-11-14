@@ -24,9 +24,9 @@
                 <div class="form-group">
                     <label for="farmer_number" class="form-label h4 font-weight-bold">कृषकको नम्बर</label>
                     <input type="number" class="form-control translate-nepali" id="farmer_number"
-                           wire:model="farmer_number" title="कृपया नम्बर प्रविष्ट गर्नुहोस्" inputmode="numeric"
-                           placeholder="कृषकको नम्बर लेख्नुहोस्">
-                
+                        wire:model="farmer_number" title="कृपया नम्बर प्रविष्ट गर्नुहोस्" inputmode="numeric"
+                        placeholder="कृषकको नम्बर लेख्नुहोस्">
+
                     @error('farmer_number')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
@@ -157,7 +157,7 @@
                     </label>
                 </div>
 
-                 <div class="d-flex align-items-center" style="column-gap: 20px">
+                <div class="d-flex align-items-center" style="column-gap: 20px">
                     <input type="search" class="form-control form-control-sm translate-nepali"
                         placeholder="खोज्नुहोस्..." aria-controls="withdraw-request-list"
                         wire:model.live.debounce.500ms="search">
@@ -229,6 +229,30 @@
 @push('script')
     <script>
         document.addEventListener('livewire:init', () => {
+            Livewire.on('success', (event) => {
+                Swal.fire({
+                    title: "जानकारी",
+                    text: event.title,
+                    icon: "success",
+                    iconColor: "#28a745", // Use a green color to match success theme
+                    background: "#f9f9f9",
+                    color: "#333", // Darker text color for readability
+                    showConfirmButton: true,
+                    confirmButtonColor: "#4CAF50", // Custom green button
+                    confirmButtonText: "ठीक छ",
+                    customClass: {
+                        popup: "swal-custom-popup",
+                        title: "swal-custom-title",
+                        confirmButton: "swal-custom-button"
+                    },
+                    didOpen: () => {
+                        // Adding a custom animation for the icon
+                        document.querySelector('.swal2-icon.swal2-success').classList.add(
+                            'swal-animate-icon');
+                    }
+                });
+
+            });
             Livewire.on('warning', (event) => {
                 Swal.fire({
                     title: 'के तपाईं यसलाई सम्पादन गर्न निश्चित हुनुहुन्छ?',
@@ -269,7 +293,7 @@
             });
         });
     </script>
-   
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Select all toggle buttons

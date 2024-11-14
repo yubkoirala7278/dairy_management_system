@@ -212,7 +212,8 @@ class MilkDeposit extends Component
             $this->sortDirection,
             $this->milk_deposit_date,
             $this->milk_deposit_time,
-            $this->milk_type
+            $this->milk_type,
+            true
         );
 
         // Generate PDF view with encoding for Nepali language support
