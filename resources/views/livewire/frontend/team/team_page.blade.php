@@ -28,7 +28,7 @@
                 <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
                     <div class="team-item rounded p-4">
                         <img class="img-fluid rounded mb-4" src="{{ asset('frontend_assets/img/team-1.jpg') }}"
-                            alt="">
+                            alt="" loading="lazy">
                         <h5>आदम क्रू</h5>
                         <p class="text-primary">संस्थापक</p>
                         <div class="d-flex justify-content-center">
@@ -44,7 +44,7 @@
                 <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
                     <div class="team-item rounded p-4">
                         <img class="img-fluid rounded mb-4" src="{{ asset('frontend_assets/img/team-2.jpg') }}"
-                            alt="">
+                            alt="" loading="lazy">
                         <h5>डोरिस जोर्डन</h5>
                         <p class="text-primary">पशु चिकित्सक</p>
                         <div class="d-flex justify-content-center">
@@ -60,7 +60,7 @@
                 <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
                     <div class="team-item rounded p-4">
                         <img class="img-fluid rounded mb-4" src="{{ asset('frontend_assets/img/team-3.jpg') }}"
-                            alt="">
+                            alt="" loading="lazy">
                             <h5>ज्याक डॉसन</h5>
                             <p class="text-primary">किसान</p>
                         <div class="d-flex justify-content-center">

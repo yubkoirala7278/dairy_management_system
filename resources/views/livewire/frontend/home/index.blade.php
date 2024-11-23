@@ -1,11 +1,11 @@
 @extends('livewire.frontend.layouts.master')
 @section('content')
  <!-- Carousel Start -->
- <div class="container-fluid px-0 mb-5">
+ <div class="container-fluid px-0 mb-5" wire:ignore>
     <div id="header-carousel" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <img class="w-100" src="{{ asset('frontend_assets/img/carousel-1.jpg') }}" alt="Image">
+                <img class="w-100" src="{{ asset('frontend_assets/img/carousel-1.jpg') }}" alt="Image" loading="lazy">
                 <div class="carousel-caption">
                     <div class="container">
                         <div class="row justify-content-start">
@@ -22,7 +22,7 @@
                 </div>
             </div>
             <div class="carousel-item">
-                <img class="w-100" src="{{ asset('frontend_assets/img/carousel-2.jpg') }}" alt="Image">
+                <img class="w-100" src="{{ asset('frontend_assets/img/carousel-2.jpg') }}" alt="Image" loading="lazy">
                 <div class="carousel-caption">
                     <div class="container">
                         <div class="row justify-content-end">
@@ -55,7 +55,7 @@
 
 
 <!-- About Start -->
-<div class="container-xxl py-5">
+<div class="container-xxl py-5" wire:ignore>
     <div class="container">
         <div class="row g-5 align-items-end">
             <div class="col-lg-6">
@@ -67,13 +67,13 @@
                         </div>
                     </div>
                     <div class="col-6 wow fadeIn" data-wow-delay="0.1s">
-                        <img class="img-fluid rounded" src="{{ asset('frontend_assets/img/service-1.jpg') }}">
+                        <img class="img-fluid rounded" src="{{ asset('frontend_assets/img/service-1.jpg') }}" loading="lazy">
                     </div>
                     <div class="col-6 wow fadeIn" data-wow-delay="0.3s">
-                        <img class="img-fluid rounded" src="{{ asset('frontend_assets/img/service-2.jpg') }}">
+                        <img class="img-fluid rounded" src="{{ asset('frontend_assets/img/service-2.jpg') }}" loading="lazy">
                     </div>
                     <div class="col-6 wow fadeIn" data-wow-delay="0.5s">
-                        <img class="img-fluid rounded" src="{{ asset('frontend_assets/img/service-3.jpg') }}">
+                        <img class="img-fluid rounded" src="{{ asset('frontend_assets/img/service-3.jpg') }}" loading="lazy">
                     </div>
                 </div>
             </div>
@@ -88,7 +88,7 @@
                 <div class="row g-5 pt-2 mb-5">
                     <div class="col-sm-6">
                         <img class="img-fluid mb-4" src="{{ asset('frontend_assets/img/service.png') }}"
-                            alt="">
+                            alt="" loading="lazy">
                         <h5 class="mb-3">समर्पित सेवा</h5>
                         <span>हामी हाम्रो ग्राहकलाई उत्कृष्ट र शुद्ध अर्ग्यानिक डेरी उत्पादनहरू प्रदान गर्न समर्पित
                             छौं। हाम्रो सेवाले गुणस्तर र विश्वसनीयता सुनिश्चित गर्दछ, जसले ग्राहकलाई सन्तुष्टि र
@@ -96,7 +96,7 @@
                     </div>
                     <div class="col-sm-6">
                         <img class="img-fluid mb-4" src="{{ asset('frontend_assets/img/product.png') }}"
-                            alt="">
+                            alt="" loading="lazy">
                         <h5 class="mb-3">अर्ग्यानिक उत्पादनहरू</h5>
                         <span>हामी केवल शुद्ध र प्राकृतिक अर्ग्यानिक डेरी उत्पादनहरू मात्र प्रदान गर्दछौं। हाम्रो
                             उत्पादनमा कुनै रासायनिक तत्वको प्रयोग नगरी, स्वस्थ र पोषक तत्वयुक्त दूध र अन्य डेरी
@@ -113,7 +113,7 @@
 
 
 <!-- Features Start -->
-<div class="container-xxl py-5">
+<div class="container-xxl py-5" wire:ignore>
     <div class="container">
         <div class="row g-5 align-items-center">
             <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s">
@@ -134,7 +134,7 @@
                         <div class="col-sm-6 wow fadeIn" data-wow-delay="0.1s">
                             <div class="text-center bg-primary py-5 px-4">
                                 <img class="img-fluid mb-4"
-                                    src="{{ asset('frontend_assets/img/experience.png') }}" alt="">
+                                    src="{{ asset('frontend_assets/img/experience.png') }}" alt="" loading="lazy">
                                 <h1 class="display-6 text-white" data-toggle="counter-up">25</h1>
                                 <span class="fs-5 fw-semi-bold text-secondary">वर्षको अनुभव</span>
                             </div>
@@ -142,7 +142,7 @@
                         <div class="col-sm-6 wow fadeIn" data-wow-delay="0.3s">
                             <div class="text-center bg-secondary py-5 px-4">
                                 <img class="img-fluid mb-4" src="{{ asset('frontend_assets/img/award.png') }}"
-                                    alt="">
+                                    alt="" loading="lazy">
                                 <h1 class="display-6" data-toggle="counter-up">145</h1>
                                 <span class="fs-5 fw-semi-bold text-primary">पुरस्कार जितेको</span>
                             </div>
@@ -150,7 +150,7 @@
                         <div class="col-sm-6 wow fadeIn" data-wow-delay="0.5s">
                             <div class="text-center bg-secondary py-5 px-4">
                                 <img class="img-fluid mb-4" src="{{ asset('frontend_assets/img/animal.png') }}"
-                                    alt="">
+                                    alt="" loading="lazy">
                                 <h1 class="display-6" data-toggle="counter-up">153</h1>
                                 <span class="fs-5 fw-semi-bold text-primary">कुल जनावरहरू</span>
                             </div>
@@ -158,7 +158,7 @@
                         <div class="col-sm-6 wow fadeIn" data-wow-delay="0.7s">
                             <div class="text-center bg-primary py-5 px-4">
                                 <img class="img-fluid mb-4" src="{{ asset('frontend_assets/img/client.png') }}"
-                                    alt="">
+                                    alt="" loading="lazy">
                                 <h1 class="display-6 text-white" data-toggle="counter-up">1345</h1>
                                 <span class="fs-5 fw-semi-bold text-secondary">खुशी ग्राहकहरू</span>
                             </div>
@@ -174,14 +174,14 @@
 
 <!-- Banner Start -->
 <div class="container-fluid banner my-5 py-5" data-parallax="scroll"
-    data-image-src="{{ asset('frontend_assets/img/banner.jpg') }}">
+    data-image-src="{{ asset('frontend_assets/img/banner.jpg') }}" wire:ignore>
     <div class="container py-5">
         <div class="row g-5">
             <div class="col-lg-6 wow fadeIn" data-wow-delay="0.3s">
                 <div class="row g-4 align-items-center">
                     <div class="col-sm-4">
                         <img class="img-fluid rounded" src="{{ asset('frontend_assets/img/banner-1.jpg') }}"
-                            alt="">
+                            alt="" loading="lazy">
                     </div>
                     <div class="col-sm-8">
                         <h2 class="text-white mb-3">हामी उत्कृष्ट डेरी उत्पादनहरू बेच्दछौं</h2>
@@ -195,7 +195,7 @@
                 <div class="row g-4 align-items-center">
                     <div class="col-sm-4">
                         <img class="img-fluid rounded" src="{{ asset('frontend_assets/img/banner-2.jpg') }}"
-                            alt="">
+                            alt="" loading="lazy">
                     </div>
                     <div class="col-sm-8">
                         <h2 class="text-white mb-3">हामी नेपालभरि ताजा दूध पुर्याउँछौं</h2>
@@ -212,7 +212,7 @@
 
 
 <!-- Service Start -->
-<div class="container-xxl py-5">
+<div class="container-xxl py-5" wire:ignore>
     <div class="container">
         <div class="text-center mx-auto pb-4 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
             <p class="section-title bg-white text-center text-primary px-3">हाम्रो सेवाहरू</p>
@@ -223,12 +223,12 @@
                 <div class="service-item d-flex h-100">
                     <div class="service-img">
                         <img class="img-fluid" src="{{ asset('frontend_assets/img/service-1.jpg') }}"
-                            alt="">
+                            alt="" loading="lazy">
                     </div>
                     <div class="service-text p-5 pt-0">
                         <div class="service-icon">
                             <img class="img-fluid rounded-circle"
-                                src="{{ asset('frontend_assets/img/service-1.jpg') }}" alt="">
+                                src="{{ asset('frontend_assets/img/service-1.jpg') }}" alt="" loading="lazy">
                         </div>
                         <h5 class="mb-3">सर्वोत्तम जनावर चयन</h5>
                         <p class="mb-4">हामीले उच्च गुणस्तरीय र स्वस्थ जनावरहरूको चयन गरेका छौं, जसले हाम्रो डेरी
@@ -242,12 +242,12 @@
                 <div class="service-item d-flex h-100">
                     <div class="service-img">
                         <img class="img-fluid" src="{{ asset('frontend_assets/img/service-2.jpg') }}"
-                            alt="">
+                            alt="" loading="lazy">
                     </div>
                     <div class="service-text p-5 pt-0">
                         <div class="service-icon">
                             <img class="img-fluid rounded-circle"
-                                src="{{ asset('frontend_assets/img/service-2.jpg') }}" alt="">
+                                src="{{ asset('frontend_assets/img/service-2.jpg') }}" alt="" loading="lazy">
                         </div>
                         <h5 class="mb-3">प्रजनन र पशु चिकित्सक सेवा</h5>
                         <p class="mb-4">हामी प्रजनन प्रक्रियामा उत्कृष्टता र स्वस्थ जनावरहरूको सुनिश्चितता
@@ -262,12 +262,12 @@
                 <div class="service-item d-flex h-100">
                     <div class="service-img">
                         <img class="img-fluid" src="{{ asset('frontend_assets/img/service-3.jpg') }}"
-                            alt="">
+                            alt="" loading="lazy">
                     </div>
                     <div class="service-text p-5 pt-0">
                         <div class="service-icon">
                             <img class="img-fluid rounded-circle"
-                                src="{{ asset('frontend_assets/img/service-3.jpg') }}" alt="">
+                                src="{{ asset('frontend_assets/img/service-3.jpg') }}" alt="" loading="lazy">
                         </div>
                         <h5 class="mb-3">हेरचाह र दुग्ध उत्पादन</h5>
                         <p class="mb-4">हामी हाम्रो जनावरहरूको उत्तम हेरचाह सुनिश्चित गर्दछौं र उच्च गुणवत्ता
@@ -284,7 +284,7 @@
 
 
 <!-- Gallery Start -->
-<div class="container-xxl py-5 px-0">
+<div class="container-xxl py-5 px-0" wire:ignore>
     <div class="row g-0">
         <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
             <div class="row g-0">
@@ -292,14 +292,14 @@
                     <a class="d-block" href="{{ asset('frontend_assets/img/gallery-5.jpg') }}"
                         data-lightbox="gallery">
                         <img class="img-fluid" src="{{ asset('frontend_assets/img/gallery-5.jpg') }}"
-                            alt="">
+                            alt="" loading="lazy">
                     </a>
                 </div>
                 <div class="col-12">
                     <a class="d-block" href="{{ asset('frontend_assets/img/gallery-1.jpg') }}"
                         data-lightbox="gallery">
                         <img class="img-fluid" src="{{ asset('frontend_assets/img/gallery-1.jpg') }}"
-                            alt="">
+                            alt="" loading="lazy">
                     </a>
                 </div>
             </div>
@@ -310,14 +310,14 @@
                     <a class="d-block" href="{{ asset('frontend_assets/img/gallery-2.jpg') }}"
                         data-lightbox="gallery">
                         <img class="img-fluid" src="{{ asset('frontend_assets/img/gallery-2.jpg') }}"
-                            alt="">
+                            alt="" loading="lazy">
                     </a>
                 </div>
                 <div class="col-12">
                     <a class="d-block" href="{{ asset('frontend_assets/img/gallery-6.jpg') }}"
                         data-lightbox="gallery">
                         <img class="img-fluid" src="{{ asset('frontend_assets/img/gallery-6.jpg') }}"
-                            alt="">
+                            alt="" loading="lazy">
                     </a>
                 </div>
             </div>
@@ -328,14 +328,14 @@
                     <a class="d-block" href="{{ asset('frontend_assets/img/gallery-7.jpg') }}"
                         data-lightbox="gallery">
                         <img class="img-fluid" src="{{ asset('frontend_assets/img/gallery-7.jpg') }}"
-                            alt="">
+                            alt="" loading="lazy">
                     </a>
                 </div>
                 <div class="col-12">
                     <a class="d-block" href="{{ asset('frontend_assets/img/gallery-3.jpg') }}"
                         data-lightbox="gallery">
                         <img class="img-fluid" src="{{ asset('frontend_assets/img/gallery-3.jpg') }}"
-                            alt="">
+                            alt="" loading="lazy">
                     </a>
                 </div>
             </div>
@@ -346,14 +346,14 @@
                     <a class="d-block" href="{{ asset('frontend_assets/img/gallery-4.jpg') }}"
                         data-lightbox="gallery">
                         <img class="img-fluid" src="{{ asset('frontend_assets/img/gallery-4.jpg') }}"
-                            alt="">
+                            alt="" loading="lazy">
                     </a>
                 </div>
                 <div class="col-12">
                     <a class="d-block" href="{{ asset('frontend_assets/img/gallery-8.jpg') }}"
                         data-lightbox="gallery">
                         <img class="img-fluid" src="{{ asset('frontend_assets/img/gallery-8.jpg') }}"
-                            alt="">
+                            alt="" loading="lazy">
                     </a>
                 </div>
             </div>
@@ -363,100 +363,8 @@
 <!-- Gallery End -->
 
 
-<!-- Product Start -->
-<div class="container-xxl py-5">
-    <div class="container">
-        <div class="text-center mx-auto wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
-            <p class="section-title bg-white text-center text-primary px-3">हाम्रा उत्पादनहरू</p>
-            <h1 class="mb-5">स्वस्थ जीवनका लागि हाम्रा डेरी उत्पादनहरू</h1>
-        </div>
-        <div class="row gx-4">
-            <div class="col-md-6 col-lg-4 col-xl-3 wow fadeInUp" data-wow-delay="0.1s">
-                <div class="product-item">
-                    <div class="position-relative">
-                        <img class="img-fluid" src="{{ asset('frontend_assets/img/product-1.jpg') }}"
-                            alt="">
-                        <div class="product-overlay">
-                            <a class="btn btn-square btn-secondary rounded-circle m-1" href=""><i
-                                    class="bi bi-link"></i></a>
-                            <a class="btn btn-square btn-secondary rounded-circle m-1" href=""><i
-                                    class="bi bi-cart"></i></a>
-                        </div>
-                    </div>
-                    <div class="text-center p-4">
-                        <a class="d-block h5" href="">शुद्ध दूध</a>
-                        <span class="text-primary me-1">रू १९.००</span>
-                        <span class="text-decoration-line-through">रू २९.००</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4 col-xl-3 wow fadeInUp" data-wow-delay="0.3s">
-                <div class="product-item">
-                    <div class="position-relative">
-                        <img class="img-fluid" src="{{ asset('frontend_assets/img/product-2.jpg') }}"
-                            alt="">
-                        <div class="product-overlay">
-                            <a class="btn btn-square btn-secondary rounded-circle m-1" href=""><i
-                                    class="bi bi-link"></i></a>
-                            <a class="btn btn-square btn-secondary rounded-circle m-1" href=""><i
-                                    class="bi bi-cart"></i></a>
-                        </div>
-                    </div>
-                    <div class="text-center p-4">
-                        <a class="d-block h5" href="">ताजा मासु</a>
-                        <span class="text-primary me-1">रू १९.००</span>
-                        <span class="text-decoration-line-through">रू २९.००</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4 col-xl-3 wow fadeInUp" data-wow-delay="0.5s">
-                <div class="product-item">
-                    <div class="position-relative">
-                        <img class="img-fluid" src="{{ asset('frontend_assets/img/product-3.jpg') }}"
-                            alt="">
-                        <div class="product-overlay">
-                            <a class="btn btn-square btn-secondary rounded-circle m-1" href=""><i
-                                    class="bi bi-link"></i></a>
-                            <a class="btn btn-square btn-secondary rounded-circle m-1" href=""><i
-                                    class="bi bi-cart"></i></a>
-                        </div>
-                    </div>
-                    <div class="text-center p-4">
-                        <a class="d-block h5" href="">डेरी उत्पादनहरू</a>
-                        <span class="text-primary me-1">रू १९.००</span>
-                        <span class="text-decoration-line-through">रू २९.००</span>
-
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4 col-xl-3 wow fadeInUp" data-wow-delay="0.7s">
-                <div class="product-item">
-                    <div class="position-relative">
-                        <img class="img-fluid" src="{{ asset('frontend_assets/img/product-4.jpg') }}"
-                            alt="">
-                        <div class="product-overlay">
-                            <a class="btn btn-square btn-secondary rounded-circle m-1" href=""><i
-                                    class="bi bi-link"></i></a>
-                            <a class="btn btn-square btn-secondary rounded-circle m-1" href=""><i
-                                    class="bi bi-cart"></i></a>
-                        </div>
-                    </div>
-                    <div class="text-center p-4">
-                        <a class="d-block h5" href="">जैविक खाना</a>
-                        <span class="text-primary me-1">रू १९.००</span>
-                        <span class="text-decoration-line-through">रू २९.००</span>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Product End -->
-
-
 <!-- Team Start -->
-<div class="container-xxl py-5">
+<div class="container-xxl py-5" wire:ignore>
     <div class="container">
         <div class="text-center mx-auto wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
             <p class="section-title bg-white text-center text-primary px-3">हाम्रो सदस्यहरू</p>
@@ -466,7 +374,7 @@
             <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
                 <div class="team-item rounded p-4">
                     <img class="img-fluid rounded mb-4" src="{{ asset('frontend_assets/img/bodraj.jpg') }}"
-                        alt="" style="height: 250px">
+                        alt="" style="height: 250px" loading="lazy">
                     <h5>बोधराज सुवेदी</h5>
                     <p class="text-primary">संस्थापक</p>
                     <div class="d-flex justify-content-center">
@@ -482,7 +390,7 @@
             <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
                 <div class="team-item rounded p-4">
                     <img class="img-fluid rounded mb-4" src="{{ asset('frontend_assets/img/devi.jpg') }}"
-                        alt="" style="height: 250px">
+                        alt="" style="height: 250px" loading="lazy">
                     <h5>देवी प्रसाद कोइराला</h5>
                     <p class="text-primary">दूध इन्चार्ज</p>
                     <div class="d-flex justify-content-center">
@@ -498,7 +406,7 @@
             <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
                 <div class="team-item rounded p-4">
                     <img class="img-fluid rounded mb-4" src="{{ asset('frontend_assets/img/sivaji.jpg') }}"
-                        alt="" style="height: 250px;">
+                        alt="" style="height: 250px;" loading="lazy">
                     <h5>शिवजी कोइराला</h5>
                     <p class="text-primary">लेखापाल</p>
                     <div class="d-flex justify-content-center">
@@ -518,7 +426,7 @@
 
 
 <!-- Testimonial Start -->
-<div class="container-xxl py-5">
+<div class="container-xxl py-5" wire:ignore>
     <div class="container">
         <div class="text-center mx-auto wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
             <p class="section-title bg-white text-center text-primary px-3">साक्षात्कार</p>
@@ -528,20 +436,20 @@
             <div class="col-lg-5 wow fadeInUp" data-wow-delay="0.1s">
                 <div class="testimonial-img">
                     <img class="img-fluid animated pulse infinite"
-                        src="{{ asset('frontend_assets/img/testimonial-1.jpg') }}" alt="">
+                        src="{{ asset('frontend_assets/img/testimonial-1.jpg') }}" alt="" loading="lazy">
                     <img class="img-fluid animated pulse infinite"
-                        src="{{ asset('frontend_assets/img/testimonial-2.jpg') }}" alt="">
+                        src="{{ asset('frontend_assets/img/testimonial-2.jpg') }}" alt="" loading="lazy">
                     <img class="img-fluid animated pulse infinite"
-                        src="{{ asset('frontend_assets/img/testimonial-3.jpg') }}" alt="">
+                        src="{{ asset('frontend_assets/img/testimonial-3.jpg') }}" alt="" loading="lazy">
                     <img class="img-fluid animated pulse infinite"
-                        src="{{ asset('frontend_assets/img/testimonial-4.jpg') }}" alt="">
+                        src="{{ asset('frontend_assets/img/testimonial-4.jpg') }}" alt="" loading="lazy">
                 </div>
             </div>
             <div class="col-lg-7 wow fadeInUp" data-wow-delay="0.5s">
                 <div class="owl-carousel testimonial-carousel">
                     <div class="testimonial-item">
                         <img class="img-fluid mb-3" src="{{ asset('frontend_assets/img/testimonial-1.jpg') }}"
-                            alt="">
+                            alt="" loading="lazy">
                         <p class="fs-5">हामीले यहाँको सेवा प्राप्त गर्दा हाम्रो जीवनमा ठूलो परिवर्तन आएको छ। यस
                             डेरी फार्मले न केवल उत्तम उत्पादन दिन्छ, तर हामीलाई स्वास्थ्य र स्वच्छताको महत्व पनि
                             बुझाएको छ। यहाँका सबै सदस्यहरूको समर्पण र मेहनतको कारण, हामी विश्वास गर्न सक्छौं कि
@@ -551,7 +459,7 @@
                     </div>
                     <div class="testimonial-item">
                         <img class="img-fluid mb-3" src="{{ asset('frontend_assets/img/testimonial-2.jpg') }}"
-                            alt="">
+                            alt="" loading="lazy">
                         <p class="fs-5">यहाँको सेवा र उत्पादनको गुणस्तर अत्यन्तै राम्रो छ। यो डेरी फार्मले हाम्रो
                             स्वास्थ्य र जीवनशैलीमा सकारात्मक प्रभाव पार्न सफल भएको छ। म सधैं यहाँका उत्पादनलाई
                             प्राथमिकता दिनेछु र अरूसँग पनि सिफारिस गर्नेछु।</p>
@@ -560,7 +468,7 @@
                     </div>
                     <div class="testimonial-item">
                         <img class="img-fluid mb-3" src="{{ asset('frontend_assets/img/testimonial-3.jpg') }}"
-                            alt="">
+                            alt="" loading="lazy">
                         <p class="fs-5">हामीले यहाँको सेवा र उत्पादनको गुणस्तरको अत्यधिक प्रशंसा गर्छौं। यो डेरी
                             फार्मले उत्कृष्ट दूध र दुग्ध उत्पादन प्रदान गर्दछ, जसले हाम्रो स्वास्थ्यमा सकारात्मक
                             प्रभाव पारेको छ। म यहाँका उत्पादनलाई सबैलाई सिफारिस गर्दछु।</p>
@@ -569,7 +477,7 @@
                     </div>
                     <div class="testimonial-item">
                         <img class="img-fluid mb-3" src="{{ asset('frontend_assets/img/testimonial-4.jpg') }}"
-                            alt="">
+                            alt="" loading="lazy">
                         <p class="fs-5">हामीले यहाँको सेवा र उत्पादनको गुणस्तरको अत्यधिक सराहना गर्छौं। डेरी
                             फार्मको उत्पादनले हाम्रो जीवनशैलीमा धेरै सुधार ल्याएको छ र स्वास्थ्यमा सकारात्मक प्रभाव
                             पार्न सफल भएको छ। म यहाँका उत्पादनहरूलाई सबैलाई सिफारिस गर्छु।</p>

@@ -1,7 +1,7 @@
 @extends('livewire.frontend.layouts.master')
 @section('content')
     <!-- Page Header Start -->
-    <div class="container-fluid page-header py-5 mb-5 wow fadeIn" data-wow-delay="0.1s">
+    <div class="container-fluid page-header py-5 mb-5 wow fadeIn" data-wow-delay="0.1s" wire:ignore>
         <div class="container text-center py-5">
             <h1 class="display-3 text-white mb-4 animated slideInDown">विशेषताहरू</h1>
             <nav aria-label="breadcrumb animated slideInDown">
@@ -18,7 +18,7 @@
 
 
     <!-- Features Start -->
-    <div class="container-xxl py-5">
+    <div class="container-xxl py-5" wire:ignore>
         <div class="container">
             <div class="row g-5 align-items-center">
                 <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s">
@@ -37,7 +37,7 @@
                             <div class="col-sm-6 wow fadeIn" data-wow-delay="0.1s">
                                 <div class="text-center bg-primary py-5 px-4">
                                     <img class="img-fluid mb-4" src="{{ asset('frontend_assets/img/experience.png') }}"
-                                        alt="">
+                                        alt="" loading="lazy">
                                     <h1 class="display-6 text-white" data-toggle="counter-up">25</h1>
                                     <span class="fs-5 fw-semi-bold text-secondary">वर्षको अनुभव</span>
                                 </div>
@@ -45,7 +45,7 @@
                             <div class="col-sm-6 wow fadeIn" data-wow-delay="0.3s">
                                 <div class="text-center bg-secondary py-5 px-4">
                                     <img class="img-fluid mb-4" src="{{ asset('frontend_assets/img/award.png') }}"
-                                        alt="">
+                                        alt="" loading="lazy">
                                     <h1 class="display-6" data-toggle="counter-up">183</h1>
                                     <span class="fs-5 fw-semi-bold text-primary">पुरस्कार विजेता</span>
                                 </div>
@@ -53,7 +53,7 @@
                             <div class="col-sm-6 wow fadeIn" data-wow-delay="0.5s">
                                 <div class="text-center bg-secondary py-5 px-4">
                                     <img class="img-fluid mb-4" src="{{ asset('frontend_assets/img/animal.png') }}"
-                                        alt="">
+                                        alt="" loading="lazy">
                                     <h1 class="display-6" data-toggle="counter-up">2619</h1>
                                     <span class="fs-5 fw-semi-bold text-primary">कुल जनावरहरू</span>
                                 </div>
@@ -61,7 +61,7 @@
                             <div class="col-sm-6 wow fadeIn" data-wow-delay="0.7s">
                                 <div class="text-center bg-primary py-5 px-4">
                                     <img class="img-fluid mb-4" src="{{ asset('frontend_assets/img/client.png') }}"
-                                        alt="">
+                                        alt="" loading="lazy">
                                     <h1 class="display-6 text-white" data-toggle="counter-up">51940</h1>
                                     <span class="fs-5 fw-semi-bold text-secondary">सन्तुष्ट ग्राहकहरू</span>
                                 </div>

@@ -32,11 +32,15 @@
 
     <!-- Template Stylesheet -->
     <link href="{{ asset('frontend_assets/css/style.css') }}" rel="stylesheet">
+
+    {{-- nelify --}}
+    <script src="https://unpkg.com/nepalify"></script>
+    @toastifyCss
 </head>
 
 <body>
     <!-- Spinner Start -->
-    <div id="spinner"
+    <div wire:ignore id="spinner"
         class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
         <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
     </div>
@@ -44,7 +48,7 @@
 
 
     <!-- Topbar Start -->
-    <div class="container-fluid bg-dark px-0">
+    <div class="container-fluid bg-dark px-0" wire:ignore>
         <div class="row g-0 d-none d-lg-flex">
             <div class="col-lg-6 ps-5 text-start">
                 <div class="h-100 d-inline-flex align-items-center text-light">
@@ -67,8 +71,8 @@
 
 
     <!-- Navbar Start -->
-    <nav class="navbar navbar-expand-lg bg-white navbar-light sticky-top px-4 px-lg-5">
-        <a href="{{route('frontend.home')}}" class="navbar-brand d-flex align-items-center">
+    <nav class="navbar navbar-expand-lg bg-white navbar-light sticky-top px-4 px-lg-5" wire:ignore>
+        <a href="{{ route('frontend.home') }}" class="navbar-brand d-flex align-items-center">
             <h1 class="m-0">आदर्श डेरी</h1>
         </a>
         <button type="button" class="navbar-toggler me-0" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -76,20 +80,30 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto p-4 p-lg-0">
-                <a href="{{route('frontend.home')}}" class="nav-item nav-link {{$page=='home'?'active':''}}">होम पेज</a>
-                <a href="{{route('frontend.about')}}" class="nav-item nav-link {{$page=='about'?'active':''}}">हाम्रो बारेमा</a>
-                <a  href="{{route('frontend.service')}}" class="nav-item nav-link {{$page=='service'?'active':''}}">सेवाहरू</a>
-                <a href="{{route('frontend.product')}}" class="nav-item nav-link {{$page=='product'?'active':''}}">उत्पादनहरू</a>
+                <a href="{{ route('frontend.home') }}" class="nav-item nav-link {{ $page == 'home' ? 'active' : '' }}">होम
+                    पेज</a>
+                <a href="{{ route('frontend.about') }}"
+                    class="nav-item nav-link {{ $page == 'about' ? 'active' : '' }}">हाम्रो बारेमा</a>
+                <a href="{{ route('frontend.service') }}"
+                    class="nav-item nav-link {{ $page == 'service' ? 'active' : '' }}">सेवाहरू</a>
+                <a href="{{ route('frontend.product') }}"
+                    class="nav-item nav-link {{ $page == 'product' ? 'active' : '' }}">उत्पादनहरू</a>
                 <div class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle {{$page=='pages'?'active':''}}" data-bs-toggle="dropdown">पेजहरू</a>
+                    <a href="#" class="nav-link dropdown-toggle {{ $page == 'pages' ? 'active' : '' }}"
+                        data-bs-toggle="dropdown">पेजहरू</a>
                     <div class="dropdown-menu bg-light m-0">
-                        <a href="{{route('frontend.gallery')}}" class="dropdown-item {{$sub_page=='gallery'?'active':''}}">ग्यालेरी</a>
-                        <a href="{{route('frontend.feature')}}" class="dropdown-item {{$sub_page=='feature'?'active':''}}">विशेषताहरू</a>
-                        <a href="{{route('frontend.team')}}" class="dropdown-item {{$sub_page=='team'?'active':''}}">हाम्रो टिम</a>
-                        <a href="{{route('frontend.testimonial')}}" class="dropdown-item {{$sub_page=='testimonial'?'active':''}}">प्रशंसा पत्र</a>
+                        <a href="{{ route('frontend.gallery') }}"
+                            class="dropdown-item {{ $sub_page == 'gallery' ? 'active' : '' }}">ग्यालेरी</a>
+                        <a href="{{ route('frontend.feature') }}"
+                            class="dropdown-item {{ $sub_page == 'feature' ? 'active' : '' }}">विशेषताहरू</a>
+                        <a href="{{ route('frontend.team') }}"
+                            class="dropdown-item {{ $sub_page == 'team' ? 'active' : '' }}">हाम्रो टिम</a>
+                        <a href="{{ route('frontend.testimonial') }}"
+                            class="dropdown-item {{ $sub_page == 'testimonial' ? 'active' : '' }}">प्रशंसा पत्र</a>
                     </div>
                 </div>
-                <a href="{{route('frontend.contact')}}" class="nav-item nav-link {{$page=='contact'?'active':''}}">सम्पर्क</a>
+                <a href="{{ route('frontend.contact') }}"
+                    class="nav-item nav-link {{ $page == 'contact' ? 'active' : '' }}">सम्पर्क</a>
             </div>
             {{-- <div class="border-start ps-4 d-none d-lg-block">
                 <button type="button" class="btn btn-sm p-0"><i class="fa fa-search"></i></button>
@@ -99,11 +113,13 @@
     <!-- Navbar End -->
 
 
-   @yield('content')
+    @yield('content')
+
+    @yield('modal')
 
 
     <!-- Footer Start -->
-    <div class="container-fluid bg-dark footer mt-5 py-5 wow fadeIn" data-wow-delay="0.1s">
+    <div class="container-fluid bg-dark footer mt-5 py-5 wow fadeIn" data-wow-delay="0.1s" wire:ignore>
         <div class="container py-5">
             <div class="row g-5">
                 <div class="col-lg-3 col-md-6">
@@ -141,7 +157,8 @@
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <h5 class="text-white mb-4">हाम्रो डेरी सेवाहरू</h5>
-                    <p>हामी उत्कृष्ट गुणस्तरका दूध र डेरी उत्पादनहरू प्रदान गर्दछौं। हाम्रो डेरी उत्पादनहरू तपाईंको स्वास्थ्य र स्वादका लागि उत्तम छन्।</p>
+                    <p>हामी उत्कृष्ट गुणस्तरका दूध र डेरी उत्पादनहरू प्रदान गर्दछौं। हाम्रो डेरी उत्पादनहरू तपाईंको
+                        स्वास्थ्य र स्वादका लागि उत्तम छन्।</p>
                     {{-- <div class="position-relative w-100">
                         <input class="form-control bg-transparent w-100 py-3 ps-4 pe-5" type="text" placeholder="तपाईंको इमेल">
                         <button type="button" class="btn btn-secondary py-2 position-absolute top-0 end-0 mt-2 me-2">सहयोगको लागि सम्पर्क गर्नुहोस्</button>
@@ -154,7 +171,7 @@
 
 
     <!-- Copyright Start -->
-    <div class="container-fluid bg-secondary text-body copyright py-4">
+    <div class="container-fluid bg-secondary text-body copyright py-4" wire:ignore>
         <div class="container">
             <div class="row">
                 <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
@@ -168,30 +185,62 @@
         </div>
     </div>
     <!-- Copyright End -->
+    {{-- <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-circle back-to-top"><i
+            class="bi bi-arrow-up"></i></a> --}}
+           
+
+    <div wire:ignore>
 
 
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-circle back-to-top"><i
-            class="bi bi-arrow-up"></i></a>
 
+        <!-- JavaScript Libraries -->
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="{{ asset('frontend_assets/lib/wow/wow.min.js') }}"></script>
+        <script src="{{ asset('frontend_assets/lib/easing/easing.min.js') }}"></script>
+        <script src="{{ asset('frontend_assets/lib/waypoints/waypoints.min.js') }}"></script>
+        <script src="{{ asset('frontend_assets/lib/owlcarousel/owl.carousel.js') }}"></script>
+        <script src="{{ asset('frontend_assets/lib/counterup/counterup.min.js') }}"></script>
+        <script src="{{ asset('frontend_assets/lib/parallax/parallax.min.js') }}"></script>
+        <script src="{{ asset('frontend_assets/lib/lightbox/js/lightbox.min.js') }}"></script>
 
-    <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ asset('frontend_assets/lib/wow/wow.min.js') }}"></script>
-    <script src="{{ asset('frontend_assets/lib/easing/easing.min.js') }}"></script>
-    <script src="{{ asset('frontend_assets/lib/waypoints/waypoints.min.js') }}"></script>
-    <script src="{{ asset('frontend_assets/lib/owlcarousel/owl.carousel.js') }}"></script>
-    <script src="{{ asset('frontend_assets/lib/counterup/counterup.min.js') }}"></script>
-    <script src="{{ asset('frontend_assets/lib/parallax/parallax.min.js') }}"></script>
-    <script src="{{ asset('frontend_assets/lib/lightbox/js/lightbox.min.js') }}"></script>
+        <!-- Template Javascript -->
+        <script src="{{ asset('frontend_assets/js/main.js') }}"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const inputs = document.querySelectorAll('.translate-nepali');
 
-    <!-- Template Javascript -->
-    <script src="{{ asset('frontend_assets/js/main.js') }}"></script>
+                inputs.forEach(input => {
+                    input.addEventListener('input', function(event) {
+                        translateToNepali(this);
+                    });
+                });
+            });
+
+            function translateToNepali(input) {
+                const options = {
+                    layout: "traditional",
+                };
+
+                // Preserve the decimal point in the value
+                let translatedValue = '';
+                for (let char of input.value) {
+                    if (char === '.') {
+                        translatedValue += char; // Keep the decimal point as is
+                    } else {
+                        translatedValue += nepalify.format(char, options); // Convert other characters to Nepali
+                    }
+                }
+
+                // Update the input with the translated value
+                input.value = translatedValue;
+            }
+        </script>
+        @toastifyJs
+    </div>
 
     {{-- script --}}
     @stack('script')
 </body>
 
 </html>
-

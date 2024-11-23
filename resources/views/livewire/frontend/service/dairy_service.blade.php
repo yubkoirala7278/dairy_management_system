@@ -28,11 +28,11 @@
                 <div class="col-lg-4 col-md-6 pt-5 wow fadeInUp" data-wow-delay="0.1s">
                     <div class="service-item d-flex h-100">
                         <div class="service-img">
-                            <img class="img-fluid" src="{{asset('frontend_assets/img/service-1.jpg')}}" alt="">
+                            <img class="img-fluid" src="{{asset('frontend_assets/img/service-1.jpg')}}" alt="" loading="lazy">
                         </div>
                         <div class="service-text p-5 pt-0">
                             <div class="service-icon">
-                                <img class="img-fluid rounded-circle" src="{{asset('frontend_assets/img/service-1.jpg')}}" alt="">
+                                <img class="img-fluid rounded-circle" src="{{asset('frontend_assets/img/service-1.jpg')}}" alt="" loading="lazy">
                             </div>
                             <h5 class="mb-3">उत्तम पशु चयन</h5>
                             <p class="mb-4">उत्तम उत्पादनको लागि स्वस्थ र उपयुक्त पशुको छनोट गरिन्छ। हामी तपाईंलाई गुणस्तरीय, स्वस्थ, 
@@ -46,11 +46,11 @@
                 <div class="col-lg-4 col-md-6 pt-5 wow fadeInUp" data-wow-delay="0.3s">
                     <div class="service-item d-flex h-100">
                         <div class="service-img">
-                            <img class="img-fluid" src="{{asset('frontend_assets/img/service-2.jpg')}}" alt="">
+                            <img class="img-fluid" src="{{asset('frontend_assets/img/service-2.jpg')}}" alt="" loading="lazy">
                         </div>
                         <div class="service-text p-5 pt-0">
                             <div class="service-icon">
-                                <img class="img-fluid rounded-circle" src="{{asset('frontend_assets/img/service-2.jpg')}}" alt="">
+                                <img class="img-fluid rounded-circle" src="{{asset('frontend_assets/img/service-2.jpg')}}" alt="" loading="lazy">
                             </div>
                             <h5 class="mb-3">प्रजनन र पशु उपचार सेवा</h5>
                             <p class="mb-4">स्वस्थ र उन्नत प्रजननको लागि विशेषज्ञ प्रजनन सेवा र नियमित पशु स्वास्थ्य जाँच। हामी तपाईंका 
@@ -64,11 +64,11 @@
                 <div class="col-lg-4 col-md-6 pt-5 wow fadeInUp" data-wow-delay="0.5s">
                     <div class="service-item d-flex h-100">
                         <div class="service-img">
-                            <img class="img-fluid" src="{{asset('frontend_assets/img/service-3.jpg')}}" alt="">
+                            <img class="img-fluid" src="{{asset('frontend_assets/img/service-3.jpg')}}" alt="" loading="lazy">
                         </div>
                         <div class="service-text p-5 pt-0">
                             <div class="service-icon">
-                                <img class="img-fluid rounded-circle" src="{{asset('frontend_assets/img/service-3.jpg')}}" alt="">
+                                <img class="img-fluid rounded-circle" src="{{asset('frontend_assets/img/service-3.jpg')}}" alt="" loading="lazy">
                             </div>
                             <h5 class="mb-3">हेरचाह र दुहुन सेवा</h5>
                             <p class="mb-4">पशुको उचित हेरचाह र स्वस्थ दुहुन प्रक्रियाका लागि हाम्रो विशेष सेवा। हामी सुनिश्चित गर्छौं कि 
@@ -103,28 +103,28 @@
                         <div class="row g-0">
                             <div class="col-sm-6 wow fadeIn" data-wow-delay="0.1s">
                                 <div class="text-center bg-primary py-5 px-4">
-                                    <img class="img-fluid mb-4" src="{{asset('frontend_assets/img/experience.png')}}" alt="">
+                                    <img class="img-fluid mb-4" src="{{asset('frontend_assets/img/experience.png')}}" alt="" loading="lazy">
                                     <h1 class="display-6 text-white" data-toggle="counter-up">25</h1>
                                     <span class="fs-5 fw-semi-bold text-secondary">वर्षको अनुभव</span>
                                 </div>
                             </div>
                             <div class="col-sm-6 wow fadeIn" data-wow-delay="0.3s">
                                 <div class="text-center bg-secondary py-5 px-4">
-                                    <img class="img-fluid mb-4" src="{{asset('frontend_assets/img/award.png')}}" alt="">
+                                    <img class="img-fluid mb-4" src="{{asset('frontend_assets/img/award.png')}}" alt="" loading="lazy">
                                     <h1 class="display-6" data-toggle="counter-up">183</h1>
                                     <span class="fs-5 fw-semi-bold text-primary">पुरस्कार प्राप्त</span>
                                 </div>
                             </div>
                             <div class="col-sm-6 wow fadeIn" data-wow-delay="0.5s">
                                 <div class="text-center bg-secondary py-5 px-4">
-                                    <img class="img-fluid mb-4" src="{{asset('frontend_assets/img/animal.png')}}" alt="">
+                                    <img class="img-fluid mb-4" src="{{asset('frontend_assets/img/animal.png')}}" alt="" loading="lazy">
                                     <h1 class="display-6" data-toggle="counter-up">2619</h1>
                                     <span class="fs-5 fw-semi-bold text-primary">कुल पशु संख्या</span>
                                 </div>
                             </div>
                             <div class="col-sm-6 wow fadeIn" data-wow-delay="0.7s">
                                 <div class="text-center bg-primary py-5 px-4">
-                                    <img class="img-fluid mb-4" src="{{asset('frontend_assets/img/client.png')}}" alt="">
+                                    <img class="img-fluid mb-4" src="{{asset('frontend_assets/img/client.png')}}" alt="" loading="lazy">
                                     <h1 class="display-6 text-white" data-toggle="counter-up">51940</h1>
                                     <span class="fs-5 fw-semi-bold text-secondary">खुसी ग्राहकहरू</span>
                                 </div>

@@ -64,7 +64,6 @@
                                     title="मेटाउनुहोस्">
                                     <i class="fa-solid fa-trash h5 text-danger"></i>
                                 </button>
-
                             </td>
                         </tr>
                     @endforeach
