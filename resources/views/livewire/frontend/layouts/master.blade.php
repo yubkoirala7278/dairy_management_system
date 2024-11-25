@@ -35,7 +35,13 @@
 
     {{-- nelify --}}
     <script src="https://unpkg.com/nepalify"></script>
+    {{-- style --}}
+    <link rel="stylesheet" href="{{ asset('backend_assets/css/style.css') }}">
+
+    {{-- sweet alert --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @toastifyCss
+    @yield('custom-style')
 </head>
 
 <body>
@@ -80,7 +86,8 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto p-4 p-lg-0">
-                <a href="{{ route('frontend.home') }}" class="nav-item nav-link {{ $page == 'home' ? 'active' : '' }}">होम
+                <a href="{{ route('frontend.home') }}"
+                    class="nav-item nav-link {{ $page == 'home' ? 'active' : '' }}">होम
                     पेज</a>
                 <a href="{{ route('frontend.about') }}"
                     class="nav-item nav-link {{ $page == 'about' ? 'active' : '' }}">हाम्रो बारेमा</a>
@@ -104,6 +111,11 @@
                 </div>
                 <a href="{{ route('frontend.contact') }}"
                     class="nav-item nav-link {{ $page == 'contact' ? 'active' : '' }}">सम्पर्क</a>
+                    @if(Auth::user())
+                    <a href="{{ route('frontend.cart') }}"
+                    class="nav-item nav-link {{ $page == 'cart' ? 'active' : '' }}">कार्ट</a>
+                    @endif
+               
             </div>
             {{-- <div class="border-start ps-4 d-none d-lg-block">
                 <button type="button" class="btn btn-sm p-0"><i class="fa fa-search"></i></button>
@@ -187,7 +199,7 @@
     <!-- Copyright End -->
     {{-- <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-circle back-to-top"><i
             class="bi bi-arrow-up"></i></a> --}}
-           
+
 
     <div wire:ignore>
 
@@ -236,8 +248,35 @@
                 input.value = translatedValue;
             }
         </script>
+
+        <script>
+            document.addEventListener('livewire:init', () => {
+                // =============error message=============
+                Livewire.on('error', (event) => {
+                    toastify().error(event.title);
+                });
+                // =========warning message============
+                Livewire.on('warningMessage', (event) => {
+                    Swal.fire({
+                        title: "<span style='color: #c0392b; font-weight: bold;'>⚠️ चेतावनी!</span>",
+                        html: `<strong style='font-size: 18px; color: #4a4a4a;'>${event.title}</strong>`,
+                        icon: "warning",
+                        iconColor: "#c0392b",
+                        background: "#fff7e6",
+                        showCloseButton: true,
+                        confirmButtonText: "<span style='font-weight: bold; font-size: 16px;'>ठीक छ</span>",
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: "custom-confirm-button"
+                        }
+                    });
+                });
+            });
+        </script>
+
         @toastifyJs
     </div>
+
 
     {{-- script --}}
     @stack('script')

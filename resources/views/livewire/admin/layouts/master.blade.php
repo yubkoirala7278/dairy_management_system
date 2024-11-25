@@ -177,10 +177,11 @@
         <div class="az-content-body " style="overflow-x:hidden">
             <div class="row ">
                 @yield('content')
-                @yield('modal')
+               
             </div><!-- row -->
         </div><!-- az-content-body -->
     </div><!-- az-content -->
+    @yield('modal')
 
 
 

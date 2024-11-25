@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 class Product extends Model
 {
     use HasFactory;
-    protected $fillable = ['name', 'slug', 'price_per_kg', 'product_qty', 'track_qty', 'status', 'image'];
+    protected $fillable = ['name', 'slug', 'price_per_kg', 'status', 'image'];
     // Mutator to automatically generate slug
     public static function boot()
     {

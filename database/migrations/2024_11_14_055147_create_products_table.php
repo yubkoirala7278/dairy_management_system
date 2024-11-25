@@ -16,8 +16,6 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug')->unique();
             $table->float('price_per_kg');
-            $table->integer('product_qty');
-            $table->boolean('track_qty')->default(false);
             $table->boolean('status')->default(true);
             $table->string('image');
             $table->timestamps();

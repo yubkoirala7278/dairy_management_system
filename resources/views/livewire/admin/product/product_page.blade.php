@@ -1,6 +1,6 @@
 @extends('livewire.admin.layouts.master')
 @section('content')
-    <div class="col-12 py-3 px-5" style="background-color: #eee;">
+    <div class="col-12 py-3 px-5" style="background-color: #eee;" wire:ignore.self>
         <div class="d-md-flex justify-content-between align-items-center  py-2 ">
             <div>
                 <label>प्रदर्शन गर्नुहोस्
@@ -21,7 +21,7 @@
                 <input type="search" class="form-control form-control-sm translate-nepali" placeholder="खोज्नुहोस्..."
                     aria-controls="withdraw-request-list" wire:model.live.debounce.500ms="search">
                 <button type="button" class="btn btn-success px-3" data-toggle="modal" data-target="#createProduct"
-                    style="border-radius: 30px;min-width:100px">
+                    style="border-radius: 30px;min-width:100px" wire:ignore>
                     नयाँ प्रोडक्ट
                 </button>
             </div>
@@ -33,7 +33,6 @@
                     <th scope="col" style="font-size: 20px; white-space: nowrap;">क्र.सं.</th>
                     <th scope="col" style="font-size: 20px; white-space: nowrap;">प्रोडक्टको नाम</th>
                     <th scope="col" style="font-size: 20px; white-space: nowrap;">मूल्य प्रति किलो(रु)</th>
-                    <th scope="col" style="font-size: 20px; white-space: nowrap;">मात्रा</th>
                     <th scope="col" style="font-size: 20px; white-space: nowrap;">स्थिति</th>
                     <th scope="col" style="font-size: 20px; white-space: nowrap;">प्रोडक्टको फोटो</th>
                     <th scope="col" style="font-size: 20px; white-space: nowrap;">कार्य</th>
@@ -46,12 +45,11 @@
                             <td>{{ $product->nepali_count }}</td>
                             <td>{{ $product->name }}</td>
                             <td>{{ $product->price_per_kg }}</td>
-                            <td>{{ $product->product_qty ?? '-' }}</td>
                             <td>{{ $product->status ? 'चालू' : 'बन्द' }}</td>
                             <td>
                                 <img src="{{ asset('storage/' . $product->image) }}" alt="Product Image"
                                     style="height: 20px; cursor: pointer;"
-                                    onclick="openImageModal('{{ asset('storage/' . $product->image) }}')">
+                                    onclick="openImageModal('{{ asset('storage/' . $product->image) }}')" loading="lazy">
                             </td>
                             <td>
                                 <button class="btn btn-sm btn-transparent py-0 px-1" data-toggle="tooltip"
@@ -104,6 +102,16 @@
                             @endif
                         </div>
                         <div class="form-group">
+                            <label for="image">प्रोडक्टको फोटो</label>
+                            <input type="file" id="fileInput" class="form-control"
+                                accept="image/jpeg,image/png,image/webp,/image/jpg" onchange="validateFileSize(this)"
+                                wire:model="image">
+                            @if ($errors->has('image'))
+                                <span class="text-danger">{{ $errors->first('image') }}</span>
+                            @endif
+                            <span id="img-error-message" style="color: red;"></span>
+                        </div>
+                        <div class="form-group">
                             <label for="price_per_kg">प्रति किलो मूल्य</label>
                             <input type="number" class="form-control" id="price_per_kg"
                                 placeholder="प्रति किलो मूल्य लेख्नुहोस्" wire:model="price_per_kg">
@@ -111,32 +119,7 @@
                                 <span class="text-danger">{{ $errors->first('price_per_kg') }}</span>
                             @endif
                         </div>
-                        <div class="form-group">
-                            <label for="image">प्रोडक्टको फोटो</label>
-                            <input type="file" class="form-control" id="image" wire:model="image">
-                            @if ($errors->has('image'))
-                                <span class="text-danger">{{ $errors->first('image') }}</span>
-                            @endif
-                        </div>
-                        <div class="form-group">
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="track_qty"
-                                    onclick="toggleProductQty(this)" wire:model="track_qty">
-                                <label class="form-check-label" for="track_qty">प्रोडक्टको अनुगमन</label>
-                                @if ($errors->has('track_qty'))
-                                    <span class="text-danger">{{ $errors->first('track_qty') }}</span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="product_qty">प्रोडक्टको मात्रा</label>
-                            <input type="number" class="form-control" id="product_qty"
-                                placeholder="प्रोडक्टको मात्रा लेख्नुहोस्" wire:model="product_qty" disabled>
-                            @if ($errors->has('product_qty'))
-                                <span class="text-danger">{{ $errors->first('product_qty') }}</span>
-                            @endif
-                        </div>
+                       
                         <div class="form-group">
                             <label for="status">अवस्था</label>
                             <select class="form-control" wire:model="status" id="status">
@@ -182,6 +165,16 @@
                             @endif
                         </div>
                         <div class="form-group">
+                            <label for="image">प्रोडक्टको फोटो</label>
+                            <input type="file" id="fileInput" class="form-control"
+                                accept="image/jpeg,image/png,image/webp,/image/jpg" onchange="validateFileSize(this)"
+                                wire:model="image">
+                            @if ($errors->has('image'))
+                                <span class="text-danger">{{ $errors->first('image') }}</span>
+                            @endif
+                            <span id="error-message" style="color: red;"></span>
+                        </div>
+                        <div class="form-group">
                             <label for="price_per_kg">प्रति किलो मूल्य</label>
                             <input type="number" class="form-control" id="price_per_kg"
                                 placeholder="प्रति किलो मूल्य लेख्नुहोस्" wire:model="price_per_kg">
@@ -189,32 +182,7 @@
                                 <span class="text-danger">{{ $errors->first('price_per_kg') }}</span>
                             @endif
                         </div>
-                        <div class="form-group">
-                            <label for="image">प्रोडक्टको फोटो</label>
-                            <input type="file" class="form-control" id="image" wire:model="image">
-                            @if ($errors->has('image'))
-                                <span class="text-danger">{{ $errors->first('image') }}</span>
-                            @endif
-                        </div>
-                        <div class="form-group">
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="track_qty_update"
-                                    onclick="toggleProductQtyForUpdate(this)" wire:model="track_qty">
-                                <label class="form-check-label" for="track_qty_update">प्रोडक्टको अनुगमन</label>
-                                @if ($errors->has('track_qty'))
-                                    <span class="text-danger">{{ $errors->first('track_qty') }}</span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="product_qty_update">प्रोडक्टको मात्रा</label>
-                            <input type="number" class="form-control" id="product_qty_update"
-                                placeholder="प्रोडक्टको मात्रा लेख्नुहोस्" wire:model="product_qty" disabled>
-                            @if ($errors->has('product_qty'))
-                                <span class="text-danger">{{ $errors->first('product_qty') }}</span>
-                            @endif
-                        </div>
+                       
                         <div class="form-group">
                             <label for="status">अवस्था</label>
                             <select class="form-control" wire:model="status" id="status">
@@ -237,8 +205,8 @@
         </div>
     </div>
     <!-- Modal for displaying the image -->
-    <div id="imageModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel"
-        aria-hidden="true">
+    <div id="imageModal" wire:ignore.self class="modal fade" tabindex="-1" role="dialog"
+        aria-labelledby="imageModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -249,7 +217,7 @@
                 </div>
                 <div class="modal-body text-center">
                     <img id="modalImage" src="" alt="Product Image" class="img-fluid"
-                        style="max-height: 500px;">
+                        style="max-height: 500px;" loading="lazy">
                 </div>
             </div>
         </div>
@@ -294,31 +262,7 @@
         });
     </script>
     <script>
-        function toggleProductQty() {
-            var checkbox = document.getElementById("track_qty");
-            var productQtyInput = document.getElementById("product_qty");
-
-            // Enable or disable the product_qty input based on checkbox state
-            if (checkbox.checked) {
-                productQtyInput.disabled = false;
-            } else {
-                productQtyInput.disabled = true;
-            }
-        }
-
-        function toggleProductQtyForUpdate() {
-            var checkbox = document.getElementById("track_qty_update");
-            var productQtyInput = document.getElementById("product_qty_update");
-
-            // Enable or disable the product_qty input based on checkbox state
-            if (checkbox.checked) {
-                productQtyInput.disabled = false;
-            } else {
-                productQtyInput.disabled = true;
-            }
-        }
-    </script>
-    <script>
+        // ======alert delete confirmation========
         function confirmDelete(productId) {
             Swal.fire({
                 title: "के तपाईं पक्का हुनुहुन्छ?",
@@ -336,13 +280,36 @@
             });
 
         }
-    </script>
-    <script>
+
+        // ======image validation==========
+        function validateFileSize(input) {
+            const file = input.files[0]; // Get the selected file
+            const maxSizeInKB = 200; // 200KB limit
+
+            // Determine the appropriate error message element
+            let errorMessageElement = input.nextElementSibling;
+
+            // Clear previous error message
+            if (errorMessageElement) {
+                errorMessageElement.textContent = '';
+            }
+
+            // Validate file size
+            if (file && file.size > maxSizeInKB * 1024) {
+                // Display error message in Nepali
+                if (errorMessageElement) {
+                    errorMessageElement.textContent = "फाइलको आकार २००KB भन्दा कम हुनुपर्छ।";
+                }
+                input.value = ""; // Clear the input field
+            }
+        }
+
+
         // Function to open the image modal and display the clicked image
         function openImageModal(imagePath) {
             // Set the source of the image in the modal
             document.getElementById('modalImage').src = imagePath;
-            
+
             // Show the modal
             $('#imageModal').modal('show');
         }

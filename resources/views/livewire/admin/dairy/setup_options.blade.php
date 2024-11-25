@@ -25,5 +25,32 @@
 </div>
 @endsection
 @push('script')
+<script>
+    document.addEventListener('livewire:init', () => {
+        Livewire.on('success', (event) => {
+            Swal.fire({
+                title: "जानकारी",
+                text: event.title,
+                icon: "success",
+                iconColor: "#28a745", // Use a green color to match success theme
+                background: "#f9f9f9",
+                color: "#333", // Darker text color for readability
+                showConfirmButton: true,
+                confirmButtonColor: "#4CAF50", // Custom green button
+                confirmButtonText: "ठीक छ",
+                customClass: {
+                    popup: "swal-custom-popup",
+                    title: "swal-custom-title",
+                    confirmButton: "swal-custom-button"
+                },
+                didOpen: () => {
+                    // Adding a custom animation for the icon
+                    document.querySelector('.swal2-icon.swal2-success').classList.add(
+                        'swal-animate-icon');
+                }
+            });
 
+        });
+    });
+</script>
 @endpush

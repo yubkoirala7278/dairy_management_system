@@ -19,7 +19,7 @@ class Product extends Component
     public $entries = 10;
     public $search = '';
 
-    public $name, $price_per_kg,  $product_qty, $track_qty = false, $status = 1, $image, $product_id;
+    public $name, $price_per_kg, $status = 1, $image, $product_id;
 
     // ========reset fields=========
     public function resetFields()
@@ -27,8 +27,6 @@ class Product extends Component
         $this->reset([
             'name',
             'price_per_kg',
-            'product_qty',
-            'track_qty',
             'status',
             'image',
             'product_id'
@@ -62,14 +60,11 @@ class Product extends Component
         $this->validate([
             'name' => ['required'],
             'price_per_kg' => ['required'],
-            'product_qty' => ['nullable'],
-            'track_qty' => ['nullable'],
             'status' => ['required'],
-            'image' => ['required', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
+            'image' => 'required|max:2024|mimes:png,jpg,jpeg,webp',
         ], [
             'name.required' => 'प्रोडक्टको नाम आवश्यक छ',
             'price_per_kg.required' => 'प्रति किलो मूल्य आवश्यक छ',
-            'product_qty.required' => 'प्रोडक्टको मात्रा आवश्यक छ',
             'status.required' => 'स्थिति चयन गर्नुहोस्',
             'image.required' => 'प्रोडक्टको फोटो आवश्यक छ',
             'image.image' => 'कृपया एक मान्य फोटो अपलोड गर्नुहोस्',
@@ -86,8 +81,6 @@ class Product extends Component
             ModelsProduct::create([
                 'name' => $this->name,
                 'price_per_kg' => $this->price_per_kg,
-                'product_qty' => $this->product_qty ? $this->product_qty : 0,
-                'track_qty' => $this->track_qty,
                 'status' => $this->status,
                 'image' => $imagePath, // Store the path of the uploaded image
             ]);
@@ -135,8 +128,6 @@ class Product extends Component
             $this->product_id = $id;
             $this->name = $product->name;
             $this->price_per_kg = $product->price_per_kg;
-            $this->product_qty = $product->product_qty;
-            $this->track_qty = $product->track_qty;
             $this->status = $product->status;
             $this->dispatch('editModal');
         } catch (\Throwable $th) {
@@ -154,10 +145,8 @@ class Product extends Component
             $this->validate([
                 'name' => ['required'],
                 'price_per_kg' => ['required'],
-                'product_qty' => ['nullable'],
-                'track_qty' => ['nullable'],
                 'status' => ['required'],
-                'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
+                'image' => 'nullable|max:2024|mimes:png,jpg,jpeg,webp',
             ], [
                 'name.required' => 'प्रोडक्टको नाम आवश्यक छ',
                 'price_per_kg.required' => 'प्रति किलो मूल्य आवश्यक छ',
@@ -185,8 +174,6 @@ class Product extends Component
             $product->update([
                 'name' => $this->name,
                 'price_per_kg' => $this->price_per_kg,
-                'product_qty' => $this->product_qty ? $this->product_qty : 0,
-                'track_qty' => $this->track_qty,
                 'status' => $this->status,
                 'image' => $imagePath, // Store the path of the uploaded or existing image
             ]);
