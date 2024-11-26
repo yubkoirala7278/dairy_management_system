@@ -68,15 +68,6 @@
                     @enderror
                 </div>
                 <div class="form-group">
-                    <label for="email" class="form-label h4 font-weight-bold">ईमेल (वैकल्पिक)</label>
-                    <input type="text" class="form-control" id="email" wire:model="email"
-                        placeholder="ईमेल लेख्नुहोस्">
-
-                    @error('email')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
-                </div>
-                <div class="form-group">
                     <label for="password" class="form-label h4 font-weight-bold">पासवर्ड</label>
                     <div class="input-group">
                         <input type="password" class="form-control" id="password" wire:model="password"
@@ -144,16 +135,19 @@
         <div class="custom-overflow-x" style=" max-width: 100%;">
             <div class="d-lg-flex justify-content-between align-items-center mx-4 py-2">
                 <div>
-                    <label>प्रदर्शन गर्नुहोस्
+                    <label class="d-flex align-items-center gap-2">
+                        <span>प्रदर्शन गर्नुहोस्</span>
                         <select name="withdraw-request-list_length" aria-controls="withdraw-request-list"
-                            class="form-select form-select-sm" wire:model.live.debounce.500ms="entries">
+                            class="form-select form-select-sm w-auto" wire:model.live.debounce.500ms="entries">
                             <option value="10">१०</option>
                             <option value="25">२५</option>
                             <option value="50">५०</option>
                             <option value="100">१००</option>
+                            <option value="200">२००</option>
+                            <option value="500">५००</option>
                             <option value="all">सबै</option>
                         </select>
-                        डेटा
+                        <span>डेटा</span>
                     </label>
                 </div>
 
@@ -199,13 +193,13 @@
                                     <button class="btn btn-sm btn-transparent py-0 px-1" data-toggle="tooltip"
                                         data-placement="top" title="सुधार्नुहोस्"
                                         wire:click="edit({{ $user->id }})">
-                                        <i class="fa-solid fa-pencil h5 text-warning"></i>
+                                        <i class="fa-solid fa-pencil fs-5 text-warning"></i>
                                     </button>
 
                                     <button class="btn btn-sm btn-transparent py-0 px-1"
                                         onclick="confirmDelete({{ $user->id }})" data-toggle="tooltip"
                                         data-placement="top" title="मेटाउनुहोस्">
-                                        <i class="fa-solid fa-trash h5 text-danger"></i>
+                                        <i class="fa-solid fa-trash fs-5 text-danger"></i>
                                     </button>
 
                                 </td>

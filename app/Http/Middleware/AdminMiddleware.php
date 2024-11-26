@@ -22,7 +22,7 @@ class AdminMiddleware
                 return $next($request);
             }
             Auth::logout();
-            return redirect()->route('login')->with('error', 'you dont have permission to access this page');
+            return redirect()->route('frontend.home')->with('error', 'तपाईंलाई यस पृष्ठमा जान अनुमति छैन।');
         }
         return redirect()->route('login');
     }

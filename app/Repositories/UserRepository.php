@@ -52,11 +52,12 @@ class UserRepository implements UserRepositoryInterface
         $query = MilkDeposit::with('user');
 
         // Filter by date if provided, otherwise use today's date
-        if (!$milk_deposit_date) {
-            $query->whereDate('created_at', Carbon::today());
-        } else {
-            $query->where('milk_deposit_date', $milk_deposit_date);
-        }
+        // if (!$milk_deposit_date) {
+        //     $query->whereDate('created_at', Carbon::today());
+        // } else {
+        //     $query->where('milk_deposit_date', $milk_deposit_date);
+        // }
+        $query->where('milk_deposit_date', $milk_deposit_date);
 
         // Filter by milk deposit time if provided
         if ($milk_deposit_time) {

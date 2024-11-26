@@ -16,7 +16,6 @@ class AdminSeeder extends Seeder
     {
         $user = User::create([
             'name' => 'admin',
-            'email' => 'admin@admin.com',
             'password' => Hash::make('11111'),
             'owner_name' => 'admin',
             'farmer_number' => 0,
@@ -24,8 +23,6 @@ class AdminSeeder extends Seeder
             'gender' => 'पुरुष',
             'status' => 'चालू',
             'phone_number' => '987654321',
-            'pan_number' => '1111',
-            'vat_number' => '1111'
         ]);
         $user->assignRole('admin');
     }

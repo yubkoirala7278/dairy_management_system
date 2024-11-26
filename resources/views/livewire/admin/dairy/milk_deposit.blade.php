@@ -20,8 +20,7 @@
                     </div>
                     <div class="form-group">
                         <label for="milk_deposit_date" class="form-label h4 font-weight-bold">दूध सङ्कलन मिति</label>
-                        <input type="text" name="date" id="milk_deposit_date" class="py-1"
-                            wire:model.live="milk_deposit_date">
+                        <input type="text" id="milk_deposit_date" class="py-1" wire:model.live="milk_deposit_date">
                         <br>
                         @error('milk_deposit_date')
                             <span class="text-danger">{{ $message }}</span>
@@ -149,17 +148,19 @@
             </div> --}}
             <div class="d-md-flex justify-content-between align-items-center mx-4 py-2">
                 <div>
-                    <label>प्रदर्शन गर्नुहोस्
+                    <label class="d-flex align-items-center gap-2">
+                        <span>प्रदर्शन गर्नुहोस्</span>
                         <select name="withdraw-request-list_length" aria-controls="withdraw-request-list"
-                            class="form-select form-select-sm" wire:model.live.debounce.500ms="entries">
+                            class="form-select form-select-sm w-auto" wire:model.live.debounce.500ms="entries">
                             <option value="10">१०</option>
                             <option value="25">२५</option>
                             <option value="50">५०</option>
                             <option value="100">१००</option>
                             <option value="200">२००</option>
                             <option value="500">५००</option>
+                            <option value="1000">सबै</option>
                         </select>
-                        डेटा
+                        <span>डेटा</span>
                     </label>
 
                 </div>
@@ -211,18 +212,18 @@
                                     <button class="btn btn-sm btn-transparent py-0 px-1" data-toggle="tooltip"
                                         data-placement="top" title="सुधार्नुहोस्"
                                         wire:click="edit({{ $deposit->id }})">
-                                        <i class="fa-solid fa-pencil h5 text-warning"></i>
+                                        <i class="fa-solid fa-pencil fs-5 text-warning"></i>
                                     </button>
 
                                     <button class="btn btn-sm btn-transparent py-0 px-1"
                                         onclick="confirmDelete({{ $deposit->id }})" data-toggle="tooltip"
                                         data-placement="top" title="मेटाउनुहोस्">
-                                        <i class="fa-solid fa-trash h5 text-danger"></i>
+                                        <i class="fa-solid fa-trash fs-5 text-danger"></i>
                                     </button>
                                 </td>
                             </tr>
                         @endforeach
-                        <tr class="text-end text-white" style="background-color: #32705f">
+                        <tr class="text-white" style="background-color: #32705f">
                             <td colspan="2">कुल दूध संकलन: {{ $totalMilkQuantity }} लिटर </td>
                             <td colspan="20">कुल मूल्य: {{ $totalDepositIncome }} रुपैया</td>
                         </tr>
@@ -242,37 +243,20 @@
 @endsection
 
 @push('script')
-    <script src="//unpkg.com/nepali-date-picker@2.0.2/dist/nepaliDatePicker.min.js"></script>
-    <link rel="stylesheet" href="//unpkg.com/nepali-date-picker@2.0.2/dist/nepaliDatePicker.min.css">
-
-    <script>
-        $(document).ready(function() {
-            // =======Get current Nepali date=======
-            var currentDate = new Date();
-            var currentNepaliDate = calendarFunctions.getBsDateByAdDate(currentDate.getFullYear(), currentDate
-                .getMonth() + 1, currentDate.getDate());
-            var formattedNepaliDate = calendarFunctions.bsDateFormat("%y-%m-%d", currentNepaliDate.bsYear,
-                currentNepaliDate.bsMonth, currentNepaliDate.bsDate);
-            @this.set('milk_deposit_date', formattedNepaliDate);
-
-            // Initialize the date picker with the current date
-            $("#milk_deposit_date").val(formattedNepaliDate).nepaliDatePicker({
-                dateFormat: "%y-%m-%d",
-                closeOnDateSelect: true,
-            });
+<script type="text/javascript">
+    $(document).ready(function() {
+        // Initialize the Nepali Date Picker
+        $('#milk_deposit_date').nepaliDatePicker({
+            onChange: function() {
+                // Manually trigger Livewire update
+                var nepaliDate = $('#milk_deposit_date').val();
+                // Convert to Nepali numerals before sending to Livewire
+                var nepaliDateInNepaliNumerals = NepaliFunctions.ConvertToUnicode(nepaliDate); 
+                @this.set('milk_deposit_date', nepaliDateInNepaliNumerals);
+            }
         });
-        // ======date picker=========
-        $("#milk_deposit_date").nepaliDatePicker({
-            dateFormat: "%y-%m-%d",
-            closeOnDateSelect: true
-        });
-        // ======testing========
-        $("#milk_deposit_date").on("dateChange", function(event) {
-            var datePickerData = event.datePickerData;
-            @this.set('milk_deposit_date', datePickerData.formattedDate);
-        });
-    </script>
-
+    });
+</script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const inputs = [

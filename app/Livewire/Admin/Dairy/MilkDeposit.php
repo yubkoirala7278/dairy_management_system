@@ -139,6 +139,7 @@ class MilkDeposit extends Component
         'milk_snf' => 'required|min:1|numeric',
         'per_litre_commission' => 'nullable|numeric',
         'per_litre_price' => 'required|numeric',
+        'milk_deposit_date'=>'required'
     ];
 
     protected $messages = [
@@ -154,6 +155,7 @@ class MilkDeposit extends Component
         'per_litre_commission.numeric' => 'प्रति लिटर कमिशन संख्यामा हुनुपर्छ।',
         'per_litre_price.required' => 'प्रति लिटर रकम आवश्यक छ।',
         'per_litre_price.numeric' => 'प्रति लिटर रकम संख्यामा हुनुपर्छ।',
+       'milk_deposit_date.required' => 'दूध सङ्कलन मिति आवश्यक छ।',
     ];
 
 

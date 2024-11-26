@@ -3,9 +3,10 @@
     <div class="col-12 py-3 px-5" style="background-color: #eee;" wire:ignore.self>
         <div class="d-md-flex justify-content-between align-items-center  py-2 ">
             <div>
-                <label>प्रदर्शन गर्नुहोस्
+                <label class="d-flex align-items-center gap-2">
+                    <span>प्रदर्शन गर्नुहोस्</span>
                     <select name="withdraw-request-list_length" aria-controls="withdraw-request-list"
-                        class="form-select form-select-sm" wire:model.live.debounce.500ms="entries">
+                        class="form-select form-select-sm w-auto" wire:model.live.debounce.500ms="entries">
                         <option value="10">१०</option>
                         <option value="25">२५</option>
                         <option value="50">५०</option>
@@ -13,15 +14,14 @@
                         <option value="200">२००</option>
                         <option value="500">५००</option>
                     </select>
-                    डेटा
+                    <span>डेटा</span>
                 </label>
-
             </div>
             <div class="d-flex align-items-center" style="column-gap: 20px">
                 <input type="search" class="form-control form-control-sm translate-nepali" placeholder="खोज्नुहोस्..."
                     aria-controls="withdraw-request-list" wire:model.live.debounce.500ms="search">
-                <button type="button" class="btn btn-success px-3" data-toggle="modal" data-target="#createProduct"
-                    style="border-radius: 30px;min-width:100px" wire:ignore>
+                <button type="button" class="btn btn-success px-3" data-bs-toggle="modal" data-bs-target="#createProduct"
+                    style="border-radius: 30px; min-width: 100px;" wire:ignore>
                     नयाँ प्रोडक्ट
                 </button>
             </div>
@@ -52,15 +52,16 @@
                                     onclick="openImageModal('{{ asset('storage/' . $product->image) }}')" loading="lazy">
                             </td>
                             <td>
-                                <button class="btn btn-sm btn-transparent py-0 px-1" data-toggle="tooltip"
-                                    data-placement="top" title="सुधार्नुहोस्" wire:click="edit({{ $product->id }})">
-                                    <i class="fa-solid fa-pencil h5 text-warning"></i>
+                                <button class="btn btn-sm btn-transparent py-0 px-1" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" title="सुधार्नुहोस्" wire:click="edit({{ $product->id }})">
+                                    <i class="fa-solid fa-pencil text-warning fs-5"></i>
                                 </button>
+
 
                                 <button class="btn btn-sm btn-transparent py-0 px-1"
                                     onclick="confirmDelete({{ $product->id }})" data-toggle="tooltip" data-placement="top"
                                     title="मेटाउनुहोस्">
-                                    <i class="fa-solid fa-trash h5 text-danger"></i>
+                                    <i class="fa-solid fa-trash fs-5 text-danger"></i>
                                 </button>
                             </td>
                         </tr>
@@ -81,48 +82,46 @@
 
 @section('modal')
     <!-- create product Modal-->
-    <div class="modal fade" id="createProduct" wire:ignore.self data-backdrop="static" tabindex="-1" role="dialog"
+    <div class="modal fade" id="createProduct" wire:ignore.self data-bs-backdrop="static" tabindex="-1"
         aria-labelledby="createProductLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title font-weight-bold" id="createProductLabel">नयाँ प्रोडक्ट थप्नुहोस्</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" wire:click="resetFields">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <h5 class="modal-title fw-bold" id="createProductLabel">नयाँ प्रोडक्ट थप्नुहोस्</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                        wire:click="resetFields"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="">
-                        <div class="form-group">
-                            <label for="name">प्रोडक्टको नाम</label>
+                    <form>
+                        <div class="mb-3">
+                            <label for="name" class="form-label text-dark">प्रोडक्टको नाम</label>
                             <input type="text" class="form-control translate-nepali" id="name"
                                 placeholder="प्रोडक्टको नाम लेख्नुहोस्" wire:model="name">
                             @if ($errors->has('name'))
                                 <span class="text-danger">{{ $errors->first('name') }}</span>
                             @endif
                         </div>
-                        <div class="form-group">
-                            <label for="image">प्रोडक्टको फोटो</label>
+                        <div class="mb-3">
+                            <label for="image" class="form-label  text-dark">प्रोडक्टको फोटो</label>
                             <input type="file" id="fileInput" class="form-control"
-                                accept="image/jpeg,image/png,image/webp,/image/jpg" onchange="validateFileSize(this)"
+                                accept="image/jpeg,image/png,image/webp,image/jpg" onchange="validateFileSize(this)"
                                 wire:model="image">
                             @if ($errors->has('image'))
                                 <span class="text-danger">{{ $errors->first('image') }}</span>
                             @endif
-                            <span id="img-error-message" style="color: red;"></span>
+                            <span id="img-error-message" class="text-danger"></span>
                         </div>
-                        <div class="form-group">
-                            <label for="price_per_kg">प्रति किलो मूल्य</label>
+                        <div class="mb-3">
+                            <label for="price_per_kg" class="form-label  text-dark">प्रति किलो मूल्य</label>
                             <input type="number" class="form-control" id="price_per_kg"
                                 placeholder="प्रति किलो मूल्य लेख्नुहोस्" wire:model="price_per_kg">
                             @if ($errors->has('price_per_kg'))
                                 <span class="text-danger">{{ $errors->first('price_per_kg') }}</span>
                             @endif
                         </div>
-                       
-                        <div class="form-group">
-                            <label for="status">अवस्था</label>
-                            <select class="form-control" wire:model="status" id="status">
+                        <div class="mb-3">
+                            <label for="status" class="form-label  text-dark">अवस्था</label>
+                            <select class="form-select" wire:model="status" id="status">
                                 <option value="1">चालू</option>
                                 <option value="0">बन्द</option>
                             </select>
@@ -130,61 +129,58 @@
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
-
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal" wire:click="resetFields">रद्द
-                        गर्नुहोस्</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        wire:click="resetFields">रद्द गर्नुहोस्</button>
                     <button type="button" class="btn btn-success" wire:click="createProduct">पेश गर्नुहोस्</button>
                 </div>
             </div>
         </div>
     </div>
 
+
     <!-- update product Modal-->
-    <div class="modal fade" id="updateProduct" wire:ignore.self data-backdrop="static" tabindex="-1" role="dialog"
+    <div class="modal fade" id="updateProduct" wire:ignore.self data-bs-backdrop="static" tabindex="-1"
         aria-labelledby="updateProductLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title font-weight-bold" id="updateProductLabel">प्रोडक्ट अपडेट गर्नुहोस्</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"
-                        wire:click="resetFields">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                        wire:click="resetFields"></button>
                 </div>
                 <div class="modal-body">
                     <form action="">
-                        <div class="form-group">
-                            <label for="name">प्रोडक्टको नाम</label>
+                        <div class="mb-3">
+                            <label for="name" class="form-label text-dark">प्रोडक्टको नाम</label>
                             <input type="text" class="form-control translate-nepali" id="name"
                                 placeholder="प्रोडक्टको नाम लेख्नुहोस्" wire:model="name">
                             @if ($errors->has('name'))
                                 <span class="text-danger">{{ $errors->first('name') }}</span>
                             @endif
                         </div>
-                        <div class="form-group">
-                            <label for="image">प्रोडक्टको फोटो</label>
+                        <div class="mb-3">
+                            <label for="image" class="form-label text-dark">प्रोडक्टको फोटो</label>
                             <input type="file" id="fileInput" class="form-control"
-                                accept="image/jpeg,image/png,image/webp,/image/jpg" onchange="validateFileSize(this)"
+                                accept="image/jpeg,image/png,image/webp,image/jpg" onchange="validateFileSize(this)"
                                 wire:model="image">
                             @if ($errors->has('image'))
                                 <span class="text-danger">{{ $errors->first('image') }}</span>
                             @endif
                             <span id="error-message" style="color: red;"></span>
                         </div>
-                        <div class="form-group">
-                            <label for="price_per_kg">प्रति किलो मूल्य</label>
+                        <div class="mb-3">
+                            <label for="price_per_kg" class="form-label text-dark">प्रति किलो मूल्य</label>
                             <input type="number" class="form-control" id="price_per_kg"
                                 placeholder="प्रति किलो मूल्य लेख्नुहोस्" wire:model="price_per_kg">
                             @if ($errors->has('price_per_kg'))
                                 <span class="text-danger">{{ $errors->first('price_per_kg') }}</span>
                             @endif
                         </div>
-                       
-                        <div class="form-group">
-                            <label for="status">अवस्था</label>
+                        <div class="mb-3">
+                            <label for="status" class="form-label text-dark">अवस्था</label>
                             <select class="form-control" wire:model="status" id="status">
                                 <option value="1">चालू</option>
                                 <option value="0">बन्द</option>
@@ -193,31 +189,28 @@
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
-
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal" wire:click="resetFields">रद्द
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        wire:click="resetFields">रद्द
                         गर्नुहोस्</button>
                     <button type="button" class="btn btn-success" wire:click="updateProduct">अपडेट गर्नुहोस्</button>
                 </div>
             </div>
         </div>
     </div>
+
     <!-- Modal for displaying the image -->
-    <div id="imageModal" wire:ignore.self class="modal fade" tabindex="-1" role="dialog"
-        aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div id="imageModal" wire:ignore.self class="modal fade" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="imageModalLabel">प्रोडक्टको फोटो</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body text-center">
-                    <img id="modalImage" src="" alt="Product Image" class="img-fluid"
-                        style="max-height: 500px;" loading="lazy">
+                    <img id="modalImage" src="" alt="Product Image" class="img-fluid" style="max-height: 500px;" loading="lazy">
                 </div>
             </div>
         </div>
@@ -231,7 +224,6 @@
             Livewire.on('success', (event) => {
                 $('#createProduct').modal('hide');
                 $('#updateProduct').modal('hide');
-                $('.modal-backdrop').remove();
                 Swal.fire({
                     title: "जानकारी",
                     text: event.title,

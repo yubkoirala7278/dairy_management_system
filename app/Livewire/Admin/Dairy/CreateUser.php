@@ -16,7 +16,7 @@ class CreateUser extends Component
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
 
-    public $name, $owner_name, $email, $password, $farmer_number, $location, $gender = 'पुरुष', $status = 'चालू', $phone_number, $pan_number, $vat_number, $password_confirmation;
+    public $name, $owner_name, $password, $farmer_number, $location, $gender = 'पुरुष', $status = 'चालू', $phone_number, $pan_number, $vat_number, $password_confirmation;
     public $page = 'farmer';
     private $userRepository;
     public $entries = 10;
@@ -39,6 +39,9 @@ class CreateUser extends Component
     {
         $this->resetPage();
     }
+    public function updatedEntries(){
+        $this->resetPage('page');
+    }
 
     public function boot(UserRepositoryInterface $userRepository)
     {
@@ -56,7 +59,6 @@ class CreateUser extends Component
     protected $rules = [
         'name' => 'required',
         'owner_name' => 'required',
-        'email' => 'nullable|email|unique:users,email',
         'password' => 'required|confirmed|min:6',
         'password_confirmation' => 'required',
         'farmer_number' => 'required|integer|min:1|unique:users,farmer_number',
@@ -70,8 +72,6 @@ class CreateUser extends Component
     protected $messages = [
         'name.required' => 'कृषकको नाम अनिवार्य छ।',
         'owner_name.required' => 'मालिकको नाम अनिवार्य छ।',
-        'email.email' => 'ईमेलको ढाँचा सहि छैन।',
-        'email.unique' => 'यो ईमेल पहिल्यै प्रयोग गरिएको छ।',
         'password.required' => 'पासवर्ड अनिवार्य छ।',
         'password.confirmed' => 'पासवर्ड पुष्टि गर्नुहोस्।',
         'password.min' => 'पासवर्डमा कम्तीमा 6 अक्षर हुनु पर्छ।',
@@ -90,7 +90,6 @@ class CreateUser extends Component
         $this->reset([
             'name',
             'owner_name',
-            'email',
             'password',
             'farmer_number',
             'location',
@@ -137,7 +136,6 @@ class CreateUser extends Component
             $user = User::create([
                 'name' => $this->name,
                 'owner_name' => $this->owner_name,
-                'email' => $this->email,
                 'password' => Hash::make($this->password),
                 'farmer_number' =>  $this->convertToNepali($this->farmer_number),
                 'location' => $this->location,
@@ -176,7 +174,6 @@ class CreateUser extends Component
             $this->user_id = $id;
             $this->name = $user->name;
             $this->owner_name = $user->owner_name;
-            $this->email = $user->email;
             $this->farmer_number = $user->farmer_number;
             $this->location = $user->location;
             $this->gender = $user->gender;
@@ -194,11 +191,6 @@ class CreateUser extends Component
         $this->validate([
             'name' => 'required',
             'owner_name' => 'required',
-            'email' => [
-                'nullable',
-                'email',
-                Rule::unique('users')->ignore($this->user_id),
-            ],
             'password' => 'nullable|confirmed|min:6',
             'password_confirmation' => 'nullable',
             'farmer_number' => [
@@ -225,7 +217,6 @@ class CreateUser extends Component
             $user->update([
                 'name' => $this->name,
                 'owner_name' => $this->owner_name,
-                'email' => $this->email,
                 'password' => $this->password ? Hash::make($this->password) : $user->password,
                 'farmer_number' =>  $this->convertToNepali($this->farmer_number),
                 'location' => $this->location,

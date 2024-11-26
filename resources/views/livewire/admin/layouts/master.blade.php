@@ -1,39 +1,38 @@
-<!DOCTYPE html>
-<html lang="ne">
+<!doctype html>
+<html lang="en">
 
 <head>
-    <!-- Required meta tags -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>
         आदर्श डेरी
     </title>
-
     <!-- vendor css -->
-    <link href="{{ asset('backend_assets/lib/fontawesome-free/css/all.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('backend_assets/lib/ionicons/css/ionicons.min.css') }}" rel="stylesheet">
     <link href="{{ asset('backend_assets/lib/typicons.font/typicons.css') }}" rel="stylesheet">
-    <link href="{{ asset('backend_assets/lib/flag-icon-css/css/flag-icon.min.css') }}" rel="stylesheet">
-    <!-- azia CSS -->
-    <link rel="stylesheet" href="{{ asset('backend_assets/css/azia.css') }}">
-    <link rel="stylesheet" href="{{ asset('backend_assets/css/style.css') }}">
 
     {{-- sweet alert --}}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://unpkg.com/nepalify"></script>
+    {{-- font awesome cdn --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
         integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+    {{-- Bootstrap cdn --}}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+         <!-- Nepali Datepicker -->
+         <link href="{{asset('backend_assets/calender/nepali.datepicker.v4.0.4.min.css')}}" rel="stylesheet" type="text/css"/>
     @toastifyCss
+    @yield('header-links')
+    <link rel="stylesheet" href="{{ asset('backend_assets/css/azia.css') }}">
+    <link rel="stylesheet" href="{{ asset('backend_assets/css/style.css') }}">
     <style>
         body {
-            /* background-color: #FFF2D7; */
-            /* background-color: #E4EA8C; */
             background-color: #eee;
         }
     </style>
 
+    
 </head>
 
 <body>
@@ -177,35 +176,17 @@
         <div class="az-content-body " style="overflow-x:hidden">
             <div class="row ">
                 @yield('content')
-               
+
             </div><!-- row -->
         </div><!-- az-content-body -->
     </div><!-- az-content -->
     @yield('modal')
-
-
-
     <div wire:ignore>
 
         <script src="{{ asset('backend_assets/lib/jquery/jquery.min.js') }}"></script>
-        <script src="{{ asset('backend_assets/lib/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-        <script src="{{ asset('backend_assets/lib/ionicons/ionicons.js') }}"></script>
-        <script src="{{ asset('backend_assets/lib/jquery.flot/jquery.flot.js') }}"></script>
-        <script src="{{ asset('backend_assets/lib/jquery.flot/jquery.flot.resize.js') }}"></script>
-        <script src="{{ asset('backend_assets/lib/chart.js/Chart.bundle.min.js') }}"></script>
-        <script src="{{ asset('backend_assets/lib/peity/jquery.peity.min.js') }}"></script>
-
         <script src="{{ asset('backend_assets/js/azia.js') }}"></script>
-        <script src="{{ asset('backend_assets/js/chart.flot.sampledata.js') }}"></script>
-        <script src="{{ asset('backend_assets/js/dashboard.sampledata.js') }}"></script>
-        <script src="{{ asset('backend_assets/lib/jquery-steps/lib/jquery.cookie-1.3.1.js') }}" type="text/javascript">
-        </script>
-
-        
-
         {{-- language switcher --}}
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 const inputs = document.querySelectorAll('.translate-nepali');
@@ -264,9 +245,15 @@
 
 
     @toastifyJs
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    {{-- nepali date picker --}}
+    <script src="{{asset('backend_assets/calender/nepali.datepicker.v4.0.4.min.js')}}" type="text/javascript"></script>
+    {{-- bootstrap --}}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+    </script>
     @stack('script')
-
+    
 </body>
+
 
 </html>
