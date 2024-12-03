@@ -36,7 +36,7 @@
                                 </div>
                                 <div class="text-center p-4">
                                     <a class="d-block h5" href="">{{ $product->name }}</a>
-                                    <span class="text-primary me-1 d-block">रु {{ $product->price_per_kg }}/Kg</span>
+                                    <span class="text-primary me-1 d-block">रु {{ $product->price_per_kg }} प्रति {{$product->unit=='kg'?'किलो':'लि.'}}</span>
                                     <button class="btn btn-primary btn-sm w-75 rounded-pill mt-1"
                                         wire:click="addProductToCart({{ $product->id }})">
                                         <i class="bi bi-cart-plus me-2"></i>

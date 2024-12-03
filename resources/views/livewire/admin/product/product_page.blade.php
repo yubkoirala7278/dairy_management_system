@@ -32,7 +32,7 @@
                 <tr class="table-secondary">
                     <th scope="col" style="font-size: 20px; white-space: nowrap;">क्र.सं.</th>
                     <th scope="col" style="font-size: 20px; white-space: nowrap;">प्रोडक्टको नाम</th>
-                    <th scope="col" style="font-size: 20px; white-space: nowrap;">मूल्य प्रति किलो(रु)</th>
+                    <th scope="col" style="font-size: 20px; white-space: nowrap;">मूल्य प्रति लि./किग्रा</th>
                     <th scope="col" style="font-size: 20px; white-space: nowrap;">स्थिति</th>
                     <th scope="col" style="font-size: 20px; white-space: nowrap;">प्रोडक्टको फोटो</th>
                     <th scope="col" style="font-size: 20px; white-space: nowrap;">कार्य</th>
@@ -45,7 +45,13 @@
                             <td>{{ $product->nepali_count }}</td>
                             <td>{{ $product->name }}</td>
                             <td>{{ $product->price_per_kg }}</td>
-                            <td>{{ $product->status ? 'चालू' : 'बन्द' }}</td>
+                            <td>
+                                @if($product->status)
+                                    <span class="badge text-bg-success">चालू</span>
+                                @else
+                                    <span class="badge text-bg-danger">बन्द</span>
+                                @endif
+                            </td>
                             <td>
                                 <img src="{{ asset('storage/' . $product->image) }}" alt="Product Image"
                                     style="height: 20px; cursor: pointer;"
@@ -105,16 +111,21 @@
                             <label for="image" class="form-label  text-dark">प्रोडक्टको फोटो</label>
                             <input type="file" id="fileInput" class="form-control"
                                 accept="image/jpeg,image/png,image/webp,image/jpg" onchange="validateFileSize(this)"
-                                wire:model="image">
+                                wire:model.live="image">
                             @if ($errors->has('image'))
                                 <span class="text-danger">{{ $errors->first('image') }}</span>
                             @endif
                             <span id="img-error-message" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
-                            <label for="price_per_kg" class="form-label  text-dark">प्रति किलो मूल्य</label>
-                            <input type="number" class="form-control" id="price_per_kg"
-                                placeholder="प्रति किलो मूल्य लेख्नुहोस्" wire:model="price_per_kg">
+                            <label for="price_per_kg" class="form-label text-dark">प्रोडक्टको मूल्य</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="price_per_kg" placeholder="प्रोडक्टको मूल्य लेख्नुहोस्" wire:model="price_per_kg">
+                                <select class="form-select" id="unit_selector" wire:model="unit">
+                                    <option value="kg">प्रति किलो</option>
+                                    <option value="ltr">प्रति लिटर</option>
+                                </select>
+                            </div>
                             @if ($errors->has('price_per_kg'))
                                 <span class="text-danger">{{ $errors->first('price_per_kg') }}</span>
                             @endif
@@ -172,9 +183,14 @@
                             <span id="error-message" style="color: red;"></span>
                         </div>
                         <div class="mb-3">
-                            <label for="price_per_kg" class="form-label text-dark">प्रति किलो मूल्य</label>
-                            <input type="number" class="form-control" id="price_per_kg"
-                                placeholder="प्रति किलो मूल्य लेख्नुहोस्" wire:model="price_per_kg">
+                            <label for="price_per_kg" class="form-label text-dark">प्रोडक्टको मूल्य</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="price_per_kg" placeholder="प्रोडक्टको मूल्य लेख्नुहोस्" wire:model="price_per_kg">
+                                <select class="form-select" id="unit_selector" wire:model="unit">
+                                    <option value="kg">प्रति किलो</option>
+                                    <option value="ltr">प्रति लिटर</option>
+                                </select>
+                            </div>
                             @if ($errors->has('price_per_kg'))
                                 <span class="text-danger">{{ $errors->first('price_per_kg') }}</span>
                             @endif
@@ -307,3 +323,55 @@
         }
     </script>
 @endpush
+
+@section('custom-style')
+<style>
+    .input-group {
+    display: flex;
+    align-items: center;
+}
+
+.input-group .form-control {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.input-group .form-select {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+}
+
+.input-group .form-select:focus {
+    border-color: #80bdff;
+    box-shadow: none;
+}
+
+.mb-3 .form-label {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.text-dark {
+    color: #343a40 !important;
+}
+
+.text-danger {
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+@media (max-width: 767px) {
+    .input-group {
+        flex-direction: column;
+    }
+
+    .input-group .form-select {
+        margin-top: 10px;
+    }
+}
+
+</style>
+@endsection

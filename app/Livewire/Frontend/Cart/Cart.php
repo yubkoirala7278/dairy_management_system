@@ -21,7 +21,7 @@ class Cart extends Component
 
     public function updatedCartCounts($value, $key)
     {
-        if(!$this->cartCounts[$key] || $this->cartCounts[$key]<=0){
+        if(!$this->cartCounts[$key] || $this->cartCounts[$key]<=0 || $this->cartCounts[$key]>=1000){
             $this->dispatch('priceChanged');
             return;
         }

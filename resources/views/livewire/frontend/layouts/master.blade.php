@@ -111,11 +111,13 @@
                 </div>
                 <a href="{{ route('frontend.contact') }}"
                     class="nav-item nav-link {{ $page == 'contact' ? 'active' : '' }}">सम्पर्क</a>
-                    @if(Auth::user())
+                @if (Auth::user() && Auth::user()->hasRole('farmer'))
                     <a href="{{ route('frontend.cart') }}"
-                    class="nav-item nav-link {{ $page == 'cart' ? 'active' : '' }}">कार्ट</a>
-                    @endif
-               
+                        class="nav-item nav-link {{ $page == 'cart' ? 'active' : '' }}">कार्ट</a>
+                        <a href="{{ route('frontend.profile') }}"
+                        class="nav-item nav-link {{ $page == 'profile' ? 'active' : '' }}">प्रोफाइल</a>
+                @endif
+
             </div>
             {{-- <div class="border-start ps-4 d-none d-lg-block">
                 <button type="button" class="btn btn-sm p-0"><i class="fa fa-search"></i></button>

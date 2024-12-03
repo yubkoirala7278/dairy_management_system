@@ -15,7 +15,8 @@
         "livewire/livewire": "^3.5",
         "maatwebsite/excel": "^3.1",
         "redot/laravel-toastify": "^1.0",
-        "spatie/laravel-permission": "^6.10"
+        "spatie/laravel-permission": "^6.10",
+        "shankhadev/bsdate": "master-dev"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

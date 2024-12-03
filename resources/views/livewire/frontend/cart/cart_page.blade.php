@@ -24,11 +24,12 @@
             </div>
 
             <!-- Grid layout for large devices (Cart info and Cart Summary side by side) -->
-            <div class="row row-cols-1 row-cols-lg-2 g-4">
-                <!-- Left side: Cart Information -->
-                <div class="col">
-                    <div class="row g-4">
-                        @if (count($myCarts) > 0)
+            @if (count($myCarts) > 0)
+                <div class="row row-cols-1 row-cols-lg-2 g-4">
+                    <!-- Left side: Cart Information -->
+                    <div class="col">
+                        <div class="row g-4">
+
                             @foreach ($myCarts as $key => $myCart)
                                 <!-- Product Card 1 -->
                                 <div class="col-12">
@@ -43,7 +44,7 @@
                                                     <h5 class="card-title mb-2 text-truncate">{{ $myCart->product->name }}
                                                     </h5>
                                                     <p class="text-muted mb-0">रु
-                                                        {{ $myCart->product->price_per_kg_nepali }}/kg</p>
+                                                        {{ $myCart->product->price_per_kg_nepali }} प्रति {{$myCart->product->unit=='kg'?'किलो':'लि.'}}</p>
                                                 </div>
                                             </div>
                                             <!-- Quantity Control -->
@@ -73,35 +74,43 @@
                                     </div>
                                 </div>
                             @endforeach
-                        @endif
-                    </div>
-                </div>
 
-                <!-- Right side: Cart Summary -->
-                <div class="col">
-                    <div class="card shadow rounded-4">
-                        <div class="card-body p-4">
-                            <h5 class="card-title mb-3">कार्ट सारांश</h5>
-                            <hr>
-                            <div class="d-flex justify-content-between mb-3">
-                                <p class="mb-0">उपकुल:</p>
-                                <p class="mb-0">रु {{$sub_total}}</p>
-                            </div>
-                            <div class="d-flex justify-content-between mb-3">
-                                <p class="mb-0">ढुवानी शुल्क:</p>
-                                <p class="mb-0">रु ०</p>
-                            </div>
-                            <div class="d-flex justify-content-between mb-3">
-                                <p class="mb-0">कुल:</p>
-                                <p class="mb-0 fw-bold" style="color: #FF6F61;">रु {{$sub_total}}</p>
-                            </div>
-                            <hr>
-                            <a href="{{route('frontend.checkout')}}" class="btn btn-success w-100">चेकआउटमा जानुहोस्</a>
                         </div>
                     </div>
-                </div>
 
-            </div>
+                    <!-- Right side: Cart Summary -->
+                    <div class="col">
+                        <div class="card shadow rounded-4">
+                            <div class="card-body p-4">
+                                <h5 class="card-title mb-3">कार्ट सारांश</h5>
+                                <hr>
+                                <div class="d-flex justify-content-between mb-3">
+                                    <p class="mb-0">उपकुल:</p>
+                                    <p class="mb-0">रु {{ $sub_total }}</p>
+                                </div>
+                                <div class="d-flex justify-content-between mb-3">
+                                    <p class="mb-0">ढुवानी शुल्क:</p>
+                                    <p class="mb-0">रु ०</p>
+                                </div>
+                                <div class="d-flex justify-content-between mb-3">
+                                    <p class="mb-0">कुल:</p>
+                                    <p class="mb-0 fw-bold" style="color: #FF6F61;">रु {{ $sub_total }}</p>
+                                </div>
+                                <hr>
+                                <a href="{{ route('frontend.checkout') }}" class="btn btn-success w-100">चेकआउटमा
+                                    जानुहोस्</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            @endif
+            @if (count($myCarts) <= 0)
+            <div class="text-center">
+                <p > कुनै उत्पादन कार्टमा थपिएको छैन।</p>
+                <a href="{{route('frontend.product')}}" class="btn btn-success rounded-pill">अहिले किन्नुहोस्</a>
+        </div>
+            @endif
         </div>
     </div>
 @endsection

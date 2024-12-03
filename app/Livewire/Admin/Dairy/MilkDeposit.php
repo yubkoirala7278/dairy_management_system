@@ -11,6 +11,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\View;
 use App\Helpers\NumberHelper;
 use App\Exports\MilkDepositsExport;
+use App\Models\Deposit;
 use Maatwebsite\Excel\Facades\Excel;
 use Livewire\Component;
 
@@ -184,7 +185,7 @@ class MilkDeposit extends Component
                 'milk_fat' => $this->milk_fat,
                 'milk_snf' => $this->milk_snf
             ]);
-            ModelsMilkDeposit::create([
+            $milk_deposit=ModelsMilkDeposit::create([
                 'user_id' => $user->id,
                 'milk_quantity' => $this->milkQuantity,
                 'milk_fat' => $this->milk_fat,
@@ -196,6 +197,11 @@ class MilkDeposit extends Component
                 'milk_deposit_date' => $this->milk_deposit_date,
                 'milk_deposit_time' => $this->milk_deposit_time,
                 'milk_type' => $this->milk_type
+            ]);
+            Deposit::create([
+                'user_id'=>$user->id,
+                'deposit'=>$this->total_milk_price,
+                'milk_deposits_id'=>$milk_deposit->id
             ]);
             $this->resetFields();
             $this->dispatch('success', title: 'डेटा सफलतापूर्वक सुरक्षित भयो।');
@@ -258,6 +264,7 @@ class MilkDeposit extends Component
             $this->location = $deposit->user->location;
             $this->phone_number = $deposit->user->phone_number;
             $this->milk_deposit_id = $id;
+
         } catch (\Throwable $th) {
             $this->dispatch('error', title: $th->getMessage());
         }
@@ -289,6 +296,12 @@ class MilkDeposit extends Component
                 'milk_deposit_time' => $this->milk_deposit_time,
                 'milk_type' => $this->milk_type
             ]);
+            $deposit=Deposit::where('milk_deposits_id',$milkDeposit->id)->first();
+            $deposit->update([
+                'user_id'=>$this->user_id,
+                'deposit'=>$this->total_milk_price,
+                'milk_deposits_id'=>$milkDeposit->id
+            ]);
             $this->resetFields();
             $this->dispatch('success', title: 'डेटा सफलतापूर्वक सुरक्षित भयो।');
         } catch (\Throwable $th) {
@@ -305,6 +318,8 @@ class MilkDeposit extends Component
                 $this->dispatch('warningMessage', title: "कृषक नम्बर {$this->farmernumber} दर्ता भएको छैन।");
                 return;
             }
+            $deposit=Deposit::where('milk_deposits_id',$milkDeposit->id)->first();
+            $deposit->delete();
             $milkDeposit->delete();
             $this->dispatch('success', title: 'डाटा मेटाइएको छ।');
         } catch (\Throwable $th) {

@@ -19,7 +19,7 @@ class AuthenticatedFrontendAccess
        
 
         // Check if the user is authenticated and trying to access a restricted route
-        if (Auth::check()) {
+        if (Auth::check() && Auth::user()->hasRole('farmer')) {
             // User is authenticated, allow access to the page
             return $next($request);
         }

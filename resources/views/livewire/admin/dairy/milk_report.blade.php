@@ -3,9 +3,10 @@
 <div class="col-12 py-3 px-5" style="background-color: #eee;">
         <div class="d-md-flex justify-content-between align-items-center  py-2 ">
             <div>
-                <label>प्रदर्शन गर्नुहोस्
+                <label class="d-flex align-items-center gap-2">
+                    <span>प्रदर्शन गर्नुहोस्</span>
                     <select name="withdraw-request-list_length" aria-controls="withdraw-request-list"
-                        class="form-select form-select-sm" wire:model.live.debounce.500ms="entries">
+                        class="form-select form-select-sm w-auto" wire:model.live.debounce.500ms="entries">
                         <option value="10">१०</option>
                         <option value="25">२५</option>
                         <option value="50">५०</option>
@@ -13,7 +14,7 @@
                         <option value="200">२००</option>
                         <option value="500">५००</option>
                     </select>
-                    डेटा
+                    <span>डेटा</span>
                 </label>
 
             </div>
@@ -64,7 +65,7 @@
                             <td>{{ $deposit->milk_total_price }}</td>
                         </tr>
                     @endforeach
-                    <tr class="text-end text-white" style="background-color: #32705f">
+                    <tr class="text-white" style="background-color: #32705f">
                         <td colspan="2" >कुल दूध संकलन: {{$totalMilkQuantity}} लिटर </td>
                         <td colspan="20">कुल मूल्य: {{$totalDepositIncome}} रुपैया</td>
                     </tr>

@@ -9,6 +9,7 @@ use App\Livewire\Frontend\Features\Features;
 use App\Livewire\Frontend\Gallery\Gallery;
 use App\Livewire\Frontend\Home\Home;
 use App\Livewire\Frontend\Product\Product;
+use App\Livewire\Frontend\Profile\Profile;
 use App\Livewire\Frontend\Service\Service;
 use App\Livewire\Frontend\Team\Team;
 use App\Livewire\Frontend\Testimonial\Testimonial;
@@ -29,4 +30,5 @@ Route::middleware(['auth.frontend'])->group(function () {
     Route::get('/cart',Cart::class)->name('cart');
     Route::get('/checkout',Checkout::class)->name('checkout');
     Route::get('/checkout-success',CheckoutSuccess::class)->name('checkout.success');
+    Route::get('/profile',Profile::class)->name('profile');
 });

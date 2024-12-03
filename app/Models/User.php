@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Helpers\NumberHelper;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -65,6 +67,32 @@ class User extends Authenticatable
 
         return $slug;
     }
+
+    public function deposit()
+    {
+        return $this->hasMany(Deposit::class);
+    }
+    public function withdraw()
+    {
+        return $this->hasMany(Withdraw::class);
+    }
+    public function getRemainingBalanceAttribute()
+    {
+        // Ensure that if no deposit or withdraw is made, return 0
+        $totalDeposit = $this->deposit_sum_deposit ?? 0;
+        $totalWithdraw = $this->withdraw_sum_withdraw ?? 0;
+        $remainingBalance = $totalDeposit - $totalWithdraw;
+    
+        // Convert the remaining balance to Nepali number format
+        $remainingBalanceNepali = NumberHelper::toNepaliNumber($remainingBalance);
+    
+        // Return both English and Nepali numbers in an array
+        return [
+            'english' => $remainingBalance,
+            'nepali'  => $remainingBalanceNepali,
+        ];
+    }
+    
 
     /**
      * The attributes that should be hidden for serialization.

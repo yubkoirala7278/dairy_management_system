@@ -38,7 +38,7 @@ class Product extends Component
     public function mount()
     {
         if(Auth::user()){
-            $cartCount = Cart::where('user_id', Auth::user()->id)->sum('cart_count');
+            $cartCount = Cart::where('user_id', Auth::user()->id)->count();
             $this->cartCount = NumberHelper::toNepaliNumber($cartCount);
         }
         $this->productCount=ModelsProduct::where('status',true)->count();
@@ -72,7 +72,7 @@ class Product extends Component
                 ]);
 
                 // Calculate total cart count
-                $cartCount = Cart::where('user_id', Auth::user()->id)->sum('cart_count');
+                $cartCount = Cart::where('user_id', Auth::user()->id)->count();
                 $this->cartCount = NumberHelper::toNepaliNumber($cartCount);
                 $this->dispatch('success', title: 'प्रोडक्ट कार्टमा थपिएको छ।');
             }

@@ -24,6 +24,7 @@
          <link href="{{asset('backend_assets/calender/nepali.datepicker.v4.0.4.min.css')}}" rel="stylesheet" type="text/css"/>
     @toastifyCss
     @yield('header-links')
+    @yield('custom-style')
     <link rel="stylesheet" href="{{ asset('backend_assets/css/azia.css') }}">
     <link rel="stylesheet" href="{{ asset('backend_assets/css/style.css') }}">
     <style>
@@ -59,11 +60,16 @@
                         </a>
                     </li>
                     <li class="nav-item {{ $page == 'product' ? 'active' : '' }}">
-                        <a href="{{ route('admin.product') }}" class="nav-link" id="dashboard-link">
-                            <i class="typcn typcn-shopping-cart"></i>
-                            प्रोडक्ट
+                        <a href="" class="nav-link with-sub" id="farmer-link">
+                            <i class="typcn typcn-shopping-cart"></i> प्रोडक्ट
                         </a>
+                        <nav class="az-menu-sub">
+                            <a href="{{ route('admin.product') }}" class="nav-link"
+                                id="deposit-milk-link">प्रोडक्ट सिर्जना/सम्पादन</a>
+                            <a href="{{ route('admin.order') }}" class="nav-link" id="create-farmer-link">अर्डरहरू</a>
+                        </nav>
                     </li>
+
                     <li class="nav-item {{ $page == 'farmer' ? 'active' : '' }}">
                         <a href="" class="nav-link with-sub" id="farmer-link">
                             <i class="typcn typcn-leaf"></i> किसान
@@ -76,6 +82,18 @@
                             <a href="{{ route('admin.setup') }}" class="nav-link" id="setup-link">सेटअप</a>
                             <a href="{{ route('admin.milk.deposit.report') }}" class="nav-link" id="setup-link">दूध
                                 संकलन रिपोर्ट</a>
+                        </nav>
+                    </li>
+                    <li class="nav-item {{ $page == 'financial' ? 'active' : '' }}">
+                        <a href="" class="nav-link with-sub" id="farmer-link">
+                            <i class="fa-solid fa-building-columns me-2"></i>वित्तीय
+                        </a>
+                        <nav class="az-menu-sub">
+                            <a href="{{ route('admin.transaction') }}" class="nav-link"
+                            id="deposit-milk-link">जम्मा / निकासी</a>
+                            <a href="" class="nav-link"
+                                id="deposit-milk-link">निक्षेप</a>
+                            <a href="{{ route('admin.withdraw') }}" class="nav-link" id="create-farmer-link">निकासी</a>
                         </nav>
                     </li>
                 </ul>

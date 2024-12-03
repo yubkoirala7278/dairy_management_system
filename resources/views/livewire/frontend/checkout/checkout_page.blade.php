@@ -85,33 +85,41 @@
                                             wire:key="{{ $key }}">
                                             <p>{{ $cart->product->name }} * <span
                                                     class="fw-bold">{{ $cart->cart_count_nepali }}</span></p>
-                                            <p class="fw-bold">रु. <span class="total-price">{{ $cart->cart_count * $cart->product->price_per_kg }}</span></p>
+                                            <p class="fw-bold">रु. <span
+                                                    class="total-price">{{ $cart->cart_count * $cart->product->price_per_kg }}</span>
+                                            </p>
                                         </div>
                                     @endforeach
+                                    <hr>
+                                    <div class="d-flex align-items-center justify-content-between fw-bold">
+                                        <p>उपकुल:</p>
+                                        <p>रु {{ $sub_total }}</p>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-between fw-bold">
+                                        <p>ढुवानी शुल्क:</p>
+                                        <p>रु ०</p>
+                                    </div>
+                                    <hr>
+                                    <div class="d-flex align-items-center justify-content-between fw-bold">
+                                        <p>कुल:</p>
+                                        <p>रु {{ $sub_total }}</p>
+                                    </div>
                                 @endif
-                                <hr>
-                                <div class="d-flex align-items-center justify-content-between fw-bold">
-                                    <p>उपकुल:</p>
-                                    <p>रु {{$sub_total}}</p>
-                                </div>
-                                <div class="d-flex align-items-center justify-content-between fw-bold">
-                                    <p>ढुवानी शुल्क:</p>
-                                    <p>रु ०</p>
-                                </div>
-                                <hr>
-                                <div class="d-flex align-items-center justify-content-between fw-bold">
-                                    <p>कुल:</p>
-                                    <p>रु {{$sub_total}}</p>
-                                </div>
+                                @if(count($myCarts) <= 0)
+                                    कुनै उत्पादन कार्टमा थपिएको छैन।
+                                @endif
                             </div>
                         </div>
                     </div>
+                    @if (count($myCarts) > 0)
                     <div class="card shadow rounded-4 mt-4">
                         <div class="card-body d-flex flex-column p-4">
                             <!-- Proceed Button -->
-                            <a href="{{route('frontend.checkout.success')}}" class="btn btn-primary w-100">अगाडि बढ्नुहोस्</a>
+                            <a href="{{ route('frontend.checkout.success') }}" class="btn btn-primary w-100"
+                                wire:click="checkoutProduct">अगाडि बढ्नुहोस्</a>
                         </div>
                     </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -122,31 +130,31 @@
 @endsection
 
 @push('script')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Function to convert English digits to Nepali digits
-        function convertToNepali() {
-            const nepaliDigits = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'];
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Function to convert English digits to Nepali digits
+            function convertToNepali() {
+                const nepaliDigits = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'];
 
-            // Select all elements with the class 'total-price'
-            const elements = document.querySelectorAll('.total-price');
+                // Select all elements with the class 'total-price'
+                const elements = document.querySelectorAll('.total-price');
 
-            elements.forEach(element => {
-                // Get the current text value of the element
-                let text = element.innerText;
+                elements.forEach(element => {
+                    // Get the current text value of the element
+                    let text = element.innerText;
 
-                // Convert each English digit to Nepali
-                let nepaliText = text.replace(/\d/g, (match) => nepaliDigits[parseInt(match)]);
+                    // Convert each English digit to Nepali
+                    let nepaliText = text.replace(/\d/g, (match) => nepaliDigits[parseInt(match)]);
 
-                // Update the element's text with the converted Nepali digits
-                element.innerText = nepaliText;
-            });
-        }
+                    // Update the element's text with the converted Nepali digits
+                    element.innerText = nepaliText;
+                });
+            }
 
-        // Call the function to convert numbers to Nepali when the page is ready
-        convertToNepali();
-    });
-</script>
+            // Call the function to convert numbers to Nepali when the page is ready
+            convertToNepali();
+        });
+    </script>
 @endpush
 
 @section('custom-style')

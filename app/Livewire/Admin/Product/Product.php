@@ -19,7 +19,7 @@ class Product extends Component
     public $entries = 10;
     public $search = '';
 
-    public $name, $price_per_kg, $status = 1, $image, $product_id;
+    public $name, $price_per_kg, $status = 1, $image, $product_id,$unit='kg';
 
     // ========reset fields=========
     public function resetFields()
@@ -29,7 +29,8 @@ class Product extends Component
             'price_per_kg',
             'status',
             'image',
-            'product_id'
+            'product_id',
+            'unit'
         ]);
         $this->resetErrorBag();
     }
@@ -82,6 +83,7 @@ class Product extends Component
                 'name' => $this->name,
                 'price_per_kg' => $this->price_per_kg,
                 'status' => $this->status,
+                'unit'=>$this->unit,
                 'image' => $imagePath, // Store the path of the uploaded image
             ]);
 
@@ -129,6 +131,7 @@ class Product extends Component
             $this->name = $product->name;
             $this->price_per_kg = $product->price_per_kg;
             $this->status = $product->status;
+            $this->unit=$product->unit;
             $this->dispatch('editModal');
         } catch (\Throwable $th) {
             // If there's any error, dispatch an error message
@@ -175,6 +178,7 @@ class Product extends Component
                 'name' => $this->name,
                 'price_per_kg' => $this->price_per_kg,
                 'status' => $this->status,
+                'unit'=>$this->unit,
                 'image' => $imagePath, // Store the path of the uploaded or existing image
             ]);
 

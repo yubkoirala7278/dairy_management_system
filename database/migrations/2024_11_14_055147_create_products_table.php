@@ -18,6 +18,7 @@ return new class extends Migration
             $table->float('price_per_kg');
             $table->boolean('status')->default(true);
             $table->string('image');
+            $table->enum('unit', ['kg', 'ltr'])->default('kg');
             $table->timestamps();
         });
     }
