@@ -11,11 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('deposits', function (Blueprint $table) {
+        Schema::create('milk_incomes', function (Blueprint $table) {
             $table->softDeletes();
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->unsignedBigInteger('milk_deposits_id')->nullable();
+            $table->foreign('milk_deposits_id')->references('id')->on('milk_deposits')->cascadeOnDelete()->cascadeOnUpdate();
             $table->float('deposit');
             $table->timestamps();
         });
@@ -26,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('deposits');
+        Schema::dropIfExists('milk_incomes');
     }
 };

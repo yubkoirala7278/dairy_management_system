@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\View;
 use App\Helpers\NumberHelper;
 use App\Exports\MilkDepositsExport;
 use App\Models\Deposit;
+use App\Models\MilkIncome;
 use Maatwebsite\Excel\Facades\Excel;
 use Livewire\Component;
 
@@ -198,7 +199,7 @@ class MilkDeposit extends Component
                 'milk_deposit_time' => $this->milk_deposit_time,
                 'milk_type' => $this->milk_type
             ]);
-            Deposit::create([
+            MilkIncome::create([
                 'user_id'=>$user->id,
                 'deposit'=>$this->total_milk_price,
                 'milk_deposits_id'=>$milk_deposit->id
@@ -296,7 +297,7 @@ class MilkDeposit extends Component
                 'milk_deposit_time' => $this->milk_deposit_time,
                 'milk_type' => $this->milk_type
             ]);
-            $deposit=Deposit::where('milk_deposits_id',$milkDeposit->id)->first();
+            $deposit=MilkIncome::where('milk_deposits_id',$milkDeposit->id)->first();
             $deposit->update([
                 'user_id'=>$this->user_id,
                 'deposit'=>$this->total_milk_price,
@@ -318,7 +319,7 @@ class MilkDeposit extends Component
                 $this->dispatch('warningMessage', title: "कृषक नम्बर {$this->farmernumber} दर्ता भएको छैन।");
                 return;
             }
-            $deposit=Deposit::where('milk_deposits_id',$milkDeposit->id)->first();
+            $deposit=MilkIncome::where('milk_deposits_id',$milkDeposit->id)->first();
             $deposit->delete();
             $milkDeposit->delete();
             $this->dispatch('success', title: 'डाटा मेटाइएको छ।');

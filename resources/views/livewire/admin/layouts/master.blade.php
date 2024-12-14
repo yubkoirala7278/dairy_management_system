@@ -79,6 +79,7 @@
                                 id="deposit-milk-link">दूध संकलन</a>
                             <a href="{{ route('admin.farmer.create') }}" class="nav-link" id="create-farmer-link">कृषक
                                 दर्ता</a>
+                                <a href="{{ route('admin.accounting') }}" class="nav-link" id="setup-link">हिसाब / किताब</a>
                             <a href="{{ route('admin.setup') }}" class="nav-link" id="setup-link">सेटअप</a>
                             <a href="{{ route('admin.milk.deposit.report') }}" class="nav-link" id="setup-link">दूध
                                 संकलन रिपोर्ट</a>
@@ -94,6 +95,7 @@
                             <a href="" class="nav-link"
                                 id="deposit-milk-link">निक्षेप</a>
                             <a href="{{ route('admin.withdraw') }}" class="nav-link" id="create-farmer-link">निकासी</a>
+                            <a href="{{ route('admin.financial-setup') }}" class="nav-link" id="setup-link">सेटअप</a>
                         </nav>
                     </li>
                 </ul>
