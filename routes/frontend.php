@@ -8,6 +8,7 @@ use App\Livewire\Frontend\Contact\Contact;
 use App\Livewire\Frontend\Features\Features;
 use App\Livewire\Frontend\Gallery\Gallery;
 use App\Livewire\Frontend\Home\Home;
+use App\Livewire\Frontend\Login\Login;
 use App\Livewire\Frontend\Product\Product;
 use App\Livewire\Frontend\Profile\Profile;
 use App\Livewire\Frontend\Service\Service;
@@ -25,6 +26,7 @@ Route::get('/features', Features::class)->name('feature');
 Route::get('/team', Team::class)->name('team');
 Route::get('/testimonial', Testimonial::class)->name('testimonial');
 Route::get('/contact-us', Contact::class)->name('contact');
+Route::get('/public/login',Login::class)->name('login');
 
 Route::middleware(['auth.frontend'])->group(function () {
     Route::get('/cart',Cart::class)->name('cart');
