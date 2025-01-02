@@ -94,8 +94,8 @@
                             id="deposit-milk-link">जम्मा / निकासी</a>
                             <a href="" class="nav-link"
                                 id="deposit-milk-link">निक्षेप</a>
-                            <a href="{{ route('admin.withdraw') }}" class="nav-link" id="create-farmer-link">निकासी</a>
-                            <a href="{{ route('admin.financial-setup') }}" class="nav-link" id="setup-link">सेटअप</a>
+                            <a href="" class="nav-link" id="create-farmer-link">निकासी</a>
+                            <a href="" class="nav-link" id="setup-link">सेटअप</a>
                         </nav>
                     </li>
                 </ul>

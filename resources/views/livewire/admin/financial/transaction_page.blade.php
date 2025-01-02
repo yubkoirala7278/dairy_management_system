@@ -40,7 +40,8 @@
                             स्थान</th>
                         <th scope="col" style="font-size: 16px; white-space: nowrap;" style="white-space: nowrap;">कुल
                             रकम(रु)</th>
-                            <th scope="col" style="font-size: 16px; white-space: nowrap;" style="white-space: nowrap;">बक्यौता रकम(रु)</th>
+                        {{-- <th scope="col" style="font-size: 16px; white-space: nowrap;" style="white-space: nowrap;">
+                            बक्यौता रकम(रु)</th> --}}
                         <th scope="col" style="font-size: 16px; white-space: nowrap;" style="white-space: nowrap;">
                             कार्य</th>
                     </tr>
@@ -49,32 +50,22 @@
                     @if (count($usersWithTransaction) > 0)
                         @foreach ($usersWithTransaction as $key => $user)
                             <tr wire:key="{{ $key }}">
-                                {{-- <td>{{ $key + 1 }}</td> --}}
-                                <td>{{ $user->farmer_number }}</td>
-                                <td>{{ $user->owner_name }}</td>
-                                <td>{{ $user->phone_number }}</td>
-                                <td>{{ $user->location }}</td>
-                                <td class="bg-success text-white">
-                                    {{-- <span class="badge text-bg-success py-2 px-4"> --}}
-                                    {{ $user->remaining_balance['nepali'] < 0 ? '०' : $user->remaining_balance['nepali'] }}
-                                {{-- </span> --}}
-                                </td>
-                                <td class="bg-danger text-white">
-                                    {{-- <span class="badge text-bg-danger py-2 px-4"> --}}
-                                        {{$user->remaining_balance['nepali'] <= 0 ? ltrim($user->remaining_balance['nepali'], '-') : '०'}}
-                                    {{-- </span> --}}
-                                    
-                                </td>
+                                <td>{{$user->user->farmer_number}}</td>
+                                <td>{{$user->user->owner_name}}</td>
+                                <td>{{$user->user->phone_number}}</td>
+                                <td>{{$user->user->location}}</td>
+                                <td>{{$user->balance}}</td>
                                 <td>
                                     <button type="button" class="btn btn-success rounded-pill" data-bs-toggle="modal"
-                                        data-bs-target="#depositModal" wire:click="getUserInfo({{ $user->id }})">
+                                        data-bs-target="#depositModal">
                                         <i class="fa-solid fa-sack-dollar me-2"></i>जमाफेरी
                                     </button>
-                                    <button type="button" class="btn btn-dark text-white rounded-pill" data-bs-toggle="modal"
-                                        data-bs-target="#withdrawModal"
-                                        wire:click="getUserInfo({{ $user->id }}, {{ $user->remaining_balance['english'] }})">
+                                    {{-- wire:click="getUserInfo({{ $user->id }})" --}}
+                                    <button type="button" class="btn btn-dark text-white rounded-pill"
+                                        data-bs-toggle="modal" data-bs-target="#withdrawModal">
                                         <i class="fa-solid fa-money-bill-transfer me-2"></i>निकासी
                                     </button>
+                                    {{-- wire:click="getUserInfo({{ $user->id }}, {{ $user->remaining_balance['english'] }})" --}}
                                 </td>
                             </tr>
                         @endforeach
@@ -120,9 +111,11 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-dark rounded-pill" data-bs-dismiss="modal" wire:click="resetFields">रद्द
+                    <button type="button" class="btn btn-dark rounded-pill" data-bs-dismiss="modal"
+                        wire:click="resetFields">रद्द
                         गर्नुहोस्</button>
-                    <button type="button" class="btn btn-success rounded-pill" wire:click="checkDepositInfo">जम्मा गर्नुहोस्</button>
+                    <button type="button" class="btn btn-success rounded-pill" wire:click="checkDepositInfo">जम्मा
+                        गर्नुहोस्</button>
                 </div>
             </div>
         </div>
@@ -133,7 +126,8 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header text-white" style="background-color: #515F52">
-                    <h1 class="modal-title fs-5" id="withdrawModalLabel">{{ $owner_name }} को खाताबाट रकम झिक्नुहोस्</h1>
+                    <h1 class="modal-title fs-5" id="withdrawModalLabel">{{ $owner_name }} को खाताबाट रकम झिक्नुहोस्
+                    </h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
                         wire:click="resetFields"></button>
                 </div>
@@ -152,7 +146,8 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-dark rounded-pill" data-bs-dismiss="modal"
                         wire:click="resetFields">रद्द गर्नुहोस्</button>
-                    <button type="button" class="btn btn-success rounded-pill" wire:click="checkWithdrawInfo">रकम झिक्नुहोस्</button>
+                    <button type="button" class="btn btn-success rounded-pill" wire:click="checkWithdrawInfo">रकम
+                        झिक्नुहोस्</button>
                 </div>
             </div>
         </div>

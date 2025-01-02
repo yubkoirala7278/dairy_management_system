@@ -26,20 +26,15 @@
             </div>
 
         </div>
-        <table class="table table-bordered table-hover " style="font-size: 20px; min-width: 800px; width: 100%;" wire:ignore.self>
+        <table class="table table-bordered table-hover " style="font-size: 20px; min-width: 800px; width: 100%;"
+            wire:ignore.self>
             <thead>
                 <tr class="table-secondary">
                     <th scope="col" style="font-size: 20px; white-space: nowrap;">
-                        <input 
-                            type="checkbox" 
-                            id="select-all" 
-                            wire:model.live="selectAll" 
-                            style="transform: scale(1.7); cursor: pointer;" 
-                            class="ms-4 rounded-pill" 
-                            wire:ignore
-                        >
+                        <input type="checkbox" id="select-all" wire:model.live="selectAll"
+                            style="transform: scale(1.7); cursor: pointer;" class="ms-4 rounded-pill" wire:ignore>
                     </th>
-                    
+
                     <th scope="col" style="font-size: 20px; white-space: nowrap;">कृ.न.</th>
                     <th scope="col" style="font-size: 20px; white-space: nowrap;">कृषक नाम</th>
                     <th scope="col" style="font-size: 20px; white-space: nowrap;">फोन नम्बर</th>
@@ -53,15 +48,10 @@
                     @foreach ($milkDepositsIncome as $key => $milkIncome)
                         <tr wire:key="{{ $key }}">
                             <td class="text-center">
-                                <input 
-                                    class="form-check-input" 
-                                    type="checkbox" 
-                                    value="{{ $milkIncome->id }}" 
-                                    wire:model="incomes" 
-                                    id="checkbox-{{ $milkIncome->id }}" 
-                                >
+                                <input class="form-check-input" type="checkbox" value="{{ $milkIncome->id }}"
+                                    wire:model="incomes" id="checkbox-{{ $milkIncome->id }}">
                             </td>
-                            
+
                             <td>{{ $milkIncome->user->farmer_number }}</td>
                             <td>{{ $milkIncome->user->owner_name }}</td>
                             <td>{{ $milkIncome->user->phone_number }}</td>
@@ -70,6 +60,10 @@
                             <td>{{ $milkIncome->deposit_nepali }}</td>
                         </tr>
                     @endforeach
+                    <tr class="text-white" style="background-color: #32705f">
+                        <td colspan="2">कुल दूध संकलन: {{ $totalMilkQuantity }} लिटर </td>
+                        <td colspan="20">कुल मूल्य: {{ $totalMilkTotalPrice }} रुपैया</td>
+                    </tr>
                 @endif
                 @if (count($milkDepositsIncome) <= 0)
                     <tr class="text-center">

@@ -5,8 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class FinancialSetup extends Model
+class Transaction extends Model
 {
     use HasFactory;
-    protected $fillable=['fixed_interest_rate','compound_interest_rate','tax_deduction_rate'];
+    protected $fillable=['account_id','type','amount'];
 }

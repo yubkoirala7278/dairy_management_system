@@ -68,14 +68,6 @@ class User extends Authenticatable
         return $slug;
     }
 
-    public function deposit()
-    {
-        return $this->hasMany(Deposit::class);
-    }
-    public function withdraw()
-    {
-        return $this->hasMany(Withdraw::class);
-    }
     public function getRemainingBalanceAttribute()
     {
         // Ensure that if no deposit or withdraw is made, return 0

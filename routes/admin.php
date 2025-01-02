@@ -21,6 +21,4 @@ Route::get('/milk-deposit-report',MilkReport::class)->name('milk.deposit.report'
 Route::get('/product',Product::class)->name('product');
 Route::get('/orders',Order::class)->name('order');
 Route::get('/transaction',Transaction::class)->name('transaction');
-Route::get('/withdraw',Withdraw::class)->name('withdraw');
 Route::get('/milk-deposit-income',Accounting::class)->name('accounting');
-Route::get('/financial-setup',FinancialSetup::class)->name('financial-setup');

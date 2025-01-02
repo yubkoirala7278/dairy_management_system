@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('financial_setups', function (Blueprint $table) {
+        Schema::create('compound_interests', function (Blueprint $table) {
             $table->id();
-            $table->float('fixed_interest_rate');
-            $table->float('compound_interest_rate');
-            $table->float('tax_deduction_rate');
+            $table->foreignId('account_id')->constrained()->onDelete('cascade'); // Links to accounts table
+            $table->decimal('interest_amount', 15, 2);
+            $table->date('period'); // Tracks the interest period
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('financial_setups');
+        Schema::dropIfExists('compound_interests');
     }
 };

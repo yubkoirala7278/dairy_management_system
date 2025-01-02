@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('owner_name');
-            $table->string('email')->unique()->nullable();
+            $table->string('email')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('farmer_number')->unique();
@@ -24,8 +24,8 @@ return new class extends Migration
             $table->enum('gender', ['पुरुष', 'महिला', 'अन्य']);
             $table->enum('status', ['चालू', 'बन्द'])->default('चालू');
             $table->string('phone_number')->nullable();
-            $table->string('pan_number')->unique()->nullable();
-            $table->string('vat_number')->unique()->nullable();
+            $table->string('pan_number')->nullable();
+            $table->string('vat_number')->nullable();
             $table->string('slug')->unique();
             $table->float('milk_fat')->nullable()->default(4.3);
             $table->float('milk_snf')->nullable()->default(9.1);

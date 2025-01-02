@@ -3,38 +3,31 @@
 namespace App\Repositories;
 
 use App\Helpers\NumberHelper;
+use App\Models\Account;
 use App\Models\MilkIncome;
 use App\Models\User;
 use App\Repositories\Interfaces\TransactionRepositoryInterface;
 
 class TransactionRepository implements TransactionRepositoryInterface
 {
-    public function getUsersWithTotalDepositsAndWithdraws($entries, $keyword)
+    public function getUsersTransactionInfo($entries, $keyword)
     {
-        // Start the query for users with the 'farmer' role
-        $query = User::query()
-            ->withSum('deposit', 'deposit')  // Get the total deposit for each user
-            ->withSum('withdraw', 'withdraw')  // Get the total withdraw for each user
-            ->whereHas('roles', function ($query) {
-                $query->where('name', 'farmer');  // Filter users with the 'farmer' role
+        $accounts = Account::with('user')
+            ->whereHas('user', function ($query) use ($keyword) {
+                $query->where('name', 'like', "%$keyword%")
+                      ->orWhere('farmer_number', 'like', "%$keyword%");
             })
-            ->orderBy('owner_name');  // Sorting by owner_name
-
-        // Apply the keyword filter for user attributes like name, farmer_number, phone_number, or location
-        if ($keyword) {
-            $query->where(function ($query) use ($keyword) {
-                $query->where('owner_name', 'like', '%' . $keyword . '%')
-                    ->orWhere('farmer_number', 'like', '%' . $keyword . '%')
-                    ->orWhere('phone_number', 'like', '%' . $keyword . '%')
-                    ->orWhere('location', 'like', '%' . $keyword . '%');
-            });
-        }
-
-        // Limit the number of entries per page
-        $users = $query->paginate($entries);
-
-        return $users;
+            ->paginate($entries);
+    
+        // Convert balance to Nepali numbers for each account
+        $accounts->getCollection()->transform(function ($account) {
+            $account->balance = \App\Helpers\NumberHelper::toNepaliNumber($account->balance);
+            return $account;
+        });
+    
+        return $accounts;
     }
+    
 
     public function getMilkDepositIncome($entries, $keyword)
     {
@@ -47,11 +40,7 @@ class TransactionRepository implements TransactionRepositoryInterface
             $query->where(function ($q) use ($keyword) {
                 $q->whereHas('user', function ($query) use ($keyword) {
                     $query->where('owner_name', 'like', '%' . $keyword . '%')
-                    ->orWhere('phone_number', 'like', '%' . $keyword . '%')
                     ->orWhere('farmer_number', 'like', '%' . $keyword . '%');
-                })
-                ->orWhereHas('milkDeposits', function ($query) use ($keyword) {
-                    $query->where('milk_deposit_date', 'like', '%' . $keyword . '%');
                 });
             });
         }
