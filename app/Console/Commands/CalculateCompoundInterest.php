@@ -4,37 +4,44 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\Account;
+use App\Models\CompoundInterest;
 use Carbon\Carbon;
 
 class CalculateCompoundInterest extends Command
 {
-    protected $signature = 'calculate:interest';
-    protected $description = 'Calculate monthly compound interest for all accounts';
+    protected $signature = 'calculate:compound-interest';
+    protected $description = 'Calculate compound interest for all accounts';
 
     public function handle()
     {
         $accounts = Account::all();
-        $today = Carbon::now();
+        $currentDate = Carbon::now()->toDateString();
 
         foreach ($accounts as $account) {
-            $lastCompounded = Carbon::parse($account->compounded_on);
-            if ($lastCompounded->diffInMonths($today) >= 1) {
-                $months = $lastCompounded->diffInMonths($today);
-                $principal = $account->balance;
-                $rate = $account->interest_rate; // Annual rate
-                $n = 12; // Monthly compounding
+            $lastCalculationDate = $account->last_interest_calculation_date 
+                ? Carbon::parse($account->last_interest_calculation_date) 
+                : null;
 
-                // Compound for all pending months
-                $amount = $principal * pow((1 + ($rate / $n)), $n * ($months / 12));
-                $interest = $amount - $principal;
+            if (!$lastCalculationDate || $lastCalculationDate->lt(Carbon::now())) {
+                $daysSinceLast = $lastCalculationDate 
+                    ? Carbon::now()->diffInDays($lastCalculationDate) 
+                    : 1;
 
-                // Update account balance and compounded date
-                $account->balance += $interest;
-                $account->compounded_on = $today;
-                $account->save();
+                $interest = $account->balance * pow((1 + ($account->interest_rate / 100) / 365), $daysSinceLast) - $account->balance;
+
+                if ($interest > 0) {
+                    $account->increment('balance', $interest);
+                    $account->update(['last_interest_calculation_date' => $currentDate]);
+
+                    CompoundInterest::create([
+                        'account_id' => $account->id,
+                        'interest_amount' => $interest,
+                        'period' => $currentDate,
+                    ]);
+                }
             }
         }
 
-        $this->info('Interest calculation completed!');
+        $this->info('Compound interest calculated for all accounts.');
     }
 }

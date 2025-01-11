@@ -50,22 +50,22 @@
                     @if (count($usersWithTransaction) > 0)
                         @foreach ($usersWithTransaction as $key => $user)
                             <tr wire:key="{{ $key }}">
-                                <td>{{$user->user->farmer_number}}</td>
-                                <td>{{$user->user->owner_name}}</td>
-                                <td>{{$user->user->phone_number}}</td>
-                                <td>{{$user->user->location}}</td>
-                                <td>{{$user->balance}}</td>
+                                <td>{{ $user->user->farmer_number }}</td>
+                                <td>{{ $user->user->owner_name }}</td>
+                                <td>{{ $user->user->phone_number }}</td>
+                                <td>{{ $user->user->location }}</td>
+                                <td>{{ $user->nepali_balance }}</td>
                                 <td>
                                     <button type="button" class="btn btn-success rounded-pill" data-bs-toggle="modal"
-                                        data-bs-target="#depositModal">
+                                        data-bs-target="#depositModal"
+                                        wire:click="getUserInfo({{ $user->user->id }}, {{ $user->balance }})">
                                         <i class="fa-solid fa-sack-dollar me-2"></i>जमाफेरी
                                     </button>
-                                    {{-- wire:click="getUserInfo({{ $user->id }})" --}}
                                     <button type="button" class="btn btn-dark text-white rounded-pill"
-                                        data-bs-toggle="modal" data-bs-target="#withdrawModal">
+                                        data-bs-toggle="modal" data-bs-target="#withdrawModal"
+                                        wire:click="getUserInfo({{ $user->user->id }}, {{ $user->balance }})">
                                         <i class="fa-solid fa-money-bill-transfer me-2"></i>निकासी
                                     </button>
-                                    {{-- wire:click="getUserInfo({{ $user->id }}, {{ $user->remaining_balance['english'] }})" --}}
                                 </td>
                             </tr>
                         @endforeach
@@ -101,7 +101,10 @@
                 <div class="modal-body" style="background-color: #F4F5F8">
                     <form>
                         <div class="mb-3">
-                            <label for="deposit_amount" class="form-label text-dark">रकम</label>
+                            <div class="d-flex align-item-center justify-content-between">
+                                <label for="deposit_amount" class="form-label text-dark">रकम</label>
+                                <span>Rs. {{ $available_balance }}</span>
+                            </div>
                             <input type="number" class="form-control" id="deposit_amount" wire:model="deposit_amount"
                                 placeholder="जम्मा गर्नको लागि रकम भर्नुहोस्">
                             @if ($errors->has('deposit_amount'))
@@ -134,7 +137,10 @@
                 <div class="modal-body" style="background-color: #F4F5F8">
                     <form>
                         <div class="mb-3">
-                            <label for="withdraw_amount" class="form-label text-dark">रकम</label>
+                            <div class="d-flex align-items-center justify-content-between">
+                                <label for="withdraw_amount" class="form-label text-dark">रकम</label>
+                                <span>Rs. {{ $available_balance }}</span>
+                            </div>
                             <input type="number" class="form-control" id="withdraw_amount" wire:model="withdraw_amount"
                                 placeholder="रकम झिक्नको लागि यहाँ भर्नुहोस्">
                             @if ($errors->has('withdraw_amount'))

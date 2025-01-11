@@ -4,9 +4,10 @@ namespace App\Livewire\Admin\Financial;
 
 use App\Helpers\NumberHelper;
 use App\Models\Account;
+use App\Models\Transaction as ModelsTransaction;
 use App\Models\User;
-use App\Models\Withdraw;
 use App\Repositories\Interfaces\TransactionRepositoryInterface;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -44,6 +45,7 @@ class Transaction extends Component
     public function render()
     {
         $usersWithTransaction = $this->transactionRepository->getUsersTransactionInfo($this->entries, $this->search);
+        // dd($usersWithTransaction);
         return view('livewire.admin.financial.transaction', [
             'usersWithTransaction' => $usersWithTransaction
         ]);
@@ -90,29 +92,38 @@ class Transaction extends Component
     }
     public function confirmDeposit()
     {
+        DB::beginTransaction(); // Start a transaction
+
         try {
             // Find the user's account or create one if it doesn't exist
             $account = Account::firstOrCreate(
                 ['user_id' => $this->user_id],
-                ['balance' => 0, 'interest_rate' => 0.04] // Default interest rate
+                ['balance' => 0]
             );
 
-            // Update the account balance
-            $account->balance += $this->deposit_amount;
-            $account->save();
+            // Update account balance
+            $account->increment('balance', $this->deposit_amount);
 
-            // Log the transaction
-            Transaction::create([
-                'user_id' => $this->user_id,
-                'transaction_type' => 'deposit',
+            // Record transaction
+            ModelsTransaction::create([
+                'account_id' => $account->id,
+                'type' => 'deposit',
                 'amount' => $this->deposit_amount,
-                'balance_after' => $account->balance,
-                'transaction_date' => now(),
             ]);
+
+            // Commit the transaction if everything is successful
+            DB::commit();
+
             $deposit_amount = NumberHelper::toNepaliNumber($this->deposit_amount);
             $this->dispatch('success', title: "रु {$deposit_amount} किसानको खातामा सफलतापूर्वक जम्मा गरिएको छ।");
+
+            // Reset fields
             $this->resetFields();
         } catch (\Throwable $th) {
+            // Rollback the transaction if an error occurs
+            DB::rollBack();
+
+            // Dispatch an error message
             $this->dispatch('error', $th->getMessage());
         }
     }
@@ -140,38 +151,42 @@ class Transaction extends Component
 
     public function confirmWithdraw()
     {
+        DB::beginTransaction(); // Begin the transaction
+
         try {
             // Find the user's account
             $account = Account::where('user_id', $this->user_id)->first();
 
             if (!$account) {
-                $this->dispatch('error', title:'Account not found');
+                $this->dispatch('error', title: 'Account not found');
                 return;
             }
 
             // Check if the user has sufficient balance
             if ($account->balance < $this->withdraw_amount) {
-                $this->dispatch('error', title:'Insufficient balance');
+                $this->dispatch('error', title: 'Insufficient balance');
                 return;
             }
 
             // Update the account balance
-            $account->balance -= $this->withdraw_amount;
-            $account->save();
+            $account->decrement('balance', $this->withdraw_amount);
 
             // Log the transaction
-            Transaction::create([
-                'user_id' => $this->user_id,
-                'transaction_type' => 'withdraw',
+            ModelsTransaction::create([
+                'account_id' => $account->id,
+                'type' => 'withdrawal',
                 'amount' => $this->withdraw_amount,
-                'balance_after' => $account->balance,
-                'transaction_date' => now(),
             ]);
+
+            DB::commit(); // Commit the transaction
+
+            // Dispatch success message
             $withdraw_amount = NumberHelper::toNepaliNumber($this->withdraw_amount);
             $this->dispatch('success', title: "रु {$withdraw_amount} किसानको खाताबाट सफलतापूर्वक झिकिएको छ।");
             $this->resetFields();
         } catch (\Throwable $th) {
-            $this->dispatch('error', title:$th->getMessage());
+            DB::rollBack(); // Rollback in case of an error
+            $this->dispatch('error', title: $th->getMessage());
         }
     }
 }

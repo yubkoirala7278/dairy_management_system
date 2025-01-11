@@ -9,6 +9,7 @@ use App\Models\InterestRate;
 use App\Models\MilkIncome;
 use App\Models\Transaction;
 use App\Repositories\Interfaces\TransactionRepositoryInterface;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -65,12 +66,14 @@ class Accounting extends Component
     }
     public function confirmDepositMilkIncome()
     {
+        DB::beginTransaction(); // Begin the transaction
+    
         try {
             // Check if any incomes are selected
             if (count($this->incomes) > 0) {
                 // Get the milk incomes for the selected IDs
                 $milkIncomes = MilkIncome::whereIn('id', $this->incomes)->get();
-
+    
                 // Prepare an array for bulk insert into Deposit table
                 $deposits = $milkIncomes->map(function ($income) {
                     return [
@@ -80,17 +83,17 @@ class Accounting extends Component
                         'updated_at' => now(),
                     ];
                 })->toArray();
-
+    
                 foreach ($deposits as $key => $deposit) {
                     // Find the user's account or create one if it doesn't exist
                     $account = Account::firstOrCreate(
                         ['user_id' => $deposit['user_id']],
                         ['balance' => 0]
                     );
-
+    
                     // Update account balance
                     $account->increment('balance', $deposit['deposit']);
-
+    
                     // Record transaction
                     Transaction::create([
                         'account_id' => $account->id,
@@ -98,12 +101,15 @@ class Accounting extends Component
                         'amount' => $deposit['deposit'],
                     ]);
                 }
+    
                 // Delete the selected milk incomes
                 MilkIncome::whereIn('id', $this->incomes)->delete();
-
+    
+                DB::commit(); // Commit the transaction
+    
                 // Dispatch success message
                 $this->dispatch('success', title: 'चयनित किसानहरूको पैसा सफलतापूर्वक जम्मा गरिएको छ।');
-
+    
                 // Reset the incomes array
                 $this->reset('incomes');
                 $this->resetPage();
@@ -112,7 +118,8 @@ class Accounting extends Component
                 $this->dispatch('warning', title: 'कृपया किसान चयन गर्नुहोस्।');
             }
         } catch (\Throwable $th) {
-            // Dispatch error message in case of failure
+            DB::rollBack(); // Rollback in case of an error
+            // Dispatch error message
             $this->dispatch('error', title: $th->getMessage());
         }
     }

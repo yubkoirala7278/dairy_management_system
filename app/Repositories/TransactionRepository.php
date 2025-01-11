@@ -21,7 +21,7 @@ class TransactionRepository implements TransactionRepositoryInterface
     
         // Convert balance to Nepali numbers for each account
         $accounts->getCollection()->transform(function ($account) {
-            $account->balance = \App\Helpers\NumberHelper::toNepaliNumber($account->balance);
+            $account->nepali_balance = \App\Helpers\NumberHelper::toNepaliNumber($account->balance);
             return $account;
         });
     
