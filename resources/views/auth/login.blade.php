@@ -74,6 +74,7 @@
             cursor: pointer;
         }
     </style>
+       <script src="https://unpkg.com/nepalify"></script>
 </head>
 
 <body>
@@ -101,7 +102,7 @@
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-id-card"></i></span>
                                     <input type="text" name="farmer_number"
-                                        class="form-control @error('farmer_number') is-invalid @enderror"
+                                        class="form-control translate-nepali @error('farmer_number') is-invalid @enderror"
                                         id="farmer_number" placeholder="आफ्नो व्यवस्थापक नम्बर प्रविष्ट गर्नुहोस्"
                                         value="{{ old('farmer_number') }}">
                                 </div>
@@ -163,6 +164,38 @@
             }
         });
     </script>
+      {{-- language switcher --}}
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <script>
+          document.addEventListener('DOMContentLoaded', function() {
+              const inputs = document.querySelectorAll('.translate-nepali');
+
+              inputs.forEach(input => {
+                  input.addEventListener('input', function(event) {
+                      translateToNepali(this);
+                  });
+              });
+          });
+
+          function translateToNepali(input) {
+              const options = {
+                  layout: "traditional",
+              };
+
+              // Preserve the decimal point in the value
+              let translatedValue = '';
+              for (let char of input.value) {
+                  if (char === '.') {
+                      translatedValue += char; // Keep the decimal point as is
+                  } else {
+                      translatedValue += nepalify.format(char, options); // Convert other characters to Nepali
+                  }
+              }
+
+              // Update the input with the translated value
+              input.value = translatedValue;
+          }
+      </script>
 </body>
 
 </html>

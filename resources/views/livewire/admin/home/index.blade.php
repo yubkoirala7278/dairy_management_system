@@ -1,1 +1,1 @@
-@include('livewire.admin.layouts.master')
+@extends('livewire.admin.layouts.master')

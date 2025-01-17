@@ -39,6 +39,7 @@
                     <th scope="col" style="font-size: 20px; white-space: nowrap;">कृषक नाम</th>
                     <th scope="col" style="font-size: 20px; white-space: nowrap;">फोन नम्बर</th>
                     <th scope="col" style="font-size: 20px; white-space: nowrap;">मिति</th>
+                    <th scope="col" style="font-size: 20px; white-space: nowrap;">प्रहर</th>
                     <th scope="col" style="font-size: 20px; white-space: nowrap;">दूध लि.</th>
                     <th scope="col" style="font-size: 20px; white-space: nowrap;">जम्मा(रु)</th>
                 </tr>
@@ -56,6 +57,7 @@
                             <td>{{ $milkIncome->user->owner_name }}</td>
                             <td>{{ $milkIncome->user->phone_number }}</td>
                             <td>{{ $milkIncome->milkDeposits->milk_deposit_date }}</td>
+                            <td>{{ $milkIncome->milkDeposits->milk_deposit_time }}</td>
                             <td>{{ $milkIncome->milkDeposits->milk_quantity_nepali }}</td>
                             <td>{{ $milkIncome->deposit_nepali }}</td>
                         </tr>

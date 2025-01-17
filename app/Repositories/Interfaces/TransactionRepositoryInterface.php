@@ -6,4 +6,5 @@ interface TransactionRepositoryInterface
 {
     public function getUsersTransactionInfo($entries, $keyword);
     public function getMilkDepositIncome($entries, $keyword);
+    public function getTotalMilkIncomeWithFilters($search = null);
 }

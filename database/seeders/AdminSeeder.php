@@ -15,14 +15,14 @@ class AdminSeeder extends Seeder
     public function run(): void
     {
         $user = User::create([
-            'name' => 'admin',
+            'name' => 'व्यवस्थापक',
             'password' => Hash::make('11111'),
-            'owner_name' => 'admin',
-            'farmer_number' => 0,
-            'location' => 'mahuli',
+            'owner_name' => 'व्यवस्थापक',
+            'farmer_number' => "०",
+            'location' => 'महुली',
             'gender' => 'पुरुष',
             'status' => 'चालू',
-            'phone_number' => '987654321',
+            'phone_number' => '९८०४७२६६४०',
         ]);
         $user->assignRole('admin');
     }

@@ -45,7 +45,6 @@ class Transaction extends Component
     public function render()
     {
         $usersWithTransaction = $this->transactionRepository->getUsersTransactionInfo($this->entries, $this->search);
-        // dd($usersWithTransaction);
         return view('livewire.admin.financial.transaction', [
             'usersWithTransaction' => $usersWithTransaction
         ]);

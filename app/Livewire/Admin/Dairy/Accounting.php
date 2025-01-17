@@ -36,12 +36,11 @@ class Accounting extends Component
     {
         $this->transactionRepository = $transactionRepository;
     }
+
     public function render()
     {
         $milkDepositsIncome = $this->transactionRepository->getMilkDepositIncome($this->entries, $this->search);
-        $totals = MilkIncome::withSum('milkDeposits', 'milk_quantity')
-            ->withSum('milkDeposits', 'milk_total_price')
-            ->get();
+        $totals = $this->transactionRepository->getTotalMilkIncomeWithFilters($this->search);
 
         $totalMilkQuantity = NumberHelper::toNepaliNumber($totals->sum('milk_deposits_sum_milk_quantity'));
         $totalMilkTotalPrice = NumberHelper::toNepaliNumber($totals->sum('milk_deposits_sum_milk_total_price'));
@@ -67,13 +66,13 @@ class Accounting extends Component
     public function confirmDepositMilkIncome()
     {
         DB::beginTransaction(); // Begin the transaction
-    
+
         try {
             // Check if any incomes are selected
             if (count($this->incomes) > 0) {
                 // Get the milk incomes for the selected IDs
                 $milkIncomes = MilkIncome::whereIn('id', $this->incomes)->get();
-    
+
                 // Prepare an array for bulk insert into Deposit table
                 $deposits = $milkIncomes->map(function ($income) {
                     return [
@@ -83,17 +82,17 @@ class Accounting extends Component
                         'updated_at' => now(),
                     ];
                 })->toArray();
-    
+
                 foreach ($deposits as $key => $deposit) {
                     // Find the user's account or create one if it doesn't exist
                     $account = Account::firstOrCreate(
                         ['user_id' => $deposit['user_id']],
                         ['balance' => 0]
                     );
-    
+
                     // Update account balance
                     $account->increment('balance', $deposit['deposit']);
-    
+
                     // Record transaction
                     Transaction::create([
                         'account_id' => $account->id,
@@ -101,15 +100,15 @@ class Accounting extends Component
                         'amount' => $deposit['deposit'],
                     ]);
                 }
-    
+
                 // Delete the selected milk incomes
                 MilkIncome::whereIn('id', $this->incomes)->delete();
-    
+
                 DB::commit(); // Commit the transaction
-    
+
                 // Dispatch success message
                 $this->dispatch('success', title: 'चयनित किसानहरूको पैसा सफलतापूर्वक जम्मा गरिएको छ।');
-    
+
                 // Reset the incomes array
                 $this->reset('incomes');
                 $this->resetPage();
@@ -126,10 +125,26 @@ class Accounting extends Component
 
     public function updatedSelectAll()
     {
+        // Start the query
+        $query = MilkIncome::query();
+    
+        // Apply search filter for specific fields (user_id, milk_deposits_id, deposit)
+        if ($this->search) {
+            $query->where(function ($query) {
+                $query->whereHas('user', function ($userQuery) {
+                    $userQuery->where('farmer_number', 'like', "%{$this->search}%")
+                              ->orWhere('owner_name', 'like', "%{$this->search}%");
+                });
+            });
+        }
+        
+    
+        // If the 'selectAll' is checked, get all IDs, else return an empty array
         if ($this->selectAll) {
-            $this->incomes = MilkIncome::pluck('id')->toArray();
+            $this->incomes = $query->pluck('id')->toArray();
         } else {
             $this->incomes = [];
         }
     }
+    
 }

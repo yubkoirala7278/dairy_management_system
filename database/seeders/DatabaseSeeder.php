@@ -17,6 +17,9 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             AdminSeeder::class,
             InterestRateSeeder::class,
+            // factory
+            // UserSeeder::class,
+            // MilkDepositSeeder::class
         ]);
     }
 }

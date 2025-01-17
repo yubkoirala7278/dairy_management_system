@@ -42,7 +42,7 @@ class MilkReport extends Component
     public function render()
     {
         $milkDeposits = $this->userRepository->getMilkDepositsReports($this->entries, $this->search);
-        $milkInfo = $this->userRepository->getTotalIncomeFromMilk();
+        $milkInfo = $this->userRepository->getTotalIncomeFromMilk($this->entries, $this->search);
         $totalDepositIncome = NumberHelper::toNepaliNumber($milkInfo['totalDepositIncome']);
         $totalDepositedMilk = NumberHelper::toNepaliNumber($milkInfo['totalDepositedMilk']);
         return view('livewire.admin.dairy.milk-report',[

@@ -14,16 +14,20 @@ class AdminMiddleware
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle($request, Closure $next)
     {
-        if (Auth::check()) {
-            $user = Auth::user();
-            if ($user->hasRole(['dairy_manager', 'financial_manager', 'admin'])) {
-                return $next($request);
-            }
-            Auth::logout();
-            return redirect()->route('frontend.home')->with('error', 'तपाईंलाई यस पृष्ठमा जान अनुमति छैन।');
+        $user = Auth::user();
+
+        // Check if the user is logged in
+        if (!$user) {
+            return redirect('/');
         }
-        return redirect()->route('login');
+
+        // Ensure the user has one of the required roles
+        if (!$user->hasAnyRole(['admin', 'dairy_manager', 'financial_manager'])) {
+            return redirect('/');
+        }
+
+        return $next($request);
     }
 }

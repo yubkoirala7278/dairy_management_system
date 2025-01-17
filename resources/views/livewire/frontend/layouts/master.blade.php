@@ -122,6 +122,7 @@
                     class="nav-item nav-link {{ $page == 'cart' ? 'active' : '' }}">कार्ट</a>
                 <a href="{{ route('frontend.profile') }}"
                     class="nav-item nav-link {{ $page == 'profile' ? 'active' : '' }}">प्रोफाइल</a>
+                @livewire('frontend.logout-button')
             </div>
         </div>
     </nav>

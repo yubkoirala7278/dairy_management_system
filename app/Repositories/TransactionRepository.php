@@ -56,4 +56,33 @@ class TransactionRepository implements TransactionRepositoryInterface
 
         return $accounting;
     }
+
+
+    public function getTotalMilkIncomeWithFilters($search = null)
+    {
+        // Start the query
+        $query = MilkIncome::query();
+
+        // Apply search filter for specific fields
+        if ($search) {
+            $query->where(function ($query) use ($search) {
+                $query->whereHas('milkDeposits', function ($milkDepositQuery) use ($search) {
+                    $milkDepositQuery->whereHas('user', function ($userQuery) use ($search) {
+                        $userQuery->where('farmer_number', 'like', "%{$search}%")
+                            ->orWhere('owner_name', 'like', "%{$search}%");
+                    });
+                })
+                    ->orWhereHas('milkDeposits', function ($milkDepositQuery) use ($search) {
+                        $milkDepositQuery->where('milk_type', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        // Apply withSum to get the total milk quantity and total milk price
+        $totals = $query->withSum('milkDeposits', 'milk_quantity')
+            ->withSum('milkDeposits', 'milk_total_price')
+            ->get();
+
+        return $totals;
+    }
 }

@@ -3,23 +3,27 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-// =========== frontend ============
-Route::name('frontend.')->group(function () {
-    require __DIR__ . '/frontend.php';
-});
-// ========= end of frontend ========
-
-// ======= auth =======
+// ======= Authentication Routes ===========
 Auth::routes(['register' => false, 'reset' => false, 'verify' => false]);
-// ==== end of auth ====
+Route::get('/', [App\Http\Controllers\Auth\LoginController::class, 'showLoginForm']);
+Route::post('/login', [App\Http\Controllers\Auth\LoginController::class, 'login']);
 
-// ======= admin =========
-Route::middleware(['auth', 'auth.admin'])->prefix('admin')->name('admin.')->group(function () {
-    require __DIR__ . '/admin.php';
-});
-// ======== end of admin ====
+// ======= Frontend Routes ===========
+Route::name('frontend.')
+    ->middleware(['auth', 'role:farmer'])
+    ->group(function () {
+        require __DIR__ . '/frontend.php';
+    });
 
-// Fallback route to handle unmatched URLs
+// ======= Admin Routes ===========
+Route::middleware(['auth.admin', 'role:admin|dairy_manager|financial_manager'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        require __DIR__ . '/admin.php';
+    });
+
+// ======= Fallback Route ===========
 Route::fallback(function () {
-   return view('livewire.frontend.error.error-page');
+    return view('livewire.frontend.error.error-page');
 });

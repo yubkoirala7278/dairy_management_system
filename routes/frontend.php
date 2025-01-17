@@ -16,7 +16,7 @@ use App\Livewire\Frontend\Testimonial\Testimonial;
 use Illuminate\Support\Facades\Route;
 
 // Define the home route for frontend
-Route::get('/', Home::class)->name('home');
+Route::get('/home', Home::class)->name('home');
 Route::get('/about', About::class)->name('about');
 Route::get('/service', Service::class)->name('service');
 Route::get('/product', Product::class)->name('product');
@@ -25,10 +25,7 @@ Route::get('/features', Features::class)->name('feature');
 Route::get('/team', Team::class)->name('team');
 Route::get('/testimonial', Testimonial::class)->name('testimonial');
 Route::get('/contact-us', Contact::class)->name('contact');
-
-Route::middleware(['auth.frontend'])->group(function () {
-    Route::get('/cart',Cart::class)->name('cart');
-    Route::get('/checkout',Checkout::class)->name('checkout');
-    Route::get('/checkout-success',CheckoutSuccess::class)->name('checkout.success');
-    Route::get('/profile',Profile::class)->name('profile');
-});
+Route::get('/cart', Cart::class)->name('cart');
+Route::get('/checkout', Checkout::class)->name('checkout');
+Route::get('/checkout-success', CheckoutSuccess::class)->name('checkout.success');
+Route::get('/profile', Profile::class)->name('profile');

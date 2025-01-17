@@ -2,14 +2,14 @@
 
 namespace App\Livewire\Admin\Dairy;
 
+use App\Exports\UsersExport;
 use App\Models\User;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\View;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Livewire\WithPagination;
 use Livewire\Component;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CreateUser extends Component
 {
@@ -21,25 +21,15 @@ class CreateUser extends Component
     private $userRepository;
     public $entries = 10;
     public $search = '';
-    public $sortField = 'created_at';
-    public $sortDirection = 'desc';
     public $user_id;
 
-    // ==========filter=========
-    public function sortBy($field)
-    {
-        if ($this->sortField === $field) {
-            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
-        } else {
-            $this->sortField = $field;
-            $this->sortDirection = 'asc';
-        }
-    }
+
     public function updatingSearch()
     {
         $this->resetPage();
     }
-    public function updatedEntries(){
+    public function updatedEntries()
+    {
         $this->resetPage('page');
     }
 
@@ -50,11 +40,29 @@ class CreateUser extends Component
 
     public function render()
     {
-        $users = $this->userRepository->all($this->entries, $this->search, $this->sortField, $this->sortDirection);
+        $users = $this->userRepository->all($this->entries, $this->search);
         return view('livewire.admin.dairy.create-user', [
             'users' => $users
         ]);
     }
+    // export pdf
+    public function printUsers()
+    {
+        $url = route('admin.users.print', ['search' => $this->search ?? '']);
+        $this->dispatch('open-new-tab', url: $url);
+    }
+    // export excel
+    public function exportToExcel()
+    {
+        $users = User::role('farmer')->get();
+        if(!$users){
+            $this->dispatch('error', title: 'डाउनलोड गर्नको लागि कुनै किसान उपलब्ध छैन!');
+            return;
+        }
+        return Excel::download(new UsersExport($users), 'users.xlsx');
+    }
+
+
 
     protected $rules = [
         'name' => 'required',
@@ -64,14 +72,14 @@ class CreateUser extends Component
         'farmer_number' => 'required|integer|min:1|unique:users,farmer_number',
         'location' => 'required',
         'gender' => 'required',
-        'status' => 'required',
+        'status' => 'nullable',
         'phone_number' => 'required',
         'pan_number' => 'nullable',
         'vat_number' => 'nullable',
     ];
     protected $messages = [
         'name.required' => 'कृषकको नाम अनिवार्य छ।',
-        'owner_name.required' => 'मालिकको नाम अनिवार्य छ।',
+        'owner_name.required' => 'हकवाला व्यक्तिको नाम अनिवार्य छ।',
         'password.required' => 'पासवर्ड अनिवार्य छ।',
         'password.confirmed' => 'पासवर्ड पुष्टि गर्नुहोस्।',
         'password.min' => 'पासवर्डमा कम्तीमा 6 अक्षर हुनु पर्छ।',
@@ -99,7 +107,7 @@ class CreateUser extends Component
             'pan_number',
             'vat_number',
             'password_confirmation',
-            'user_id'
+            'user_id',
         ]);
         $this->resetErrorBag();
     }
@@ -140,7 +148,7 @@ class CreateUser extends Component
                 'farmer_number' =>  $this->convertToNepali($this->farmer_number),
                 'location' => $this->location,
                 'gender' => $this->gender,
-                'status' => $this->status,
+                // 'status' => $this->status,
                 'phone_number' => $this->phone_number,
                 'pan_number' => $this->convertToNepali($this->pan_number),
                 'vat_number' => $this->convertToNepali($this->vat_number),
@@ -199,7 +207,7 @@ class CreateUser extends Component
             ],
             'location' => 'required',
             'gender' => 'required',
-            'status' => 'required',
+            'status' => 'nullable',
             'phone_number' => 'required',
             'pan_number' => 'nullable',
             'vat_number' => 'nullable',
@@ -221,7 +229,7 @@ class CreateUser extends Component
                 'farmer_number' =>  $this->convertToNepali($this->farmer_number),
                 'location' => $this->location,
                 'gender' => $this->gender,
-                'status' => $this->status,
+                // 'status' => $this->status,
                 'phone_number' => $this->phone_number,
                 'pan_number' => $this->convertToNepali($this->pan_number),
                 'vat_number' => $this->convertToNepali($this->vat_number),
@@ -233,23 +241,20 @@ class CreateUser extends Component
         }
     }
 
-    public function exportFarmerInformationToPdf()
+    // change status
+    public function changeStatus($id)
     {
-        // Fetch milk deposit records based on filters
-        $farmerInformation = $this->userRepository->all($this->entries, $this->search, $this->sortField, $this->sortDirection);
-
-        // Generate PDF view with encoding for Nepali language support
-        $view = view::make('exports.farmer_information', [
-            'farmerInformation' => $farmerInformation
-        ])->render();
-
-        // Convert entire view content to UTF-8 HTML entities
-        $encodedView = mb_convert_encoding($view, 'HTML-ENTITIES', 'UTF-8');
-
-        // Load HTML content into PDF
-        $pdf = PDF::loadHtml($encodedView);
-
-        // Download the PDF
-        return response()->streamDownload(fn() => print($pdf->output()), 'farmer_information.pdf');
+        try {
+            $user = User::findOrFail($id);
+            if (!$user) {
+                $this->dispatch('error', title: 'User not found!');
+                return;
+            }
+            $user->status = $user->status === 'चालू' ? 'बन्द' : 'चालू';
+            $user->save();
+            $this->dispatch('success', title: 'अवस्था सफलतापूर्वक परिवर्तन गरियो!');
+        } catch (\Throwable $th) {
+            $this->dispatch('error', title: $th->getMessage());
+        }
     }
 }

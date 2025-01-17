@@ -28,11 +28,14 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/admin/home';
+    protected $redirectTo = '/admin/home'; // Default redirection
 
+    /**
+     * Handle login request with farmer_number and password validation.
+     */
     public function login(Request $request)
     {
-        // Validate the input (farmer_number and password)
+        // Validate the input
         $validator = Validator::make($request->all(), [
             'farmer_number' => 'required|string',
             'password' => 'required',
@@ -41,19 +44,37 @@ class LoginController extends Controller
             'farmer_number.string' => 'किसान नम्बर केवल अङ्क र अक्षर हुनुपर्छ।',
             'password.required' => 'पासवर्ड आवश्यक छ।',
         ]);
-        
 
         // If validation fails, redirect back with errors
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        // Attempt to log in using farmer_number and password
+        // Attempt login with farmer_number and password
         if (Auth::attempt(['farmer_number' => $request->farmer_number, 'password' => $request->password], $request->remember)) {
-            return redirect()->route('admin.home');  // Redirect to the dashboard or any other route after successful login
-        } else {
-            return redirect()->back()->with('error', 'कृपया सही किसान नम्बर वा पासवर्ड प्रविष्ट गर्नुहोस्।');
+            // Redirect based on role after successful login
+            return $this->authenticated($request, Auth::user());
         }
+
+        // If login fails, redirect back with error
+        return redirect()->back()->with('error', 'कृपया सही किसान नम्बर वा पासवर्ड प्रविष्ट गर्नुहोस्।');
+    }
+
+    /**
+     * Handle post-login redirection based on user roles.
+     */
+    protected function authenticated(Request $request, $user)
+    {
+        if ($user->hasRole('farmer')) {
+            return redirect()->route('frontend.home');
+        }
+
+        if ($user->hasAnyRole(['admin', 'dairy_manager', 'financial_manager'])) {
+            return redirect()->route('admin.home');
+        }
+
+        // Default redirection for other cases
+        return redirect()->route('login')->with('error', 'Unauthorized role.');
     }
 
     /**
@@ -64,6 +85,5 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
-        $this->middleware('auth')->only('logout');
     }
 }

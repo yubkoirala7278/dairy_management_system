@@ -72,7 +72,6 @@
                     </div>
                 </div>
             @endif
-
         </div>
     </div>
     @if (Auth::user())
@@ -85,9 +84,6 @@
             </span>
         </a>
     @endif
-
-
-
 
     <!-- Product End -->
 @endsection
