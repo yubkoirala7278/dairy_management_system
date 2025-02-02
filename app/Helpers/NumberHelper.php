@@ -21,5 +21,15 @@ class NumberHelper
         // Replace English numbers with Nepali numbers
         return str_replace($englishNumbers, $nepaliNumbers, $formattedNumber);
     }
+
+    public static function toEnglishNumber($number)
+    {
+        // Define Nepali and English numbers
+        $nepaliNumbers = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९', '.'];
+        $englishNumbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'];
+    
+        // Replace Nepali numbers with English numbers
+        return str_replace($nepaliNumbers, $englishNumbers, $number);
+    }
 }
 

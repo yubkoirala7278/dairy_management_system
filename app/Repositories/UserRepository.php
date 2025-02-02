@@ -100,11 +100,11 @@ class UserRepository implements UserRepositoryInterface
         if (!$milk_deposit_date) {
             $milk_deposit_date = Carbon::now();
         }
-    
+
         // Start the query
         $query = MilkDeposit::where('milk_deposit_date', $milk_deposit_date)
             ->where('milk_deposit_time', $milk_deposit_time);
-    
+
         // Apply search filter for specific fields
         if ($search) {
             $query->where(function ($query) use ($search) {
@@ -115,24 +115,27 @@ class UserRepository implements UserRepositoryInterface
                     ->orWhere('milk_type', 'like', "%{$search}%");
             });
         }
-    
+
         // Get total deposit income and total deposited milk with filters
         $totalDepositIncome = $query->sum('milk_total_price');
         $totalDepositedMilk = $query->sum('milk_quantity');
-    
+
         return [
             'totalDepositIncome' => $totalDepositIncome,
             'totalDepositedMilk' => $totalDepositedMilk
         ];
     }
-    
+
     // ==========end of getting total money generated from milk on specific date==========
 
     // ============get total milk deposits reports=================
-    public function getMilkDepositsReports($entries = 10, $search = null)
+    public function getMilkDepositsReports($entries = 10, $search = null, $milk_deposit_date = null)
     {
         // Start the query
-        $query = MilkDeposit::with('user');
+        $query = MilkDeposit::with('user')
+        ->join('users', 'milk_deposits.user_id', '=', 'users.id') // Join users table
+        ->select('milk_deposits.*') // Select all columns from milk_deposits
+        ->orderBy('users.id', 'asc');
 
         // Apply search filter for specific fields
         if ($search) {
@@ -144,6 +147,10 @@ class UserRepository implements UserRepositoryInterface
                     ->orWhere('milk_type', 'like', "%{$search}%")
                     ->orWhere('milk_deposit_time', 'like', "%{$search}%");
             });
+        }
+        // Apply filter for milk_deposit_date if provided
+        if ($milk_deposit_date) {
+            $query->where('milk_deposit_date', '=', $milk_deposit_date);
         }
 
         // Apply sorting to get latest first
@@ -175,7 +182,7 @@ class UserRepository implements UserRepositoryInterface
 
 
     // ==========get total money generated from milk ==========
-    public function getTotalIncomeFromMilk($entries = 10, $search = null)
+    public function getTotalIncomeFromMilk($entries = 10, $search = null,$milk_deposit_date=null)
     {
         // Start the query
         $query = MilkDeposit::query();
@@ -191,6 +198,11 @@ class UserRepository implements UserRepositoryInterface
                     ->orWhere('milk_deposit_time', 'like', "%{$search}%");
             });
         }
+         // Apply filter for milk_deposit_date if provided
+         if ($milk_deposit_date) {
+            $query->where('milk_deposit_date', '=', $milk_deposit_date);
+        }
+
 
         // Get total deposit income and total deposited milk with filters
         $totalDepositIncome = $query->sum('milk_total_price');

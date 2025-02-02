@@ -20,8 +20,9 @@
     {{-- Bootstrap cdn --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-         <!-- Nepali Datepicker -->
-         <link href="{{asset('backend_assets/calender/nepali.datepicker.v4.0.4.min.css')}}" rel="stylesheet" type="text/css"/>
+    <!-- Nepali Datepicker -->
+    <link href="{{ asset('backend_assets/calender/nepali.datepicker.v4.0.4.min.css') }}" rel="stylesheet"
+        type="text/css" />
     @toastifyCss
     @yield('header-links')
     @yield('custom-style')
@@ -33,7 +34,7 @@
         }
     </style>
 
-    
+
 </head>
 
 <body>
@@ -64,8 +65,8 @@
                             <i class="typcn typcn-shopping-cart"></i> प्रोडक्ट
                         </a>
                         <nav class="az-menu-sub">
-                            <a href="{{ route('admin.product') }}" class="nav-link"
-                                id="deposit-milk-link">प्रोडक्ट सिर्जना/सम्पादन</a>
+                            <a href="{{ route('admin.product') }}" class="nav-link" id="deposit-milk-link">प्रोडक्ट
+                                सिर्जना/सम्पादन</a>
                             <a href="{{ route('admin.order') }}" class="nav-link" id="create-farmer-link">अर्डरहरू</a>
                         </nav>
                     </li>
@@ -79,10 +80,11 @@
                                 id="deposit-milk-link">दूध संकलन</a>
                             <a href="{{ route('admin.farmer.create') }}" class="nav-link" id="create-farmer-link">कृषक
                                 दर्ता</a>
-                                <a href="{{ route('admin.accounting') }}" class="nav-link" id="setup-link">हिसाब / किताब</a>
-                            <a href="{{ route('admin.setup') }}" class="nav-link" id="setup-link">सेटअप</a>
+                            <a href="{{ route('admin.accounting') }}" class="nav-link" id="setup-link">हिसाब /
+                                किताब</a>
                             <a href="{{ route('admin.milk.deposit.report') }}" class="nav-link" id="setup-link">दूध
                                 संकलन रिपोर्ट</a>
+                            <a href="{{ route('admin.setup') }}" class="nav-link" id="setup-link">सेटअप</a>
                         </nav>
                     </li>
                     <li class="nav-item {{ $page == 'financial' ? 'active' : '' }}">
@@ -90,10 +92,9 @@
                             <i class="fa-solid fa-building-columns me-2"></i>वित्तीय
                         </a>
                         <nav class="az-menu-sub">
-                            <a href="{{ route('admin.transaction') }}" class="nav-link"
-                            id="deposit-milk-link">जम्मा / निकासी</a>
-                            <a href="" class="nav-link"
-                                id="deposit-milk-link">निक्षेप</a>
+                            <a href="{{ route('admin.transaction') }}" class="nav-link" id="deposit-milk-link">जम्मा /
+                                निकासी</a>
+                            <a href="" class="nav-link" id="deposit-milk-link">निक्षेप</a>
                             <a href="" class="nav-link" id="create-farmer-link">निकासी</a>
                             <a href="" class="nav-link" id="setup-link">सेटअप</a>
                         </nav>
@@ -266,13 +267,13 @@
 
     @toastifyJs
     {{-- nepali date picker --}}
-    <script src="{{asset('backend_assets/calender/nepali.datepicker.v4.0.4.min.js')}}" type="text/javascript"></script>
+    <script src="{{ asset('backend_assets/calender/nepali.datepicker.v4.0.4.min.js') }}" type="text/javascript"></script>
     {{-- bootstrap --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script>
     @stack('script')
-    
+
 </body>
 
 

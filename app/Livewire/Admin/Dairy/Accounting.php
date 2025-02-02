@@ -2,16 +2,15 @@
 
 namespace App\Livewire\Admin\Dairy;
 
-use App\Helpers\NumberHelper;
+use App\Exports\MilkDepositIncomeExport;
 use App\Models\Account;
-use App\Models\Deposit;
-use App\Models\InterestRate;
 use App\Models\MilkIncome;
 use App\Models\Transaction;
 use App\Repositories\Interfaces\TransactionRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Maatwebsite\Excel\Facades\Excel;
 
 class Accounting extends Component
 {
@@ -20,9 +19,10 @@ class Accounting extends Component
     public $page = 'farmer';
     public $search = '';
     private $transactionRepository;
-    public $entries = 10;
+    public $entries =10;
     public $incomes = [];
     public $selectAll = false;
+    public $milk_deposit_date;
 
     public function updatingSearch()
     {
@@ -39,15 +39,12 @@ class Accounting extends Component
 
     public function render()
     {
-        $milkDepositsIncome = $this->transactionRepository->getMilkDepositIncome($this->entries, $this->search);
-        $totals = $this->transactionRepository->getTotalMilkIncomeWithFilters($this->search);
-
-        $totalMilkQuantity = NumberHelper::toNepaliNumber($totals->sum('milk_deposits_sum_milk_quantity'));
-        $totalMilkTotalPrice = NumberHelper::toNepaliNumber($totals->sum('milk_deposits_sum_milk_total_price'));
+        $milkDepositsIncome = $this->transactionRepository->getMilkDepositIncome($this->entries, $this->search, $this->milk_deposit_date);
+        $totals = $this->transactionRepository->getTotalMilkIncomeWithFilters( $this->search, $this->milk_deposit_date);
         return view('livewire.admin.dairy.accounting', [
             'milkDepositsIncome' => $milkDepositsIncome,
-            'totalMilkQuantity' => $totalMilkQuantity,
-            'totalMilkTotalPrice' => $totalMilkTotalPrice
+            'totalMilkQuantity' => $totals['total_milk_quantity_nepali'],
+            'totalMilkTotalPrice' =>  $totals['total_milk_price_nepali'],
         ]);
     }
 
@@ -73,15 +70,13 @@ class Accounting extends Component
                 // Get the milk incomes for the selected IDs
                 $milkIncomes = MilkIncome::whereIn('id', $this->incomes)->get();
 
-                // Prepare an array for bulk insert into Deposit table
-                $deposits = $milkIncomes->map(function ($income) {
+                // Group the milk incomes by user_id and sum the deposits
+                $deposits = $milkIncomes->groupBy('user_id')->map(function ($group) {
                     return [
-                        'user_id' => $income->user_id,
-                        'deposit' => $income->deposit,
-                        'created_at' => now(),
-                        'updated_at' => now(),
+                        'user_id' => $group->first()->user_id,
+                        'deposit' => $group->sum('deposit'), // Sum deposits for each user
                     ];
-                })->toArray();
+                })->values()->toArray();
 
                 foreach ($deposits as $key => $deposit) {
                     // Find the user's account or create one if it doesn't exist
@@ -106,15 +101,15 @@ class Accounting extends Component
 
                 DB::commit(); // Commit the transaction
 
+                // Reset the incomes array
+                $this->incomes = [];
+                $this->resetPage();
+
                 // Dispatch success message
                 $this->dispatch('success', title: 'चयनित किसानहरूको पैसा सफलतापूर्वक जम्मा गरिएको छ।');
-
-                // Reset the incomes array
-                $this->reset('incomes');
-                $this->resetPage();
             } else {
                 // If no incomes are selected, dispatch a warning
-                $this->dispatch('warning', title: 'कृपया किसान चयन गर्नुहोस्।');
+                $this->dispatch('warningMessage', title: 'कृपया किसान चयन गर्नुहोस्।');
             }
         } catch (\Throwable $th) {
             DB::rollBack(); // Rollback in case of an error
@@ -125,26 +120,56 @@ class Accounting extends Component
 
     public function updatedSelectAll()
     {
-        // Start the query
-        $query = MilkIncome::query();
-    
-        // Apply search filter for specific fields (user_id, milk_deposits_id, deposit)
+        // Start the query for MilkIncome with relations and sum aggregations
+        $query = MilkIncome::with('user', 'milkDeposits')
+            ->orderBy('created_at', 'asc'); // Order by the latest entries
+
+        // Apply keyword filter for user attributes like name, email, or other attributes
         if ($this->search) {
-            $query->where(function ($query) {
-                $query->whereHas('user', function ($userQuery) {
-                    $userQuery->where('farmer_number', 'like', "%{$this->search}%")
-                              ->orWhere('owner_name', 'like', "%{$this->search}%");
-                });
+            $query->where(function ($q) {
+                $q->whereHas('user', function ($query) {
+                    $query->where('owner_name', 'like', '%' . $this->search . '%')
+                        ->orWhere('farmer_number', 'like', '%' . $this->search . '%');
+                })
+                    ->orWhereHas('milkDeposits', function ($query) {
+                        $query->where('milk_deposit_time', 'like', '%' . $this->search . '%');
+                    });
             });
         }
-        
-    
-        // If the 'selectAll' is checked, get all IDs, else return an empty array
+
+        // Apply filter for milk_deposit_date if provided
+        if ($this->milk_deposit_date) {
+            $query->whereHas('milkDeposits', function ($query) {
+                $query->where('milk_deposit_date', '=', $this->milk_deposit_date);
+            });
+        }
+
+        // If 'selectAll' is checked, get all IDs, else return an empty array
         if ($this->selectAll) {
             $this->incomes = $query->pluck('id')->toArray();
         } else {
             $this->incomes = [];
         }
     }
-    
+
+    // export excel
+    public function exportToExcel()
+    {
+        $milkDepositsIncome = $this->transactionRepository->getMilkDepositIncomeForExport($this->search, $this->milk_deposit_date);
+        if($milkDepositsIncome->isEmpty()){
+            $this->dispatch('warningMessage', title: 'डाउनलोड गर्न मिल्ने कुनै दुध जम्मा आम्दानी उपलब्ध छैन।');
+            return;
+        }
+        $totals = $this->transactionRepository->getTotalMilkIncomeWithFilters( $this->search, $this->milk_deposit_date);
+        return Excel::download(new MilkDepositIncomeExport($milkDepositsIncome,$totals), 'milk_deposit_income.xlsx');
+    }
+    // export pdf
+    public function printUsers()
+    {
+        $url = route('admin.accounting.print', [
+            'milk_deposit_date' => $this->milk_deposit_date?$this->milk_deposit_date:'no-date',
+            'search' => $this->search ?? null,
+        ]);
+        $this->dispatch('open-new-tab', url: $url);
+    }
 }

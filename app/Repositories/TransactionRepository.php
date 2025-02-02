@@ -10,43 +10,73 @@ use App\Repositories\Interfaces\TransactionRepositoryInterface;
 
 class TransactionRepository implements TransactionRepositoryInterface
 {
-    public function getUsersTransactionInfo($entries, $keyword)
+    public function getUsersTransactionInfo($entries, $keyword = null)
     {
-        $accounts = Account::with('user')
-            ->whereHas('user', function ($query) use ($keyword) {
-                $query->where('name', 'like', "%$keyword%")
-                      ->orWhere('farmer_number', 'like', "%$keyword%");
-            })
-            ->paginate($entries);
-    
-        // Convert balance to Nepali numbers for each account
-        $accounts->getCollection()->transform(function ($account) {
+        $accountsQuery = Account::with('user')
+            ->join('users', 'users.id', '=', 'accounts.user_id')  // Join the users table
+            ->orderBy('users.id', 'asc'); // Order by users' created_at in ascending order
+
+        // Apply search condition only if $keyword is provided
+        if ($keyword) {
+            $accountsQuery->where(function ($query) use ($keyword) {
+                $query->where('users.owner_name', 'like', "%$keyword%")
+                    ->orWhere('users.farmer_number', 'like', "%$keyword%");
+            });
+        }
+
+        // If `$entries` is 'all', retrieve all records, else paginate
+        $accounts = ($entries === 'all') ? $accountsQuery->get() : $accountsQuery->paginate($entries);
+
+        // Convert balance to Nepali numbers
+        $accounts->transform(function ($account) {
             $account->nepali_balance = \App\Helpers\NumberHelper::toNepaliNumber($account->balance);
             return $account;
         });
-    
+
         return $accounts;
     }
-    
 
-    public function getMilkDepositIncome($entries, $keyword)
+    public function getTotalBalance()
+    {
+        // Get the sum of all balances from the 'accounts' table
+        $totalBalance = Account::sum('balance');
+
+        // Convert the total balance to Nepali numerals
+        $totalBalanceNepali = \App\Helpers\NumberHelper::toNepaliNumber($totalBalance);
+
+        // Return the total balance in Nepali format
+        return $totalBalanceNepali;
+    }
+
+
+    public function getMilkDepositIncome($entries, $keyword, $milk_deposit_date = null)
     {
         // Start the query for MilkIncome with relations and sum aggregations
         $query = MilkIncome::with('user', 'milkDeposits')
-            ->orderBy('created_at', 'asc'); // Order by the latest entries
+            ->orderBy('created_at', 'asc');;
 
         // Apply keyword filter for user attributes like name, email, or other attributes
         if ($keyword) {
             $query->where(function ($q) use ($keyword) {
                 $q->whereHas('user', function ($query) use ($keyword) {
                     $query->where('owner_name', 'like', '%' . $keyword . '%')
-                    ->orWhere('farmer_number', 'like', '%' . $keyword . '%');
-                });
+                        ->orWhere('farmer_number', 'like', '%' . $keyword . '%');
+                })
+                    ->orWhereHas('milkDeposits', function ($query) use ($keyword) {
+                        $query->where('milk_deposit_time', 'like', '%' . $keyword . '%');
+                    });
+            });
+        }
+
+        // Apply filter for milk_deposit_date if provided
+        if ($milk_deposit_date) {
+            $query->whereHas('milkDeposits', function ($query) use ($milk_deposit_date) {
+                $query->where('milk_deposit_date', '=', $milk_deposit_date);
             });
         }
 
         // Apply pagination with the specified number of entries per page
-        $accounting = $query->paginate($entries);
+        $accounting = ($entries === 'all') ? $query->get() : $query->paginate($entries);
 
         $accounting->getCollection()->transform(function ($account) {
             $account->deposit_nepali = NumberHelper::toNepaliNumber($account->deposit);
@@ -57,32 +87,86 @@ class TransactionRepository implements TransactionRepositoryInterface
         return $accounting;
     }
 
-
-    public function getTotalMilkIncomeWithFilters($search = null)
+    public function getMilkDepositIncomeForExport($keyword, $milk_deposit_date = null)
     {
-        // Start the query
-        $query = MilkIncome::query();
+        // Start the query for MilkIncome with relations and sum aggregations
+        $query = MilkIncome::with('user', 'milkDeposits')
+            ->join('users', 'users.id', '=', 'milk_incomes.user_id')
+            ->orderBy('users.id', 'asc');
 
-        // Apply search filter for specific fields
-        if ($search) {
-            $query->where(function ($query) use ($search) {
-                $query->whereHas('milkDeposits', function ($milkDepositQuery) use ($search) {
-                    $milkDepositQuery->whereHas('user', function ($userQuery) use ($search) {
-                        $userQuery->where('farmer_number', 'like', "%{$search}%")
-                            ->orWhere('owner_name', 'like', "%{$search}%");
-                    });
+        // Apply keyword filter for user attributes like name, email, or other attributes
+        if ($keyword) {
+            $query->where(function ($q) use ($keyword) {
+                $q->whereHas('user', function ($query) use ($keyword) {
+                    $query->where('owner_name', 'like', '%' . $keyword . '%')
+                        ->orWhere('farmer_number', 'like', '%' . $keyword . '%');
                 })
-                    ->orWhereHas('milkDeposits', function ($milkDepositQuery) use ($search) {
-                        $milkDepositQuery->where('milk_type', 'like', "%{$search}%");
+                    ->orWhereHas('milkDeposits', function ($query) use ($keyword) {
+                        $query->where('milk_deposit_time', 'like', '%' . $keyword . '%');
                     });
             });
         }
 
-        // Apply withSum to get the total milk quantity and total milk price
-        $totals = $query->withSum('milkDeposits', 'milk_quantity')
-            ->withSum('milkDeposits', 'milk_total_price')
-            ->get();
+        // Apply filter for milk_deposit_date if provided
+        if ($milk_deposit_date) {
+            $query->whereHas('milkDeposits', function ($query) use ($milk_deposit_date) {
+                $query->where('milk_deposit_date', '=', $milk_deposit_date);
+            });
+        }
 
-        return $totals;
+        // Apply pagination with the specified number of entries per page
+        $accounting = $query->get(); // Use get() instead of paginate()
+
+        $accounting->transform(function ($account) {
+            $account->deposit_nepali = NumberHelper::toNepaliNumber($account->deposit);
+            $account->milkDeposits->milk_quantity_nepali = NumberHelper::toNepaliNumber($account->milkDeposits->milk_quantity);
+            return $account;
+        });
+
+        return $accounting; // Return the collection instead of paginated data
+    }
+
+
+    public function getTotalMilkIncomeWithFilters($keyword, $milk_deposit_date = null)
+    {
+        // Start the query for MilkIncome with relations and sum aggregations
+        $query = MilkIncome::with('user', 'milkDeposits')
+            ->join('milk_deposits', 'milk_incomes.milk_deposits_id', '=', 'milk_deposits.id') // Corrected the foreign key reference
+            ->selectRaw('SUM(milk_deposits.milk_quantity) as total_milk_quantity, SUM(milk_deposits.milk_total_price) as total_milk_price'); // Aggregate sums directly
+
+        // Apply keyword filter for user attributes like name, email, or other attributes
+        if ($keyword) {
+            $query->where(function ($q) use ($keyword) {
+                $q->whereHas('user', function ($query) use ($keyword) {
+                    $query->where('owner_name', 'like', '%' . $keyword . '%')
+                        ->orWhere('farmer_number', 'like', '%' . $keyword . '%');
+                })
+                    ->orWhereHas('milkDeposits', function ($query) use ($keyword) {
+                        $query->where('milk_deposit_time', 'like', '%' . $keyword . '%');
+                    });
+            });
+        }
+
+        // Apply filter for milk_deposit_date if provided
+        if ($milk_deposit_date) {
+            $query->whereHas('milkDeposits', function ($query) use ($milk_deposit_date) {
+                $query->where('milk_deposit_date', '=', $milk_deposit_date);
+            });
+        }
+
+        // Execute the query to calculate the totals
+        $totals = $query->first(); // Retrieve the totals directly
+
+        // Convert the totals to Nepali numbers (if needed)
+        $totalMilkQuantityNepali = NumberHelper::toNepaliNumber($totals->total_milk_quantity);
+        $totalMilkPriceNepali = NumberHelper::toNepaliNumber($totals->total_milk_price);
+
+        // Return the results with the totals
+        return [
+            'total_milk_quantity' => $totals->total_milk_quantity,
+            'total_milk_quantity_nepali' => $totalMilkQuantityNepali,
+            'total_milk_price' => $totals->total_milk_price,
+            'total_milk_price_nepali' => $totalMilkPriceNepali,
+        ];
     }
 }

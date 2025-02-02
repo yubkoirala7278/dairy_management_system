@@ -54,11 +54,30 @@ class CreateUser extends Component
     // export excel
     public function exportToExcel()
     {
-        $users = User::role('farmer')->get();
-        if(!$users){
+        // Start the query with the role filter
+        $usersQuery = User::role('farmer');
+    
+        // Apply search filter if a search term is provided
+        if (!empty($this->search)) {
+            $usersQuery->where(function ($query) {
+                $query->where('owner_name', 'like', "%{$this->search}%")
+                    ->orWhere('location', 'like', "%{$this->search}%")
+                    ->orWhere('farmer_number', 'like', "%{$this->search}%")
+                    ->orWhere('gender', 'like', "%{$this->search}%")
+                    ->orWhere('status', 'like', "%{$this->search}%");
+            });
+        }
+    
+        // Check if there are any results
+        $users = $usersQuery->get();
+    
+        if ($users->isEmpty()) {
+            // Dispatch error event to Livewire
             $this->dispatch('error', title: 'डाउनलोड गर्नको लागि कुनै किसान उपलब्ध छैन!');
             return;
         }
+    
+        // Export filtered users to Excel
         return Excel::download(new UsersExport($users), 'users.xlsx');
     }
 

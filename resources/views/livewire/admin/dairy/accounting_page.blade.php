@@ -1,6 +1,6 @@
 @extends('livewire.admin.layouts.master')
 @section('content')
-    <div class="col-12 py-3 px-5" style="background-color: #eee;">
+    <div class="col-12 py-3 px-5" style="background-color: #eee;" wire:ignore.self>
         <div class="d-md-flex justify-content-between align-items-center  py-2 ">
             <div>
                 <label class="d-flex align-items-center gap-2">
@@ -16,13 +16,20 @@
                     </select>
                     <span>डेटा</span>
                 </label>
-
             </div>
-            <div class="d-flex align-items-center" style="column-gap: 20px">
-                <input type="search" class="form-control form-control-sm translate-nepali" placeholder="खोज्नुहोस्..."
+            <div class="d-flex align-items-center" style="column-gap: 10px">
+                <input type="search" class="form-control  translate-nepali" placeholder="खोज्नुहोस्..."
                     aria-controls="withdraw-request-list" wire:model.live.debounce.500ms="search">
-                <button type="button" class="btn btn-success px-3 rounded-pill" style="width: 170px"
+                <input type="text" id="milk_deposit_date" class="form-control " wire:model.live="milk_deposit_date"
+                    placeholder="दूध सङ्कलन मिति">
+                <button type="button" class="btn btn-success px-3 rounded-pill" style="width: 300px"
                     wire:click="depositMilkIncome" id="deposit-button" wire:ignore>जम्मा गर्नुहोस्</button>
+                <button type="button" class="btn btn-secondary px-3 rounded-pill btn-flex" 
+                    wire:click="printUsers()">
+                    PDF
+                </button>
+                <button type="button" class="btn btn-secondary px-3 btn-flex  rounded-pill"
+                    wire:click="exportToExcel">Excel</button>
             </div>
 
         </div>
@@ -76,55 +83,74 @@
             </tbody>
         </table>
         <div class="ml-4">
-            {{ $milkDepositsIncome->links() }}
+            {{ $entries!=='all'?$milkDepositsIncome->links():'' }}
         </div>
     </div>
 @endsection
 
 @push('script')
-    <script>
-        document.addEventListener('livewire:init', () => {
-            Livewire.on('success', (event) => {
-                Swal.fire({
-                    title: "जानकारी",
-                    text: event.title,
-                    icon: "success",
-                    iconColor: "#28a745", // Use a green color to match success theme
-                    background: "#f9f9f9",
-                    color: "#333", // Darker text color for readability
-                    showConfirmButton: true,
-                    confirmButtonColor: "#4CAF50", // Custom green button
-                    confirmButtonText: "ठीक छ",
-                    customClass: {
-                        popup: "swal-custom-popup",
-                        title: "swal-custom-title",
-                        confirmButton: "swal-custom-button"
-                    },
-                    didOpen: () => {
-                        // Adding a custom animation for the icon
-                        document.querySelector('.swal2-icon.swal2-success').classList.add(
-                            'swal-animate-icon');
+    <div wire:ignore.self>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                // Initialize the Nepali Date Picker
+                $('#milk_deposit_date').nepaliDatePicker({
+                    onChange: function() {
+                        // Manually trigger Livewire update
+                        var nepaliDate = $('#milk_deposit_date').val();
+                        // Convert to Nepali numerals before sending to Livewire
+                        var nepaliDateInNepaliNumerals = NepaliFunctions.ConvertToUnicode(nepaliDate);
+                        @this.set('milk_deposit_date', nepaliDateInNepaliNumerals);
                     }
                 });
-
             });
-            Livewire.on('warning', (event) => {
-                Swal.fire({
-                    title: event.title,
-                    text: "यो क्रिया पुनः फर्काउन सकिने छैन!",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "हो, सम्पादन गरौं!",
-                    cancelButtonText: "रद्द गर्नुहोस्"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        @this.call('confirmDepositMilkIncome');
-                    }
+        </script>
+        <script>
+            document.addEventListener('livewire:init', () => {
+                Livewire.on('success', (event) => {
+                    Swal.fire({
+                        title: "जानकारी",
+                        text: event.title,
+                        icon: "success",
+                        iconColor: "#28a745", // Use a green color to match success theme
+                        background: "#f9f9f9",
+                        color: "#333", // Darker text color for readability
+                        showConfirmButton: true,
+                        confirmButtonColor: "#4CAF50", // Custom green button
+                        confirmButtonText: "ठीक छ",
+                        customClass: {
+                            popup: "swal-custom-popup",
+                            title: "swal-custom-title",
+                            confirmButton: "swal-custom-button"
+                        },
+                        didOpen: () => {
+                            // Adding a custom animation for the icon
+                            document.querySelector('.swal2-icon.swal2-success').classList.add(
+                                'swal-animate-icon');
+                        }
+                    });
+
                 });
+                Livewire.on('warning', (event) => {
+                    Swal.fire({
+                        title: event.title,
+                        text: "यो क्रिया पुनः फर्काउन सकिने छैन!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "हो, सम्पादन गरौं!",
+                        cancelButtonText: "रद्द गर्नुहोस्"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            @this.call('confirmDepositMilkIncome');
+                        }
+                    });
 
+                });
+                Livewire.on('open-new-tab', (event) => {
+                    window.open(event.url, '_blank');
+                });
             });
-        });
-    </script>
+        </script>
+    </div>
 @endpush

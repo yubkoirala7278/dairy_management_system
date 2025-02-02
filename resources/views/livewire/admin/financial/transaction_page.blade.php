@@ -12,14 +12,19 @@
                         <option value="50">५०</option>
                         <option value="100">१००</option>
                         <option value="200">२००</option>
-                        <option value="500">५००</option>
+                        <option value="all">सबै</option>
                     </select>
                     <span>डेटा</span>
                 </label>
             </div>
-            <div class="d-flex align-items-center" style="column-gap: 20px">
-                <input type="search" class="form-control form-control-sm translate-nepali" placeholder="खोज्नुहोस्..."
+            <div class="d-flex align-items-center" style="column-gap: 10px">
+                <input type="search" class="form-control  translate-nepali" placeholder="खोज्नुहोस्..."
                     aria-controls="withdraw-request-list" wire:model.live.debounce.500ms="search">
+                <button type="button" class="btn btn-secondary px-3 rounded-pill btn-flex" wire:click="printTransaction()">
+                    PDF
+                </button>
+                <button type="button" class="btn btn-secondary px-3 btn-flex  rounded-pill"
+                    wire:click="exportToExcel">Excel</button>
             </div>
         </div>
 
@@ -69,6 +74,14 @@
                                 </td>
                             </tr>
                         @endforeach
+                        <tr>
+                            <td class="fs-5 fw-semibold  bg-body-secondary">
+                                कुल बचत
+                            </td>
+                            <td colspan="20" class="fs-5 fw-semibold  bg-body-secondary">
+                                रु {{$totalBalance}}
+                            </td>
+                        </tr>
                     @endif
                     @if (count($usersWithTransaction) <= 0)
                         <tr class="text-center">
@@ -81,7 +94,9 @@
 
         <!-- Pagination -->
         <div class="ml-4">
-            {{ $usersWithTransaction->links() }}
+            @if ($entries !== 'all')
+                {{ $usersWithTransaction->links() }}
+            @endif
         </div>
     </div>
 @endsection
@@ -103,7 +118,7 @@
                         <div class="mb-3">
                             <div class="d-flex align-item-center justify-content-between">
                                 <label for="deposit_amount" class="form-label text-dark">रकम</label>
-                                <span>Rs. {{ $available_balance }}</span>
+                                <span>रु {{ $available_balance_nepali }}</span>
                             </div>
                             <input type="number" class="form-control" id="deposit_amount" wire:model="deposit_amount"
                                 placeholder="जम्मा गर्नको लागि रकम भर्नुहोस्">
@@ -139,7 +154,7 @@
                         <div class="mb-3">
                             <div class="d-flex align-items-center justify-content-between">
                                 <label for="withdraw_amount" class="form-label text-dark">रकम</label>
-                                <span>Rs. {{ $available_balance }}</span>
+                                <span>रु {{ $available_balance_nepali }}</span>
                             </div>
                             <input type="number" class="form-control" id="withdraw_amount" wire:model="withdraw_amount"
                                 placeholder="रकम झिक्नको लागि यहाँ भर्नुहोस्">
@@ -161,71 +176,76 @@
 @endsection
 
 @push('script')
-    <script>
-        document.addEventListener('livewire:init', () => {
-            Livewire.on('success', (event) => {
-                $('#depositModal').modal('hide');
-                $('#withdrawModal').modal('hide');
-                Swal.fire({
-                    title: "जानकारी",
-                    text: event.title,
-                    icon: "success",
-                    iconColor: "#28a745", // Use a green color to match success theme
-                    background: "#f9f9f9",
-                    color: "#333", // Darker text color for readability
-                    showConfirmButton: true,
-                    confirmButtonColor: "#4CAF50", // Custom green button
-                    confirmButtonText: "ठीक छ",
-                    customClass: {
-                        popup: "swal-custom-popup",
-                        title: "swal-custom-title",
-                        confirmButton: "swal-custom-button"
-                    },
-                    didOpen: () => {
-                        // Adding a custom animation for the icon
-                        document.querySelector('.swal2-icon.swal2-success').classList.add(
-                            'swal-animate-icon');
-                    }
+    <div wire:ignore.self>
+        <script>
+            document.addEventListener('livewire:init', () => {
+                Livewire.on('success', (event) => {
+                    $('#depositModal').modal('hide');
+                    $('#withdrawModal').modal('hide');
+                    Swal.fire({
+                        title: "जानकारी",
+                        text: event.title,
+                        icon: "success",
+                        iconColor: "#28a745", // Use a green color to match success theme
+                        background: "#f9f9f9",
+                        color: "#333", // Darker text color for readability
+                        showConfirmButton: true,
+                        confirmButtonColor: "#4CAF50", // Custom green button
+                        confirmButtonText: "ठीक छ",
+                        customClass: {
+                            popup: "swal-custom-popup",
+                            title: "swal-custom-title",
+                            confirmButton: "swal-custom-button"
+                        },
+                        didOpen: () => {
+                            // Adding a custom animation for the icon
+                            document.querySelector('.swal2-icon.swal2-success').classList.add(
+                                'swal-animate-icon');
+                        }
+                    });
+
+                });
+                Livewire.on('warningForDeposit', (event) => {
+                    Swal.fire({
+                        title: event.title,
+                        text: "यो प्रक्रिया एकपटक पूरा भएपछि पुनः फर्काउन सकिने छैन। कृपया एक पटक पुनः जाँच गर्नुहोस्!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "हो, जम्मा गरौं!",
+                        cancelButtonText: "रद्द गर्नुहोस्"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            @this.call('confirmDeposit');
+                        }
+                    });
+
                 });
 
-            });
-            Livewire.on('warningForDeposit', (event) => {
-                Swal.fire({
-                    title: event.title,
-                    text: "यो प्रक्रिया एकपटक पूरा भएपछि पुनः फर्काउन सकिने छैन। कृपया एक पटक पुनः जाँच गर्नुहोस्!",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "हो, जम्मा गरौं!",
-                    cancelButtonText: "रद्द गर्नुहोस्"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        @this.call('confirmDeposit');
-                    }
+                Livewire.on('warningForWithdraw', (event) => {
+                    Swal.fire({
+                        title: event.title,
+                        text: "यो प्रक्रिया एकपटक पूरा भएपछि पुनः फर्काउन सकिने छैन। कृपया एक पटक पुनः जाँच गर्नुहोस्!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "हो, जम्मा गरौं!",
+                        cancelButtonText: "रद्द गर्नुहोस्"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            @this.call('confirmWithdraw');
+                        }
+                    });
+
                 });
-
-            });
-
-            Livewire.on('warningForWithdraw', (event) => {
-                Swal.fire({
-                    title: event.title,
-                    text: "यो प्रक्रिया एकपटक पूरा भएपछि पुनः फर्काउन सकिने छैन। कृपया एक पटक पुनः जाँच गर्नुहोस्!",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "हो, जम्मा गरौं!",
-                    cancelButtonText: "रद्द गर्नुहोस्"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        @this.call('confirmWithdraw');
-                    }
+                Livewire.on('open-new-tab', (event) => {
+                    window.open(event.url, '_blank');
                 });
-
             });
-        });
-    </script>
+        </script>
+    </div>
 @endpush
 
 @section('custom-style')

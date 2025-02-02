@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Admin\Financial;
 
+use App\Exports\TransactionExport;
 use App\Helpers\NumberHelper;
 use App\Models\Account;
 use App\Models\Transaction as ModelsTransaction;
@@ -10,6 +11,7 @@ use App\Repositories\Interfaces\TransactionRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Maatwebsite\Excel\Facades\Excel;
 
 class Transaction extends Component
 {
@@ -24,6 +26,12 @@ class Transaction extends Component
     public $user_id;
     public $owner_name = '';
     public $available_balance = '';
+    public $available_balance_nepali='';
+
+    public function updatedEntries()
+    {
+        $this->resetPage('page');
+    }
 
     public function boot(TransactionRepositoryInterface $transactionRepository)
     {
@@ -45,8 +53,10 @@ class Transaction extends Component
     public function render()
     {
         $usersWithTransaction = $this->transactionRepository->getUsersTransactionInfo($this->entries, $this->search);
+        $totalBalance=$this->transactionRepository->getTotalBalance();
         return view('livewire.admin.financial.transaction', [
-            'usersWithTransaction' => $usersWithTransaction
+            'usersWithTransaction' => $usersWithTransaction,
+            'totalBalance'=>$totalBalance
         ]);
     }
 
@@ -60,7 +70,8 @@ class Transaction extends Component
                 return;
             }
             if ($available_balance) {
-                $this->available_balance = $available_balance;
+                $this->available_balance=$available_balance;
+                $this->available_balance_nepali = NumberHelper::toNepaliNumber($available_balance);
             }
             $this->user_id = $user->id;
             $this->owner_name = $user->owner_name;
@@ -188,4 +199,25 @@ class Transaction extends Component
             $this->dispatch('error', title: $th->getMessage());
         }
     }
+
+     // export pdf
+     public function printTransaction()
+     {
+         $url = route('admin.transaction.report.print');
+         $this->dispatch('open-new-tab', url: $url);
+     }
+      // export excel
+      public function exportToExcel()
+      {
+          $usersWithTransaction = $this->transactionRepository->getUsersTransactionInfo('all');
+
+          if($usersWithTransaction->isEmpty()){
+              $this->dispatch('warningMessage', title: 'डाउनलोड गर्न मिल्ने कुनै कृषकको वित्तीय विवरण रिपोर्ट उपलब्ध छैन।');
+              return;
+          }
+          $totalBalance=$this->transactionRepository->getTotalBalance();
+      
+          // Pass the data to the TransactionExport class
+          return Excel::download(new TransactionExport($usersWithTransaction,$totalBalance), 'transaction.xlsx');
+      }
 }

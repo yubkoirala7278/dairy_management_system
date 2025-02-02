@@ -53,6 +53,11 @@ class MilkDeposit extends Component
         $this->resetErrorBag();
     }
 
+    public function updatedEntries()
+    {
+        $this->resetPage('page');
+    }
+
     // ==========filter=========
     public function updatingSearch()
     {
@@ -203,6 +208,15 @@ class MilkDeposit extends Component
     {
         try {
             $deposit = ModelsMilkDeposit::with('user')->find($id);
+            if (!$deposit) {
+                $this->dispatch('warningMessage', title: "कृषक नम्बर दर्ता भएको छैन।");
+                return;
+            }
+            $milkIncome = MilkIncome::where('milk_deposits_id', $deposit->id)->first();
+            if (!$milkIncome) {
+                $this->dispatch('warningMessage', title: "कृषक नम्बर {$deposit->user->farmer_number} को राशी पहिले नै मुख्य खातामा जम्मा भइसकेको छ, यसकारण यसलाई अभिलेख गर्न सकिँदैन।");
+                return;
+            }
             $this->milkQuantity = $deposit->milk_quantity;
             $this->milk_fat = $deposit->milk_fat;
             $this->milk_snf = $deposit->milk_snf;
@@ -308,6 +322,8 @@ class MilkDeposit extends Component
         $milkDeposits = ModelsMilkDeposit::with('user')
             ->where('milk_deposit_date', $this->milk_deposit_date)
             ->where('milk_deposit_time', $this->milk_deposit_time)
+            ->join('users', 'users.id', '=', 'milk_deposits.user_id')
+            ->orderBy('users.id', 'asc')
             ->get();
         if (count($milkDeposits) <= 0) {
             $this->dispatch('warningMessage', title: 'डाउनलोड गर्नको लागि कुनै दूध जम्मा उपलब्ध छैन!');

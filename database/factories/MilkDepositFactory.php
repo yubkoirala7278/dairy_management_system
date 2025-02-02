@@ -19,7 +19,7 @@ class MilkDepositFactory extends Factory
         $milkTypes = ['मिश्रित', 'गाईको'];
 
         return [
-            'user_id' => User::inRandomOrder()->first()->id,
+            'user_id' => User::role('farmer')->inRandomOrder()->first()?->id,
             'milk_quantity' => $this->faker->randomFloat(2, 1, 50), // Random milk quantity between 1 to 50 liters
             'milk_fat' => $this->faker->randomFloat(2, 3, 7),       // Random fat percentage (3% to 7%)
             'milk_snf' => $this->faker->randomFloat(2, 8, 10),      // Random SNF percentage (8% to 10%)

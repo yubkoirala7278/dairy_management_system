@@ -1,6 +1,6 @@
 @extends('livewire.admin.layouts.master')
 @section('content')
-<div class="col-12 py-3 px-5" style="background-color: #eee;">
+    <div class="col-12 py-3 px-5" style="background-color: #eee;">
         <div class="d-md-flex justify-content-between align-items-center  py-2 ">
             <div>
                 <label class="d-flex align-items-center gap-2">
@@ -19,13 +19,13 @@
 
             </div>
             <div class="d-flex align-items-center" style="column-gap: 20px">
-                <input type="search" class="form-control form-control-sm translate-nepali"
-                    placeholder="खोज्नुहोस्..." aria-controls="withdraw-request-list"
-                    wire:model.live.debounce.500ms="search">
+                <input type="search" class="form-control  translate-nepali" placeholder="खोज्नुहोस्..."
+                    aria-controls="withdraw-request-list" wire:model.live.debounce.500ms="search">
+                <input type="text" id="milk_deposit_date" class="form-control " wire:model.live="milk_deposit_date"
+                    placeholder="दूध सङ्कलन मिति">
                 <div class="d-flex align-items-center" style="column-gap: 5px">
-                    <button type="button" class="btn btn-secondary px-3 radius-30 btn-flex"
-                        style="border-radius: 30px;" wire:click="exportMilkDepositsToPdf">PDF</button>
-                    {{-- <button type="button" class="btn btn-secondary px-3 btn-flex" style="border-radius: 30px;" wire:click="exportToExcel">Excel</button> --}}
+                    <button type="button" class="btn btn-secondary px-3 radius-30 btn-flex" style="border-radius: 30px;"
+                        wire:click="printMilkDepositReport">PDF</button>
                 </div>
             </div>
 
@@ -52,22 +52,22 @@
                     @foreach ($milkDeposits as $key => $deposit)
                         <tr wire:key="{{ $key }}">
                             <td>{{ $deposit->user->farmer_number }}</td>
-                            <td>{{$deposit->milk_deposit_date}}</td>
-                            <td>{{$deposit->milk_deposit_time}}</td>
+                            <td>{{ $deposit->milk_deposit_date }}</td>
+                            <td>{{ $deposit->milk_deposit_time }}</td>
                             <td>{{ $deposit->user->owner_name }}</td>
                             <td>{{ $deposit->milk_type }}</td>
                             <td>{{ $deposit->milk_quantity }}</td>
                             <td>{{ $deposit->milk_fat }}</td>
                             <td>{{ $deposit->milk_snf }}</td>
-                            <td>{{$deposit->milk_price_per_ltr}}</td>
-                            <td>{{$deposit->per_ltr_commission}}</td>
+                            <td>{{ $deposit->milk_price_per_ltr }}</td>
+                            <td>{{ $deposit->per_ltr_commission }}</td>
                             <td>{{ $deposit->milk_per_ltr_price_with_commission }}</td>
                             <td>{{ $deposit->milk_total_price }}</td>
                         </tr>
                     @endforeach
                     <tr class="text-white" style="background-color: #32705f">
-                        <td colspan="2" >कुल दूध संकलन: {{$totalMilkQuantity}} लिटर </td>
-                        <td colspan="20">कुल मूल्य: {{$totalDepositIncome}} रुपैया</td>
+                        <td colspan="2">कुल दूध संकलन: {{ $totalMilkQuantity }} लिटर </td>
+                        <td colspan="20">कुल मूल्य: {{ $totalDepositIncome }} रुपैया</td>
                     </tr>
                 @endif
                 @if (count($milkDeposits) <= 0)
@@ -78,7 +78,33 @@
             </tbody>
         </table>
         <div class="ml-4">
-            {{$milkDeposits->links()}}
+            {{ $milkDeposits->links() }}
         </div>
-</div>
+    </div>
 @endsection
+
+@push('script')
+    <div wire:ignore.self>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                // Initialize the Nepali Date Picker
+                $('#milk_deposit_date').nepaliDatePicker({
+                    onChange: function() {
+                        // Manually trigger Livewire update
+                        var nepaliDate = $('#milk_deposit_date').val();
+                        // Convert to Nepali numerals before sending to Livewire
+                        var nepaliDateInNepaliNumerals = NepaliFunctions.ConvertToUnicode(nepaliDate);
+                        @this.set('milk_deposit_date', nepaliDateInNepaliNumerals);
+                    }
+                });
+            });
+        </script>
+        <script>
+            document.addEventListener('livewire:init', () => {
+                Livewire.on('open-new-tab', (event) => {
+                    window.open(event.url, '_blank');
+                });
+            });
+        </script>
+    </div>
+@endpush

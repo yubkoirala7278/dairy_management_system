@@ -18,8 +18,8 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,
             InterestRateSeeder::class,
             // factory
-            // UserSeeder::class,
-            // MilkDepositSeeder::class
+            UserSeeder::class,
+            MilkDepositSeeder::class
         ]);
     }
 }
