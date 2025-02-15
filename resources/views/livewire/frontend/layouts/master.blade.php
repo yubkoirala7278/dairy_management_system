@@ -15,9 +15,9 @@
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
+    {{-- <link
         href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@700&family=Open+Sans:wght@400;500;600&display=swap"
-        rel="stylesheet">
+        rel="stylesheet"> --}}
 
     <!-- Icon Font Stylesheet -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
@@ -65,26 +65,26 @@
         <div class="row g-0 d-none d-lg-flex">
             <div class="col-lg-6 ps-5 text-start">
                 <div class="h-100 d-inline-flex align-items-center text-light">
-                    <span>फलो :</span>
-                    <a class="btn btn-link text-light" href=""><i class="fab fa-facebook-f"></i></a>
+                    <span class="me-2">सम्पर्क नम्बर : </span>
+                    {{-- <a class="btn btn-link text-light" href=""><i class="fab fa-facebook-f"></i></a>
                     <a class="btn btn-link text-light" href=""><i class="fab fa-twitter"></i></a>
                     <a class="btn btn-link text-light" href=""><i class="fab fa-linkedin-in"></i></a>
-                    <a class="btn btn-link text-light" href=""><i class="fab fa-instagram"></i></a>
+                    <a class="btn btn-link text-light" href=""><i class="fab fa-instagram"></i></a> --}}
+                    <span>९८०४७२६६४०</span>
                 </div>
             </div>
             <div class="col-lg-6 text-end">
                 <div class="h-100 bg-secondary d-inline-flex align-items-center text-dark py-2 px-4">
-                    <span class="me-2 fw-semi-bold"><i class="fa fa-phone-alt me-2"></i>सम्पर्क नम्बर:</span>
-                    <span>९८०४७२६६४०</span>
+                    <span class="me-2 fw-semi-bold"><i class="fa fa-user me-2"></i>कृषकको नाम:</span>
+                    <span>{{ Auth::user()->owner_name }}</span>
                 </div>
             </div>
         </div>
     </div>
     <!-- Topbar End -->
 
-
     <!-- Navbar Start -->
-    <nav class="navbar navbar-expand-lg bg-white navbar-light sticky-top px-4 px-lg-5">
+    <nav class="navbar navbar-expand-lg  navbar-light sticky-top px-4 px-lg-5" style="background-color: #F7FCFF !important">
         <a href="{{ route('frontend.home') }}" class="navbar-brand d-flex align-items-center">
             <h1 class="m-0">आदर्श डेरी</h1>
         </a>
@@ -120,6 +120,8 @@
                     class="nav-item nav-link {{ $page == 'contact' ? 'active' : '' }}">सम्पर्क</a>
                 <a href="{{ route('frontend.cart') }}"
                     class="nav-item nav-link {{ $page == 'cart' ? 'active' : '' }}">कार्ट</a>
+                <a href="{{ route('frontend.my-order') }}"
+                    class="nav-item nav-link {{ $page == 'my-order' ? 'active' : '' }}">मेरो अर्डरहरू</a>
                 <a href="{{ route('frontend.profile') }}"
                     class="nav-item nav-link {{ $page == 'profile' ? 'active' : '' }}">प्रोफाइल</a>
                 @livewire('frontend.logout-button')

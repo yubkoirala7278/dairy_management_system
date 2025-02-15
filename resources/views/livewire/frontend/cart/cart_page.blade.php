@@ -97,8 +97,8 @@
                                     <p class="mb-0 fw-bold" style="color: #FF6F61;">रु {{ $sub_total }}</p>
                                 </div>
                                 <hr>
-                                <a href="{{ route('frontend.checkout') }}" class="btn btn-success w-100">चेकआउटमा
-                                    जानुहोस्</a>
+                                <button class="btn btn-success w-100" wire:click="checkOut">चेकआउटमा
+                                    जानुहोस्</button>
                             </div>
                         </div>
                     </div>
@@ -107,7 +107,7 @@
             @endif
             @if (count($myCarts) <= 0)
             <div class="text-center">
-                <p > कुनै उत्पादन कार्टमा थपिएको छैन।</p>
+                <p> कुनै उत्पादन कार्टमा थपिएको छैन।</p>
                 <a href="{{route('frontend.product')}}" class="btn btn-success rounded-pill">अहिले किन्नुहोस्</a>
         </div>
             @endif

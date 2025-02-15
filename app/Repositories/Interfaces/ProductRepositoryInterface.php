@@ -9,4 +9,5 @@ interface ProductRepositoryInterface
     public function getCartSubtotal();
     public function getCartInfo();
     public function getAllOrders($entries, $keyword);
+    public function getAuthUserOrders($entries);
 }

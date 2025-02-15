@@ -20,7 +20,7 @@ class UserRepository implements UserRepositoryInterface
             $query->where(function ($query) use ($search) {
                 $query->Where('owner_name', 'like', "%{$search}%")
                     ->orWhere('location', 'like', "%{$search}%")
-                    ->orWhere('farmer_number', 'like', "%{$search}%")
+                    ->orWhere('farmer_number', '=', $search)
                     ->orWhere('gender', 'like', "%{$search}%")
                     ->orWhere('status', 'like', "%{$search}%");
             });
@@ -57,7 +57,7 @@ class UserRepository implements UserRepositoryInterface
         if ($search) {
             $query->where(function ($query) use ($search) {
                 $query->whereHas('user', function ($userQuery) use ($search) {
-                    $userQuery->where('farmer_number', 'like', "%{$search}%")
+                    $userQuery->where('farmer_number', '=', $search)
                         ->orWhere('owner_name', 'like', "%{$search}%");
                 })
                     ->orWhere('milk_type', 'like', "%{$search}%");
@@ -109,7 +109,7 @@ class UserRepository implements UserRepositoryInterface
         if ($search) {
             $query->where(function ($query) use ($search) {
                 $query->whereHas('user', function ($userQuery) use ($search) {
-                    $userQuery->where('farmer_number', 'like', "%{$search}%")
+                    $userQuery->where('farmer_number', '=', $search)
                         ->orWhere('owner_name', 'like', "%{$search}%");
                 })
                     ->orWhere('milk_type', 'like', "%{$search}%");
@@ -141,7 +141,7 @@ class UserRepository implements UserRepositoryInterface
         if ($search) {
             $query->where(function ($query) use ($search) {
                 $query->whereHas('user', function ($userQuery) use ($search) {
-                    $userQuery->where('farmer_number', 'like', "%{$search}%")
+                    $userQuery->where('farmer_number', '=', $search)
                         ->orWhere('owner_name', 'like', "%{$search}%");
                 })
                     ->orWhere('milk_type', 'like', "%{$search}%")
@@ -191,7 +191,7 @@ class UserRepository implements UserRepositoryInterface
         if ($search) {
             $query->where(function ($query) use ($search) {
                 $query->whereHas('user', function ($userQuery) use ($search) {
-                    $userQuery->where('farmer_number', 'like', "%{$search}%")
+                    $userQuery->where('farmer_number', '=', $search)
                         ->orWhere('owner_name', 'like', "%{$search}%");
                 })
                     ->orWhere('milk_type', 'like', "%{$search}%")

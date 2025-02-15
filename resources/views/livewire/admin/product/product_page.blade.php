@@ -46,7 +46,7 @@
                             <td>{{ $product->name }}</td>
                             <td>{{ $product->price_per_kg }}</td>
                             <td>
-                                @if($product->status)
+                                @if ($product->status)
                                     <span class="badge text-bg-success">चालू</span>
                                 @else
                                     <span class="badge text-bg-danger">बन्द</span>
@@ -54,22 +54,26 @@
                             </td>
                             <td>
                                 <img src="{{ asset('storage/' . $product->image) }}" alt="Product Image"
-                                    style="height: 20px; cursor: pointer;"
+                                    style="height: 30px; cursor: pointer;"
                                     onclick="openImageModal('{{ asset('storage/' . $product->image) }}')" loading="lazy">
                             </td>
-                            <td>
-                                <button class="btn btn-sm btn-transparent py-0 px-1" data-bs-toggle="tooltip"
-                                    data-bs-placement="top" title="सुधार्नुहोस्" wire:click="edit({{ $product->id }})">
-                                    <i class="fa-solid fa-pencil text-warning fs-5"></i>
+                            <td class="d-flex gap-2 align-items-center">
+                                <!-- Edit Button -->
+                                <button class="btn btn-warning shadow-sm text-dark  rounded-1 d-flex justify-content-center align-items-center"
+                                    data-bs-toggle="tooltip" data-bs-placement="top" title="सुधार्नुहोस्"
+                                    wire:click="edit({{ $product->id }})" style="height: 20px;width:20px">
+                                    <i class="fa-solid fa-pencil fs-6"></i>
                                 </button>
-
-
-                                <button class="btn btn-sm btn-transparent py-0 px-1"
-                                    onclick="confirmDelete({{ $product->id }})" data-toggle="tooltip" data-placement="top"
-                                    title="मेटाउनुहोस्">
-                                    <i class="fa-solid fa-trash fs-5 text-danger"></i>
+                            
+                                <!-- Delete Button -->
+                                <button class="btn btn-danger shadow-sm text-white  rounded-1 d-flex justify-content-center align-items-center"
+                                    onclick="confirmDelete({{ $product->id }})"
+                                    data-bs-toggle="tooltip" data-bs-placement="top" title="मेटाउनुहोस्" style="height: 20px;width:20px">
+                                    <i class="fa-solid fa-trash fs-6"></i>
                                 </button>
                             </td>
+                            
+                            
                         </tr>
                     @endforeach
                 @endif
@@ -110,7 +114,7 @@
                         <div class="mb-3">
                             <label for="image" class="form-label  text-dark">प्रोडक्टको फोटो</label>
                             <input type="file" id="fileInput" class="form-control"
-                                accept="image/jpeg,image/png,image/webp,image/jpg" onchange="validateFileSize(this)"
+                                accept="image/jpeg,image/png,image/webp,image/jpg"
                                 wire:model.live="image">
                             @if ($errors->has('image'))
                                 <span class="text-danger">{{ $errors->first('image') }}</span>
@@ -120,7 +124,8 @@
                         <div class="mb-3">
                             <label for="price_per_kg" class="form-label text-dark">प्रोडक्टको मूल्य</label>
                             <div class="input-group">
-                                <input type="number" class="form-control" id="price_per_kg" placeholder="प्रोडक्टको मूल्य लेख्नुहोस्" wire:model="price_per_kg">
+                                <input type="number" class="form-control" id="price_per_kg"
+                                    placeholder="प्रोडक्टको मूल्य लेख्नुहोस्" wire:model="price_per_kg">
                                 <select class="form-select" id="unit_selector" wire:model="unit">
                                     <option value="kg">प्रति किलो</option>
                                     <option value="ltr">प्रति लिटर</option>
@@ -175,7 +180,7 @@
                         <div class="mb-3">
                             <label for="image" class="form-label text-dark">प्रोडक्टको फोटो</label>
                             <input type="file" id="fileInput" class="form-control"
-                                accept="image/jpeg,image/png,image/webp,image/jpg" onchange="validateFileSize(this)"
+                                accept="image/jpeg,image/png,image/webp,image/jpg" 
                                 wire:model="image">
                             @if ($errors->has('image'))
                                 <span class="text-danger">{{ $errors->first('image') }}</span>
@@ -185,7 +190,8 @@
                         <div class="mb-3">
                             <label for="price_per_kg" class="form-label text-dark">प्रोडक्टको मूल्य</label>
                             <div class="input-group">
-                                <input type="number" class="form-control" id="price_per_kg" placeholder="प्रोडक्टको मूल्य लेख्नुहोस्" wire:model="price_per_kg">
+                                <input type="number" class="form-control" id="price_per_kg"
+                                    placeholder="प्रोडक्टको मूल्य लेख्नुहोस्" wire:model="price_per_kg">
                                 <select class="form-select" id="unit_selector" wire:model="unit">
                                     <option value="kg">प्रति किलो</option>
                                     <option value="ltr">प्रति लिटर</option>
@@ -218,7 +224,8 @@
     </div>
 
     <!-- Modal for displaying the image -->
-    <div id="imageModal" wire:ignore.self class="modal fade" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div id="imageModal" wire:ignore.self class="modal fade" tabindex="-1" aria-labelledby="imageModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -226,7 +233,8 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body text-center">
-                    <img id="modalImage" src="" alt="Product Image" class="img-fluid" style="max-height: 500px;" loading="lazy">
+                    <img id="modalImage" src="" alt="Product Image" class="img-fluid"
+                        style="max-height: 500px;" loading="lazy">
                 </div>
             </div>
         </div>
@@ -234,144 +242,123 @@
 @endsection
 
 @push('script')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // ========success message============
-            Livewire.on('success', (event) => {
-                $('#createProduct').modal('hide');
-                $('#updateProduct').modal('hide');
+    <div wire:ignore.self>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // ========success message============
+                Livewire.on('success', (event) => {
+                    $('#createProduct').modal('hide');
+                    $('#updateProduct').modal('hide');
+                    Swal.fire({
+                        title: "जानकारी",
+                        text: event.title,
+                        icon: "success",
+                        iconColor: "#28a745", // Use a green color to match success theme
+                        background: "#f9f9f9",
+                        color: "#333", // Darker text color for readability
+                        showConfirmButton: true,
+                        confirmButtonColor: "#4CAF50", // Custom green button
+                        confirmButtonText: "ठीक छ",
+                        customClass: {
+                            popup: "swal-custom-popup",
+                            title: "swal-custom-title",
+                            confirmButton: "swal-custom-button"
+                        },
+                        didOpen: () => {
+                            // Adding a custom animation for the icon
+                            document.querySelector('.swal2-icon.swal2-success').classList.add(
+                                'swal-animate-icon');
+                        }
+                    });
+
+                });
+
+                Livewire.on('editModal', (event) => {
+                    $('#updateProduct').modal('show');
+                });
+            });
+        </script>
+        <script>
+            // ======alert delete confirmation========
+            function confirmDelete(productId) {
                 Swal.fire({
-                    title: "जानकारी",
-                    text: event.title,
-                    icon: "success",
-                    iconColor: "#28a745", // Use a green color to match success theme
-                    background: "#f9f9f9",
-                    color: "#333", // Darker text color for readability
-                    showConfirmButton: true,
-                    confirmButtonColor: "#4CAF50", // Custom green button
-                    confirmButtonText: "ठीक छ",
-                    customClass: {
-                        popup: "swal-custom-popup",
-                        title: "swal-custom-title",
-                        confirmButton: "swal-custom-button"
-                    },
-                    didOpen: () => {
-                        // Adding a custom animation for the icon
-                        document.querySelector('.swal2-icon.swal2-success').classList.add(
-                            'swal-animate-icon');
+                    title: "के तपाईं पक्का हुनुहुन्छ?",
+                    text: "यो क्रिया पुनः फर्काउन सकिने छैन!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "हो, यसलाई मेटाउनुहोस्!",
+                    cancelButtonText: "रद्द गर्नुहोस्"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        @this.call('delete', productId);
                     }
                 });
 
-            });
-
-            Livewire.on('editModal', (event) => {
-                $('#updateProduct').modal('show');
-            });
-        });
-    </script>
-    <script>
-        // ======alert delete confirmation========
-        function confirmDelete(productId) {
-            Swal.fire({
-                title: "के तपाईं पक्का हुनुहुन्छ?",
-                text: "यो क्रिया पुनः फर्काउन सकिने छैन!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "हो, यसलाई मेटाउनुहोस्!",
-                cancelButtonText: "रद्द गर्नुहोस्"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    @this.call('delete', productId);
-                }
-            });
-
-        }
-
-        // ======image validation==========
-        function validateFileSize(input) {
-            const file = input.files[0]; // Get the selected file
-            const maxSizeInKB = 200; // 200KB limit
-
-            // Determine the appropriate error message element
-            let errorMessageElement = input.nextElementSibling;
-
-            // Clear previous error message
-            if (errorMessageElement) {
-                errorMessageElement.textContent = '';
             }
 
-            // Validate file size
-            if (file && file.size > maxSizeInKB * 1024) {
-                // Display error message in Nepali
-                if (errorMessageElement) {
-                    errorMessageElement.textContent = "फाइलको आकार २००KB भन्दा कम हुनुपर्छ।";
-                }
-                input.value = ""; // Clear the input field
+            // Function to open the image modal and display the clicked image
+            function openImageModal(imagePath) {
+                // Set the source of the image in the modal
+                document.getElementById('modalImage').src = imagePath;
+
+                // Show the modal
+                $('#imageModal').modal('show');
             }
-        }
-
-
-        // Function to open the image modal and display the clicked image
-        function openImageModal(imagePath) {
-            // Set the source of the image in the modal
-            document.getElementById('modalImage').src = imagePath;
-
-            // Show the modal
-            $('#imageModal').modal('show');
-        }
-    </script>
+        </script>
+    </div>
 @endpush
 
 @section('custom-style')
-<style>
-    .input-group {
-    display: flex;
-    align-items: center;
-}
+    <div wire:ignore.self>
+        <style>
+            .input-group {
+                display: flex;
+                align-items: center;
+            }
 
-.input-group .form-control {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-}
+            .input-group .form-control {
+                border-top-right-radius: 0;
+                border-bottom-right-radius: 0;
+            }
 
-.input-group .form-select {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    background-color: #f8f9fa;
-    border: 1px solid #ced4da;
-}
+            .input-group .form-select {
+                border-top-left-radius: 0;
+                border-bottom-left-radius: 0;
+                background-color: #f8f9fa;
+                border: 1px solid #ced4da;
+            }
 
-.input-group .form-select:focus {
-    border-color: #80bdff;
-    box-shadow: none;
-}
+            .input-group .form-select:focus {
+                border-color: #80bdff;
+                box-shadow: none;
+            }
 
-.mb-3 .form-label {
-    font-weight: bold;
-    font-size: 16px;
-    margin-bottom: 8px;
-}
+            .mb-3 .form-label {
+                font-weight: bold;
+                font-size: 16px;
+                margin-bottom: 8px;
+            }
 
-.text-dark {
-    color: #343a40 !important;
-}
+            .text-dark {
+                color: #343a40 !important;
+            }
 
-.text-danger {
-    font-size: 12px;
-    margin-top: 4px;
-}
+            .text-danger {
+                font-size: 12px;
+                margin-top: 4px;
+            }
 
-@media (max-width: 767px) {
-    .input-group {
-        flex-direction: column;
-    }
+            @media (max-width: 767px) {
+                .input-group {
+                    flex-direction: column;
+                }
 
-    .input-group .form-select {
-        margin-top: 10px;
-    }
-}
-
-</style>
+                .input-group .form-select {
+                    margin-top: 10px;
+                }
+            }
+        </style>
+    </div>
 @endsection

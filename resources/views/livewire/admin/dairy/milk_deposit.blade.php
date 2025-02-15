@@ -204,17 +204,20 @@
                                 {{-- <td>{{$deposit->per_ltr_commission}}</td> --}}
                                 <td>{{ $deposit->milk_per_ltr_price_with_commission }}</td>
                                 <td>{{ $deposit->milk_total_price }}</td>
-                                <td>
-                                    <button class="btn btn-sm btn-transparent py-0 px-1" data-toggle="tooltip"
-                                        data-placement="top" title="सुधार्नुहोस्"
-                                        wire:click="edit({{ $deposit->id }})">
-                                        <i class="fa-solid fa-pencil fs-5 text-warning"></i>
+                                <td class="d-flex gap-2 align-items-center">
+                                    <!-- Edit Button -->
+                                    <button class="btn btn-warning shadow-sm text-dark  rounded-1 d-flex justify-content-center align-items-center"
+                                        data-bs-toggle="tooltip" data-bs-placement="top" title="सुधार्नुहोस्"
+                                        wire:click="edit({{ $deposit->id }})" style="height: 20px;width:20px">
+                                        <i class="fa-solid fa-pencil fs-6"></i>
                                     </button>
-
-                                    <button class="btn btn-sm btn-transparent py-0 px-1"
-                                        onclick="confirmDelete({{ $deposit->id }})" data-toggle="tooltip"
-                                        data-placement="top" title="मेटाउनुहोस्">
-                                        <i class="fa-solid fa-trash fs-5 text-danger"></i>
+                                
+                                    <!-- Delete Button -->
+                                    <button class="btn btn-danger shadow-sm text-white  rounded-1 d-flex justify-content-center align-items-center"
+                                        onclick="confirmDelete({{ $deposit->id }})"
+                                        data-bs-toggle="tooltip" data-bs-placement="top" title="मेटाउनुहोस्" style="height: 20px;width:20px">
+                                        <i class="fa-solid fa-trash  fs-6"></i>
+                                        {{-- <span>मेटाउनुहोस्</span> --}}
                                     </button>
                                 </td>
                             </tr>

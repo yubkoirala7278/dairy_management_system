@@ -168,13 +168,13 @@ class Transaction extends Component
             $account = Account::where('user_id', $this->user_id)->first();
 
             if (!$account) {
-                $this->dispatch('error', title: 'Account not found');
+                $this->dispatch('error', title: 'किसानको खाता भेटिएन');
                 return;
             }
 
             // Check if the user has sufficient balance
             if ($account->balance < $this->withdraw_amount) {
-                $this->dispatch('error', title: 'Insufficient balance');
+                $this->dispatch('error', title: 'किसानको खातामा पर्याप्त ब्यालेन्स छैन');
                 return;
             }
 

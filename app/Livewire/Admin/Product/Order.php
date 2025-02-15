@@ -3,9 +3,11 @@
 namespace App\Livewire\Admin\Product;
 
 use App\Helpers\NumberHelper;
+use App\Models\Account;
 use App\Models\Order as ModelsOrder;
 use App\Models\OrderItem;
-use App\Models\Withdraw;
+use App\Models\Transaction;
+use Illuminate\Support\Facades\DB;
 use App\Repositories\Interfaces\ProductRepositoryInterface;
 use Livewire\WithPagination;
 use Livewire\Component;
@@ -31,6 +33,10 @@ class Order extends Component
     public function updatingSearch()
     {
         $this->resetPage();
+    }
+    public function updatedEntries()
+    {
+        $this->resetPage('page');
     }
 
     public function render()
@@ -74,37 +80,59 @@ class Order extends Component
 
     public function updatedStatus()
     {
-        $this->dispatch('warning',);
+        $this->dispatch('warning');
     }
     public function confirmUpdateStatus()
     {
-        // Update the status in the database
-        $this->order_summary->status = $this->status;
-        $this->order_summary->save();
-        // Pending
-        if ($this->status == 'pending') {
-            $withdraw=Withdraw::where('order_id',$this->order_summary->id)->first();
-            if($withdraw){
-                $withdraw->delete();
+        DB::beginTransaction();
+        try {
+            if ($this->order_summary->status == 'pending' || $this->order_summary->status == 'cancelled') {
+                // Update the order status
+                $this->order_summary->status = $this->status;
+                $this->order_summary->save();
+
+                // Handle status changes
+                if ($this->status === 'pending') {
+                    $this->dispatch('success', title: 'अर्डर विचाराधीन अवस्थामा छ।');
+                } elseif ($this->status === 'delivered') {
+                    // Find the user's account
+                    $account = Account::where('user_id', $this->order_summary->user_id)->first();
+                    if (!$account) {
+                        DB::rollBack();
+                        $this->dispatch('error', title: 'किसानको खाता भेटिएन');
+                        return;
+                    }
+
+                    // Check if the user has sufficient balance
+                    if ($account->balance < $this->order_summary->total_charge) {
+                        DB::rollBack();
+                        $this->dispatch('error', title: 'किसानको खातामा पर्याप्त ब्यालेन्स छैन');
+                        return;
+                    }
+
+                    // Deduct the balance
+                    $account->decrement('balance', $this->order_summary->total_charge);
+
+                    // Log the transaction
+                    Transaction::create([
+                        'account_id' => $account->id,
+                        'type' => 'withdrawal',
+                        'amount' => $this->order_summary->total_charge,
+                    ]);
+                    // Dispatch success message
+                    $withdraw_amount_nepali = NumberHelper::toNepaliNumber($this->order_summary->total_charge);
+                    $this->dispatch('success', title: "अर्डर सफलतापूर्वक वितरण गरिएको छ। रु {$withdraw_amount_nepali} किसानको खाताबाट कटौती गरिएको छ।");
+                } elseif ($this->status === 'cancelled') {
+                    $this->dispatch('success', title: 'अर्डर रद्द गरिएको छ।');
+                }
+
+                DB::commit();
+            } else {
+                $this->dispatch('warningMessage', title: 'सामान पहिले नै डेलिभर गरिएको छ त्यसैले यसको स्थिति परिवर्तन गर्न सकिँदैन!');
             }
-            $this->dispatch('success', title: 'अर्डर विचाराधीन अवस्थामा छ।');
-        }
-        // Delivered
-        if ($this->status == 'delivered') {
-            Withdraw::create([
-                'user_id'=>$this->order_summary->user_id,
-                'withdraw'=>$this->order_summary->total_charge,
-                'order_id'=>$this->order_summary->id
-            ]);
-            $this->dispatch('success', title: 'अर्डर सफलतापूर्वक पुर्याइएको छ।');
-        }
-        // Cancelled
-        if ($this->status == 'cancelled') {
-            $withdraw=Withdraw::where('order_id',$this->order_summary->id)->first();
-            if($withdraw){
-                $withdraw->delete();
-            }
-            $this->dispatch('success', title: 'अर्डर रद्द गरिएको छ।');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $this->dispatch('error', title: 'Error: ' . $e->getMessage());
         }
     }
 }

@@ -92,10 +92,10 @@
                             <i class="fa-solid fa-building-columns me-2"></i>वित्तीय
                         </a>
                         <nav class="az-menu-sub">
-                            <a href="{{ route('admin.transaction') }}" class="nav-link" id="deposit-milk-link">जम्मा /
+                            <a href="{{ route('admin.transaction') }}" class="nav-link" id="deposit-milk-link">निक्षेप /
                                 निकासी</a>
-                            <a href="" class="nav-link" id="deposit-milk-link">निक्षेप</a>
-                            <a href="" class="nav-link" id="create-farmer-link">निकासी</a>
+                            <a href="{{route('admin.deposit.transaction')}}" class="nav-link" id="deposit-milk-link">निक्षेप</a>
+                            <a href="{{route('admin.withdraw.transaction')}}" class="nav-link" id="create-farmer-link">निकासी</a>
                             <a href="" class="nav-link" id="setup-link">सेटअप</a>
                         </nav>
                     </li>

@@ -62,7 +62,7 @@ class CreateUser extends Component
             $usersQuery->where(function ($query) {
                 $query->where('owner_name', 'like', "%{$this->search}%")
                     ->orWhere('location', 'like', "%{$this->search}%")
-                    ->orWhere('farmer_number', 'like', "%{$this->search}%")
+                    ->orWhere('farmer_number', '=', $this->search)
                     ->orWhere('gender', 'like', "%{$this->search}%")
                     ->orWhere('status', 'like', "%{$this->search}%");
             });

@@ -115,8 +115,8 @@
                     <div class="card shadow rounded-4 mt-4">
                         <div class="card-body d-flex flex-column p-4">
                             <!-- Proceed Button -->
-                            <a href="{{ route('frontend.checkout.success') }}" class="btn btn-primary w-100"
-                                wire:click="checkoutProduct">अगाडि बढ्नुहोस्</a>
+                            <button class="btn btn-primary w-100"
+                                wire:click="checkoutProduct">अगाडि बढ्नुहोस्</button>
                         </div>
                     </div>
                     @endif

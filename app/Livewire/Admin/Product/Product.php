@@ -6,6 +6,8 @@ use App\Models\Product as ModelsProduct;
 use App\Repositories\Interfaces\ProductRepositoryInterface;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
+use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Storage;
 
 use Livewire\Component;
 
@@ -40,6 +42,10 @@ class Product extends Component
     {
         $this->resetPage();
     }
+    public function updatedEntries()
+    {
+        $this->resetPage('page');
+    }
 
     public function boot(ProductRepositoryInterface $productRepository)
     {
@@ -62,7 +68,7 @@ class Product extends Component
             'name' => ['required'],
             'price_per_kg' => ['required'],
             'status' => ['required'],
-            'image' => 'required|max:2024|mimes:png,jpg,jpeg,webp',
+            'image' => 'required|mimes:png,jpg,jpeg,webp',
         ], [
             'name.required' => 'प्रोडक्टको नाम आवश्यक छ',
             'price_per_kg.required' => 'प्रति किलो मूल्य आवश्यक छ',
@@ -70,28 +76,40 @@ class Product extends Component
             'image.required' => 'प्रोडक्टको फोटो आवश्यक छ',
             'image.image' => 'कृपया एक मान्य फोटो अपलोड गर्नुहोस्',
             'image.mimes' => 'केवल jpeg, png, jpg, र webp प्रकारका फोटो मात्र स्वीकार्य छन्',
-            'image.max' => 'फोटोको आकार 200KB भन्दा सानो हुनु पर्छ',
         ]);
-
-        // Try to store the product and handle any exceptions
+    
         try {
-            // Store the image in 'storage/app/public/product' directory
-            $imagePath = $this->image->store('product', 'public'); // Use the public disk
-
-            // Create the product
+            // Get the original file
+            $originalFile = $this->image->getRealPath();
+    
+            // Generate a unique filename
+            $fileName = 'product_' . time() . '.webp';
+    
+            // Load the image, resize while maintaining aspect ratio, and convert to webp
+            $compressedImage = Image::make($originalFile)
+                ->resize(800, null, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                })
+                ->encode('webp', 80); // Compress with 80% quality
+    
+            // Store the compressed webp image in public storage
+            Storage::disk('public')->put('product/' . $fileName, $compressedImage);
+    
+            // Save product data
             ModelsProduct::create([
                 'name' => $this->name,
                 'price_per_kg' => $this->price_per_kg,
                 'status' => $this->status,
-                'unit'=>$this->unit,
-                'image' => $imagePath, // Store the path of the uploaded image
+                'unit' => $this->unit,
+                'image' => 'product/' . $fileName, // Save the image path
             ]);
-
-            // Optional: You can dispatch a success event or handle success
+    
+            // Dispatch success message
             $this->dispatch('success', title: 'प्रोडक्ट सफलतापूर्वक थपियो');
             $this->resetFields();
         } catch (\Throwable $th) {
-            // If there's any error, dispatch an error message
+            // Dispatch error message
             $this->dispatch('error', title: $th->getMessage());
         }
     }
@@ -143,13 +161,13 @@ class Product extends Component
         try {
             // Retrieve the product from the database
             $product = ModelsProduct::findOrFail($this->product_id);
-
+    
             // Validate the incoming request data
             $this->validate([
                 'name' => ['required'],
                 'price_per_kg' => ['required'],
                 'status' => ['required'],
-                'image' => 'nullable|max:2024|mimes:png,jpg,jpeg,webp',
+                'image' => 'nullable|mimes:png,jpg,jpeg,webp',
             ], [
                 'name.required' => 'प्रोडक्टको नाम आवश्यक छ',
                 'price_per_kg.required' => 'प्रति किलो मूल्य आवश्यक छ',
@@ -158,30 +176,44 @@ class Product extends Component
                 'image.mimes' => 'केवल jpeg, png, jpg, र webp प्रकारका फोटो मात्र स्वीकार्य छन्',
                 'image.max' => 'फोटोको आकार 200KB भन्दा सानो हुनु पर्छ',
             ]);
-
-            // If a new image is uploaded, delete the old one and store the new one
+    
+            // Handle Image Upload & Conversion
             if ($this->image) {
-                // Delete the old image from storage
-                if ($product->image && file_exists(storage_path('app/public/' . $product->image))) {
-                    unlink(storage_path('app/public/' . $product->image));
+                // Delete the old image
+                if ($product->image && Storage::disk('public')->exists($product->image)) {
+                    Storage::disk('public')->delete($product->image);
                 }
-
-                // Store the new image
-                $imagePath = $this->image->store('product', 'public');
+    
+                // Generate a unique filename for the webp image
+                $imageName = 'product/' . uniqid() . '.webp';
+    
+                // Convert & compress the image to webp format
+                $image = Image::make($this->image->getRealPath())
+                    ->encode('webp', 80) // Compress & convert to webp (80% quality)
+                    ->resize(800, null, function ($constraint) {
+                        $constraint->aspectRatio(); // Maintain aspect ratio
+                        $constraint->upsize(); // Prevent enlargement
+                    });
+    
+                // Store the converted image in the public disk
+                Storage::disk('public')->put($imageName, (string) $image);
+    
+                // Store the new image path
+                $imagePath = $imageName;
             } else {
-                // If no new image is uploaded, retain the old image path
+                // Retain the old image if no new image is uploaded
                 $imagePath = $product->image;
             }
-
+    
             // Update the product data in the database
             $product->update([
                 'name' => $this->name,
                 'price_per_kg' => $this->price_per_kg,
                 'status' => $this->status,
-                'unit'=>$this->unit,
+                'unit' => $this->unit,
                 'image' => $imagePath, // Store the path of the uploaded or existing image
             ]);
-
+    
             // Dispatch success event or message
             $this->dispatch('success', title: 'प्रोडक्ट सफलतापूर्वक अपडेट गरियो');
             $this->resetFields();

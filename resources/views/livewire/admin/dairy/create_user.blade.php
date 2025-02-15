@@ -192,17 +192,16 @@
                                         {{ $user->status }}
                                     </span>
                                 </td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <button class="btn btn-sm btn-transparent py-0 px-1" data-toggle="tooltip"
+                                <td class="d-flex gap-2 align-items-center">
+                                        <button class="btn btn-warning shadow-sm text-dark  rounded-1 d-flex justify-content-center align-items-center" data-toggle="tooltip"
                                             data-placement="top" title="सुधार्नुहोस्"
-                                            wire:click="edit({{ $user->id }})">
-                                            <i class="fa-solid fa-pencil fs-5 text-warning"></i>
+                                            wire:click="edit({{ $user->id }})" style="height: 20px;width:20px">
+                                            <i class="fa-solid fa-pencil fs-6"></i>
                                         </button>
 
-                                        <button class="btn btn-sm btn-transparent py-0 px-1"
+                                        <button class="btn btn-dark shadow-sm text-white  rounded-1 d-flex justify-content-center align-items-center"
                                             onclick="confirmChangeStatus({{ $user->id }})" data-toggle="tooltip"
-                                            data-placement="top" title="स्थिति परिवर्तन गर्नुहोस्">
+                                            data-placement="top" title="स्थिति परिवर्तन गर्नुहोस्" style="height: 20px;width:20px">
                                             <i class="fa-solid fa-toggle-on fs-5"></i>
                                         </button>
 
@@ -211,7 +210,6 @@
                                         data-placement="top" title="मेटाउनुहोस्">
                                         <i class="fa-solid fa-trash fs-5 text-danger"></i>
                                     </button> --}}
-                                    </div>
 
                                 </td>
                             </tr>

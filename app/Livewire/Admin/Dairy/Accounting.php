@@ -129,7 +129,7 @@ class Accounting extends Component
             $query->where(function ($q) {
                 $q->whereHas('user', function ($query) {
                     $query->where('owner_name', 'like', '%' . $this->search . '%')
-                        ->orWhere('farmer_number', 'like', '%' . $this->search . '%');
+                    ->orWhere('farmer_number', '=', $this->search);
                 })
                     ->orWhereHas('milkDeposits', function ($query) {
                         $query->where('milk_deposit_time', 'like', '%' . $this->search . '%');

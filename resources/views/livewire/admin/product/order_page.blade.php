@@ -28,8 +28,10 @@
             <table class="table table-bordered" style="font-size: 16px; min-width: 800px; width: 100%;">
                 <thead>
                     <tr class="table-secondary">
-                        <th scope="col" style="font-size: 16px; white-space: nowrap;" style="white-space: nowrap;">
-                            क्र.सं.</th>
+                        {{-- <th scope="col" style="font-size: 16px; white-space: nowrap;" style="white-space: nowrap;">
+                            क्र.सं.</th> --}}
+                            <th scope="col" style="font-size: 16px; white-space: nowrap;" style="white-space: nowrap;">कृषक
+                                नम्बर</th>
                         <th scope="col" style="font-size: 16px; white-space: nowrap;" style="white-space: nowrap;">कृषकको
                             नाम</th>
                         <th scope="col" style="font-size: 16px; white-space: nowrap;" style="white-space: nowrap;">फोन
@@ -52,12 +54,12 @@
                     @if (count($orders) > 0)
                         @foreach ($orders as $key => $order)
                             <tr wire:key="{{ $key }}">
-                                <td style="white-space: nowrap;">{{ $order->nepali_count }}</td>
+                                <td style="white-space: nowrap;">{{ $order->user->farmer_number }}</td>
                                 <td style="white-space: nowrap;">{{ $order->user->owner_name }}</td>
                                 <td style="white-space: nowrap;">{{ $order->user->phone_number }}</td>
                                 <td style="white-space: nowrap;">
                                     @if ($order->status == 'pending')
-                                        <span class="badge text-bg-warning text-white py-2">विचाराधीन</span>
+                                        <span class="badge text-bg-warning text-dark py-2">विचाराधीन</span>
                                     @elseif($order->status == 'delivered')
                                         <span class="badge text-bg-success py-2 text-white">पुर्याइएको</span>
                                     @elseif($order->status == 'cancelled')
@@ -127,9 +129,9 @@
                             <thead class="bg-light">
                                 <tr>
                                     <th scope="col" class="fs-5" style="white-space: nowrap;">प्रोडक्ट</th>
+                                    <th scope="col" class="fs-5" style="white-space: nowrap;">मात्रा</th>
                                     <th scope="col" class="fs-5" style="white-space: nowrap;">मूल्य प्रति लि./किग्रा
                                     </th>
-                                    <th scope="col" class="fs-5" style="white-space: nowrap;">मात्रा</th>
                                     <th scope="col" class="fs-5" style="white-space: nowrap;">कुल(रु)</th>
                                 </tr>
                             </thead>
@@ -138,10 +140,10 @@
                                     @foreach ($orderDetails as $key => $order)
                                         <tr wire:ignore>
                                             <td style="white-space: nowrap;">{{ $order->product_name }}</td>
-                                            <td wire:ignore>रु {{ $order->price_nepali }}</td>
                                             <td>{{ $order->qty_nepali }}
                                                 {{ $order->product->unit == 'kg' ? 'किलो' : 'लिटर' }}
                                             </td>
+                                            <td wire:ignore>रु {{ $order->price_nepali }}</td>
                                             <td>रु {{ $order->total_nepali }}</td>
                                         </tr>
                                     @endforeach

@@ -16,7 +16,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: 'Arial', sans-serif;
         }
 
         .card {

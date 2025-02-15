@@ -91,16 +91,15 @@ class ProductRepository implements ProductRepositoryInterface
     public function getAllOrders($entries, $keyword)
     {
         $query = Order::with('user')
-            ->orderByRaw("FIELD(status, 'pending', 'cancelled', 'delivered')") // Order by status priority
-            ->orderBy('user_id') // Group orders by user
-            ->orderBy('created_at'); // Maintain chronological order within a user's orders
+            ->orderByRaw("FIELD(status, 'pending', 'cancelled', 'delivered')");
 
         // Apply keyword filter
         if ($keyword) {
             $query->where(function ($q) use ($keyword) {
-                $q->where('sub_total', 'like', '%' . $keyword . '%')
+                $q->where('sub_total', '=', $keyword)
                     ->orWhereHas('user', function ($q) use ($keyword) {
-                        $q->where('owner_name', 'like', '%' . $keyword . '%');
+                        $q->where('owner_name', 'like', '%' . $keyword . '%')
+                            ->orWhere('farmer_number', '=', $keyword);
                     });
             });
         }
@@ -118,6 +117,27 @@ class ProductRepository implements ProductRepositoryInterface
 
             return $order;
         });
+        return $orders;
+    }
+
+    public function getAuthUserOrders($entries)
+    {
+        $query = Order::where('user_id', Auth::id())->latest();
+
+        // Limit results per page
+        $orders = $query->paginate($entries);
+        $orders->getCollection()->transform(function ($order, $key) {
+            // Convert numbers to Nepali
+            $order->sub_total_nepali = NumberHelper::toNepaliNumber($order->sub_total);
+            $order->total_charge_nepali = NumberHelper::toNepaliNumber($order->total_charge);
+            $order->shipping_charge_nepali = NumberHelper::toNepaliNumber($order->shipping_charge);
+
+            // Add a custom "count" column in Nepali
+            $order->nepali_count = NumberHelper::toNepaliNumber($key + 1);
+
+            return $order;
+        });
+
         return $orders;
     }
 }

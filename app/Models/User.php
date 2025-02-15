@@ -74,17 +74,17 @@ class User extends Authenticatable
         $totalDeposit = $this->deposit_sum_deposit ?? 0;
         $totalWithdraw = $this->withdraw_sum_withdraw ?? 0;
         $remainingBalance = $totalDeposit - $totalWithdraw;
-    
+
         // Convert the remaining balance to Nepali number format
         $remainingBalanceNepali = NumberHelper::toNepaliNumber($remainingBalance);
-    
+
         // Return both English and Nepali numbers in an array
         return [
             'english' => $remainingBalance,
             'nepali'  => $remainingBalanceNepali,
         ];
     }
-    
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -105,4 +105,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+    // Relationship with account
+    public function account()
+    {
+        return $this->hasOne(Account::class);
+    }
 }
