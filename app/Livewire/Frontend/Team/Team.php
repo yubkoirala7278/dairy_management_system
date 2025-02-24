@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Frontend\Team;
 
+use App\Models\Employee;
+use App\Models\Administrator;
 use Livewire\Component;
 
 class Team extends Component
@@ -10,6 +12,11 @@ class Team extends Component
     public $sub_page="team";
     public function render()
     {
-        return view('livewire.frontend.team.team');
+        $employees=Employee::orderBy('rank', 'asc')->get();
+        $administrations=Administrator::orderBy('rank', 'asc')->get();
+        return view('livewire.frontend.team.team',[
+            'employees'=>$employees,
+            'administrations'=>$administrations
+        ]);
     }
 }

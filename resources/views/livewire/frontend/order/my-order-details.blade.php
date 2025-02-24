@@ -82,8 +82,26 @@
                                         ', ' .
                                         $date['day'] }}
                                 </p>
+                                @if ($order_summary->status == 'delivered')
+                                    @php
+                                        $year = $order_summary->updated_at->format('Y');
+                                        $month = $order_summary->updated_at->format('m');
+                                        $day = $order_summary->updated_at->format('d');
+                                        $date = Bsdate::eng_to_nep($year, $month, $day);
+                                    @endphp
+                                    <p>
+                                        <strong>डेलिभरी मिति:</strong>
+                                        {{ html_entity_decode($date['date']) .
+                                            ' ' .
+                                            html_entity_decode($date['nmonth']) .
+                                            ' ' .
+                                            html_entity_decode($date['year']) .
+                                            ', ' .
+                                            $date['day'] }}
+                                    </p>
+                                @endif
                             </div>
-                            <div class="col-md-4 text-md-center">
+                            <div class="col-md-4 text-lg-center">
                                 <p>
                                     <strong>अर्डर स्थिति:</strong>
                                     @if ($order_summary->status == 'pending')
@@ -96,7 +114,7 @@
                                 </p>
                             </div>
                             @if ($order_summary->status == 'pending')
-                                <div class="col-md-4 text-md-end">
+                                <div class="col-md-4 text-lg-end">
                                     <button class="btn btn-danger rounded-pill"
                                         wire:click="cancelOrder({{ $order_summary->id }})">
                                         अर्डर रद्द गर्नुहोस्
@@ -140,17 +158,22 @@
                                     @endforeach
                                     <!-- Order Summary Rows -->
                                     <tr class="bg-light">
-                                        <td colspan="3" class="text-end"><strong>उपकुल :</strong></td>
-                                        <td class="fw-bold" wire:ignore>रु {{ $order_summary->sub_total_nepali }}</td>
+                                        <td colspan="3" class="text-end" style="white-space: nowrap;"><strong>उपकुल
+                                                :</strong></td>
+                                        <td class="fw-bold" wire:ignore style="white-space: nowrap;">रु
+                                            {{ $order_summary->sub_total_nepali }}</td>
                                     </tr>
                                     <tr class="bg-light">
-                                        <td colspan="3" class="text-end"><strong>ढुवानी शुल्क :</strong></td>
-                                        <td class="fw-bold" wire:ignore>रु {{ $order_summary->shipping_charge_nepali }}
+                                        <td colspan="3" class="text-end" style="white-space: nowrap;"><strong>ढुवानी
+                                                शुल्क :</strong></td>
+                                        <td class="fw-bold" wire:ignore style="white-space: nowrap;">रु
+                                            {{ $order_summary->shipping_charge_nepali }}
                                         </td>
                                     </tr>
                                     <tr class="bg-light">
-                                        <td colspan="3" class="text-end"><strong>कुल :</strong></td>
-                                        <td class="fw-bold text-success" wire:ignore>रु
+                                        <td colspan="3" class="text-end" style="white-space: nowrap;"><strong>कुल
+                                                :</strong></td>
+                                        <td class="fw-bold text-success" wire:ignore style="white-space: nowrap;">रु
                                             {{ $order_summary->total_charge_nepali }}</td>
                                     </tr>
                                 </tbody>

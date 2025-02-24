@@ -7,6 +7,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use App\Helpers\NumberHelper;
 use App\Repositories\Interfaces\UserRepositoryInterface;
+use Illuminate\Support\Facades\Auth;
 
 class UserRepository implements UserRepositoryInterface
 {
@@ -133,9 +134,9 @@ class UserRepository implements UserRepositoryInterface
     {
         // Start the query
         $query = MilkDeposit::with('user')
-        ->join('users', 'milk_deposits.user_id', '=', 'users.id') // Join users table
-        ->select('milk_deposits.*') // Select all columns from milk_deposits
-        ->orderBy('users.id', 'asc');
+            ->join('users', 'milk_deposits.user_id', '=', 'users.id') // Join users table
+            ->select('milk_deposits.*') // Select all columns from milk_deposits
+            ->orderBy('users.id', 'asc');
 
         // Apply search filter for specific fields
         if ($search) {
@@ -182,7 +183,7 @@ class UserRepository implements UserRepositoryInterface
 
 
     // ==========get total money generated from milk ==========
-    public function getTotalIncomeFromMilk($entries = 10, $search = null,$milk_deposit_date=null)
+    public function getTotalIncomeFromMilk($entries = 10, $search = null, $milk_deposit_date = null)
     {
         // Start the query
         $query = MilkDeposit::query();
@@ -198,8 +199,8 @@ class UserRepository implements UserRepositoryInterface
                     ->orWhere('milk_deposit_time', 'like', "%{$search}%");
             });
         }
-         // Apply filter for milk_deposit_date if provided
-         if ($milk_deposit_date) {
+        // Apply filter for milk_deposit_date if provided
+        if ($milk_deposit_date) {
             $query->where('milk_deposit_date', '=', $milk_deposit_date);
         }
 
@@ -213,6 +214,92 @@ class UserRepository implements UserRepositoryInterface
             'totalDepositedMilk' => $totalDepositedMilk
         ];
     }
+    // ==========end of getting total money generated from milk ==========
 
+
+
+
+    // ============get total milk deposits reports of auth user=================
+    public function getAuthUserMilkDepositsReports($entries = 10, $search = null, $milk_deposit_date = null)
+    {
+        // Start the query
+        $query = MilkDeposit::where('user_id', Auth::user()->id)->with('user')
+            ->join('users', 'milk_deposits.user_id', '=', 'users.id') // Join users table
+            ->select('milk_deposits.*') // Select all columns from milk_deposits
+            ->orderBy('users.id', 'asc');
+
+        // Apply search filter for specific fields
+        if ($search) {
+            $query->where(function ($query) use ($search) {
+                $query->whereHas('user', function ($userQuery) use ($search) {
+                    $userQuery->where('farmer_number', '=', $search)
+                        ->orWhere('owner_name', 'like', "%{$search}%");
+                })
+                    ->orWhere('milk_type', 'like', "%{$search}%")
+                    ->orWhere('milk_deposit_time', 'like', "%{$search}%");
+            });
+        }
+        // Apply filter for milk_deposit_date if provided
+        if ($milk_deposit_date) {
+            $query->where('milk_deposit_date', '=', $milk_deposit_date);
+        }
+
+        // Apply sorting to get latest first
+        $query->orderBy('created_at', 'desc');
+
+        // Paginate the results with the specified number of entries per page
+        if ($entries == 'all') {
+            $milkDeposits = $query->get();
+        } else {
+            $milkDeposits = $query->paginate($entries);
+        }
+
+        // Convert the milk_price_per_ltr column to Nepali numerals
+        $milkDeposits->getCollection()->transform(function ($deposit) {
+            $deposit->milk_per_ltr_price_with_commission = NumberHelper::toNepaliNumber($deposit->milk_per_ltr_price_with_commission);
+            $deposit->milk_snf = NumberHelper::toNepaliNumber($deposit->milk_snf);
+            $deposit->milk_fat = NumberHelper::toNepaliNumber($deposit->milk_fat);
+            $deposit->milk_quantity = NumberHelper::toNepaliNumber($deposit->milk_quantity);
+            $deposit->milk_total_price = NumberHelper::toNepaliNumber($deposit->milk_total_price);
+            $deposit->milk_price_per_ltr = NumberHelper::toNepaliNumber($deposit->milk_price_per_ltr);
+            $deposit->per_ltr_commission = NumberHelper::toNepaliNumber($deposit->per_ltr_commission);
+            return $deposit;
+        });
+
+        return $milkDeposits;
+    }
+
+    // ==========get total money generated from milk of auth user==========
+    public function getAuthUserTotalIncomeFromMilk($entries = 10, $search = null, $milk_deposit_date = null)
+    {
+        // Start the query
+        $query = MilkDeposit::where('user_id', Auth::user()->id);
+
+        // Apply search filter for specific fields
+        if ($search) {
+            $query->where(function ($query) use ($search) {
+                $query->whereHas('user', function ($userQuery) use ($search) {
+                    $userQuery->where('farmer_number', '=', $search)
+                        ->orWhere('owner_name', 'like', "%{$search}%");
+                })
+                    ->orWhere('milk_type', 'like', "%{$search}%")
+                    ->orWhere('milk_deposit_time', 'like', "%{$search}%");
+            });
+        }
+        // Apply filter for milk_deposit_date if provided
+        if ($milk_deposit_date) {
+            $query->where('milk_deposit_date', '=', $milk_deposit_date);
+        }
+
+
+        // Get total deposit income and total deposited milk with filters
+        $totalDepositIncome = $query->sum('milk_total_price');
+        $totalDepositedMilk = $query->sum('milk_quantity');
+
+        return [
+            'totalDepositIncome' => $totalDepositIncome,
+            'totalDepositedMilk' => $totalDepositedMilk
+        ];
+    }
     // ==========end of getting total money generated from milk ==========
 }

@@ -81,10 +81,10 @@
                         </tr>
                     @endif
                     @if (count($depositTransactions) <= 0)
-                    <tr class="text-center">
-                        <td colspan="20">प्रदर्शन गर्नका लागि कुनै डाटा छैन</td>
-                    </tr>
-                @endif
+                        <tr class="text-center">
+                            <td colspan="20">प्रदर्शन गर्नका लागि कुनै डाटा छैन</td>
+                        </tr>
+                    @endif
 
 
                 </tbody>

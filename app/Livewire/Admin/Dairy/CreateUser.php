@@ -266,7 +266,7 @@ class CreateUser extends Component
         try {
             $user = User::findOrFail($id);
             if (!$user) {
-                $this->dispatch('error', title: 'User not found!');
+                $this->dispatch('error', title: 'किसान फेला परेन!');
                 return;
             }
             $user->status = $user->status === 'चालू' ? 'बन्द' : 'चालू';

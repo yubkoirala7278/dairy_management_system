@@ -1,10 +1,12 @@
 <?php
 
+use App\Livewire\Admin\Administrator\Administrator;
 use App\Livewire\Admin\Dairy\Accounting;
 use App\Livewire\Admin\Dairy\CreateUser;
 use App\Livewire\Admin\Dairy\MilkDeposit;
 use App\Livewire\Admin\Dairy\MilkReport;
 use App\Livewire\Admin\Dairy\Setup;
+use App\Livewire\Admin\Employee\Employee;
 use App\Livewire\Admin\Financial\DepositTransaction;
 use App\Livewire\Admin\Financial\Transaction;
 use App\Livewire\Admin\Financial\WithdrawTransaction;
@@ -31,6 +33,8 @@ Route::get('/transaction',Transaction::class)->name('transaction');
 Route::get('/deposit-transaction',DepositTransaction::class)->name('deposit.transaction');
 Route::get('/milk-deposit-income',Accounting::class)->name('accounting');
 Route::get('/withdraw-transaction',WithdrawTransaction::class)->name('withdraw.transaction');
+Route::get('/employee',Employee::class)->name('employee');
+Route::get('/administration',Administrator::class)->name('administration');
 
 
 // print

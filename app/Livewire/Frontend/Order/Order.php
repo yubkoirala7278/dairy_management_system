@@ -10,8 +10,8 @@ class Order extends Component
 {
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
-    public $page = 'my-order';
-    public $sub_page;
+    public $page = "pages";
+    public $sub_page = "order";
     private $productRepository;
     public $entries = 10;
     public $orderDetails = [];
@@ -29,8 +29,8 @@ class Order extends Component
     public function render()
     {
         $orders = $this->productRepository->getAuthUserOrders($this->entries);
-        return view('livewire.frontend.order.order',[
-            'orders'=>$orders
+        return view('livewire.frontend.order.order', [
+            'orders' => $orders
         ]);
     }
 }

@@ -84,7 +84,8 @@
     <!-- Topbar End -->
 
     <!-- Navbar Start -->
-    <nav class="navbar navbar-expand-lg  navbar-light sticky-top px-4 px-lg-5" style="background-color: #F7FCFF !important">
+    <nav class="navbar navbar-expand-lg  navbar-light sticky-top px-4 px-lg-5"
+        style="background-color: #F7FCFF !important">
         <a href="{{ route('frontend.home') }}" class="navbar-brand d-flex align-items-center">
             <h1 class="m-0">आदर्श डेरी</h1>
         </a>
@@ -96,8 +97,6 @@
                 <a href="{{ route('frontend.home') }}"
                     class="nav-item nav-link {{ $page == 'home' ? 'active' : '' }}">होम
                     पेज</a>
-                <a href="{{ route('frontend.about') }}"
-                    class="nav-item nav-link {{ $page == 'about' ? 'active' : '' }}">हाम्रो बारेमा</a>
                 <a href="{{ route('frontend.service') }}"
                     class="nav-item nav-link {{ $page == 'service' ? 'active' : '' }}">सेवाहरू</a>
                 <a href="{{ route('frontend.product') }}"
@@ -106,22 +105,27 @@
                     <a href="#" class="nav-link dropdown-toggle {{ $page == 'pages' ? 'active' : '' }}"
                         data-bs-toggle="dropdown">पेजहरू</a>
                     <div class="dropdown-menu bg-light m-0">
+                        <a href="{{ route('frontend.my-order') }}"
+                            class="dropdown-item {{ $sub_page == 'order' ? 'active' : '' }}">मेरो अर्डरहरू</a>
+                        <a href="{{ route('frontend.my-milk-deposit-reports') }}"
+                            class="dropdown-item {{ $sub_page == 'milk_deposit_report' ? 'active' : '' }}">दूध संकलन
+                            रिपोर्ट</a>
+                            <a href="{{ route('frontend.my-cash-deposit-reports') }}"
+                            class="dropdown-item {{ $sub_page == 'cash_deposit_report' ? 'active' : '' }}">नगद निक्षेप
+                            रिपोर्ट</a>
+                        <a href="{{ route('frontend.my-cash-withdraw-reports') }}"
+                            class="dropdown-item {{ $sub_page == 'cash_withdraw_report' ? 'active' : '' }}">नगद निकासी
+                            रिपोर्ट</a>
                         <a href="{{ route('frontend.gallery') }}"
                             class="dropdown-item {{ $sub_page == 'gallery' ? 'active' : '' }}">ग्यालेरी</a>
-                        <a href="{{ route('frontend.feature') }}"
-                            class="dropdown-item {{ $sub_page == 'feature' ? 'active' : '' }}">विशेषताहरू</a>
                         <a href="{{ route('frontend.team') }}"
-                            class="dropdown-item {{ $sub_page == 'team' ? 'active' : '' }}">हाम्रो टिम</a>
-                        <a href="{{ route('frontend.testimonial') }}"
-                            class="dropdown-item {{ $sub_page == 'testimonial' ? 'active' : '' }}">प्रशंसा पत्र</a>
+                            class="dropdown-item {{ $sub_page == 'team' ? 'active' : '' }}">कर्मचारी र सञ्चालक</a>
                     </div>
                 </div>
                 <a href="{{ route('frontend.contact') }}"
                     class="nav-item nav-link {{ $page == 'contact' ? 'active' : '' }}">सम्पर्क</a>
                 <a href="{{ route('frontend.cart') }}"
                     class="nav-item nav-link {{ $page == 'cart' ? 'active' : '' }}">कार्ट</a>
-                <a href="{{ route('frontend.my-order') }}"
-                    class="nav-item nav-link {{ $page == 'my-order' ? 'active' : '' }}">मेरो अर्डरहरू</a>
                 <a href="{{ route('frontend.profile') }}"
                     class="nav-item nav-link {{ $page == 'profile' ? 'active' : '' }}">प्रोफाइल</a>
                 @livewire('frontend.logout-button')

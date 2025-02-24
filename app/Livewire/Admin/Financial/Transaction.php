@@ -53,7 +53,7 @@ class Transaction extends Component
     public function render()
     {
         $usersWithTransaction = $this->transactionRepository->getUsersTransactionInfo($this->entries, $this->search);
-        $totalBalance=$this->transactionRepository->getTotalBalance();
+        $totalBalance=$this->transactionRepository->getTotalBalance($this->search);
         return view('livewire.admin.financial.transaction', [
             'usersWithTransaction' => $usersWithTransaction,
             'totalBalance'=>$totalBalance

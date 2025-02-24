@@ -67,7 +67,13 @@
                                     $date = Bsdate::eng_to_nep($year, $month, $day);
                                 @endphp
                                 <td style="white-space: nowrap;">
-                                    {{ html_entity_decode($date['date']) . ' ' . html_entity_decode($date['nmonth']) . ' ' . html_entity_decode($date['year']) . ', ' . $date['day'] }}
+                                    {{ html_entity_decode($date['date']) .
+                                        ' ' .
+                                        html_entity_decode($date['nmonth']) .
+                                        ' ' .
+                                        html_entity_decode($date['year']) .
+                                        ', ' .
+                                        $date['day'] }}
                                 </td>
                             </tr>
                         @endforeach
@@ -81,10 +87,10 @@
                         </tr>
                     @endif
                     @if (count($withdrawTransactions) <= 0)
-                    <tr class="text-center">
-                        <td colspan="20">प्रदर्शन गर्नका लागि कुनै डाटा छैन</td>
-                    </tr>
-                @endif
+                        <tr class="text-center">
+                            <td colspan="20">प्रदर्शन गर्नका लागि कुनै डाटा छैन</td>
+                        </tr>
+                    @endif
 
 
                 </tbody>

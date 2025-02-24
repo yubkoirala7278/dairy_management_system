@@ -32,13 +32,10 @@
         body {
             background-color: #eee;
         }
-    </style>
-
-
+    </style>  
 </head>
 
 <body>
-
     <div class="az-header" wire:ignore>
         <div class="container">
             <div class="az-header-left">
@@ -65,8 +62,7 @@
                             <i class="typcn typcn-shopping-cart"></i> प्रोडक्ट
                         </a>
                         <nav class="az-menu-sub">
-                            <a href="{{ route('admin.product') }}" class="nav-link" id="deposit-milk-link">प्रोडक्ट
-                                सिर्जना/सम्पादन</a>
+                            <a href="{{ route('admin.product') }}" class="nav-link" id="deposit-milk-link">प्रोडक्ट</a>
                             <a href="{{ route('admin.order') }}" class="nav-link" id="create-farmer-link">अर्डरहरू</a>
                         </nav>
                     </li>
@@ -92,11 +88,23 @@
                             <i class="fa-solid fa-building-columns me-2"></i>वित्तीय
                         </a>
                         <nav class="az-menu-sub">
-                            <a href="{{ route('admin.transaction') }}" class="nav-link" id="deposit-milk-link">निक्षेप /
+                            <a href="{{ route('admin.transaction') }}" class="nav-link" id="deposit-milk-link">निक्षेप
+                                /
                                 निकासी</a>
-                            <a href="{{route('admin.deposit.transaction')}}" class="nav-link" id="deposit-milk-link">निक्षेप</a>
-                            <a href="{{route('admin.withdraw.transaction')}}" class="nav-link" id="create-farmer-link">निकासी</a>
+                            <a href="{{ route('admin.deposit.transaction') }}" class="nav-link"
+                                id="deposit-milk-link">निक्षेप</a>
+                            <a href="{{ route('admin.withdraw.transaction') }}" class="nav-link"
+                                id="create-farmer-link">निकासी</a>
                             <a href="" class="nav-link" id="setup-link">सेटअप</a>
+                        </nav>
+                    </li>
+                    <li class="nav-item {{ $page == 'members' ? 'active' : '' }}">
+                        <a href="" class="nav-link with-sub" id="farmer-link">
+                            <i class="fa-solid fa-user-tie me-2"></i>कर्मचारी र सञ्चालक
+                        </a>
+                        <nav class="az-menu-sub">
+                            <a href="{{ route('admin.employee') }}" class="nav-link">कर्मचारी</a>
+                            <a href="{{ route('admin.administration') }}"  class="nav-link">सञ्चालक</a>
                         </nav>
                     </li>
                 </ul>

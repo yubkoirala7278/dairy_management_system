@@ -16,7 +16,6 @@
                     </select>
                     <span>डेटा</span>
                 </label>
-
             </div>
             <div class="d-flex align-items-center" style="column-gap: 20px">
                 <input type="search" class="form-control  translate-nepali" placeholder="खोज्नुहोस्..."
@@ -28,7 +27,6 @@
                         wire:click="printMilkDepositReport">PDF</button>
                 </div>
             </div>
-
         </div>
         <table class="table table-bordered table-hover " style="font-size: 20px; min-width: 800px; width: 100%;">
             <thead>

@@ -7,6 +7,7 @@ use App\Models\Account;
 use App\Models\MilkIncome;
 use App\Models\Transaction;
 use App\Repositories\Interfaces\TransactionRepositoryInterface;
+use Illuminate\Support\Facades\Auth;
 
 class TransactionRepository implements TransactionRepositoryInterface
 {
@@ -20,7 +21,7 @@ class TransactionRepository implements TransactionRepositoryInterface
         if ($keyword) {
             $accountsQuery->where(function ($query) use ($keyword) {
                 $query->where('users.owner_name', 'like', "%$keyword%")
-                    ->orWhere('users.farmer_number', 'like', "%$keyword%");
+                    ->orWhere('users.farmer_number', '=', $keyword); // Exact match for farmer_number
             });
         }
 
@@ -36,10 +37,21 @@ class TransactionRepository implements TransactionRepositoryInterface
         return $accounts;
     }
 
-    public function getTotalBalance()
+    public function getTotalBalance($keyword = null)
     {
-        // Get the sum of all balances from the 'accounts' table
-        $totalBalance = Account::sum('balance');
+        // Start the query on the 'accounts' table and join with the 'users' table
+        $accountsQuery = Account::join('users', 'users.id', '=', 'accounts.user_id');
+
+        // Apply search condition if $keyword is provided
+        if ($keyword) {
+            $accountsQuery->where(function ($query) use ($keyword) {
+                $query->where('users.owner_name', 'like', "%$keyword%")
+                    ->orWhere('users.farmer_number', '=', $keyword); // Exact match for farmer_number
+            });
+        }
+
+        // Get the sum of the balance from the filtered accounts
+        $totalBalance = $accountsQuery->sum('accounts.balance');
 
         // Convert the total balance to Nepali numerals
         $totalBalanceNepali = \App\Helpers\NumberHelper::toNepaliNumber($totalBalance);
@@ -47,6 +59,7 @@ class TransactionRepository implements TransactionRepositoryInterface
         // Return the total balance in Nepali format
         return $totalBalanceNepali;
     }
+
 
 
     public function getMilkDepositIncome($entries, $keyword, $milk_deposit_date = null)
@@ -183,10 +196,9 @@ class TransactionRepository implements TransactionRepositoryInterface
         if ($keyword) {
             $query->where(function ($query) use ($keyword) {
                 $query->whereHas('account.user', function ($userQuery) use ($keyword) {
-                    $userQuery->where('farmer_number', 'like', "%$keyword%")
+                    $userQuery->where('farmer_number',  '=', $keyword)
                         ->orWhere('owner_name', 'like', "%$keyword%");
-                })
-                    ->orWhere('amount', 'like', "%$keyword%");
+                });
             });
         }
 
@@ -218,10 +230,9 @@ class TransactionRepository implements TransactionRepositoryInterface
         if ($keyword) {
             $query->where(function ($query) use ($keyword) {
                 $query->whereHas('account.user', function ($userQuery) use ($keyword) {
-                    $userQuery->where('farmer_number', 'like', "%$keyword%")
+                    $userQuery->where('farmer_number',  '=', $keyword)
                         ->orWhere('owner_name', 'like', "%$keyword%");
-                })
-                    ->orWhere('amount', 'like', "%$keyword%");
+                });
             });
         }
 
@@ -250,10 +261,9 @@ class TransactionRepository implements TransactionRepositoryInterface
         if ($keyword) {
             $query->where(function ($query) use ($keyword) {
                 $query->whereHas('account.user', function ($userQuery) use ($keyword) {
-                    $userQuery->where('farmer_number', 'like', "%$keyword%")
+                    $userQuery->where('farmer_number', '=', "$keyword")
                         ->orWhere('owner_name', 'like', "%$keyword%");
-                })
-                    ->orWhere('amount', 'like', "%$keyword%");
+                });
             });
         }
 
@@ -284,12 +294,106 @@ class TransactionRepository implements TransactionRepositoryInterface
         if ($keyword) {
             $query->where(function ($query) use ($keyword) {
                 $query->whereHas('account.user', function ($userQuery) use ($keyword) {
-                    $userQuery->where('farmer_number', 'like', "%$keyword%")
+                    $userQuery->where('farmer_number', '=', "$keyword")
                         ->orWhere('owner_name', 'like', "%$keyword%");
-                })
-                    ->orWhere('amount', 'like', "%$keyword%");
+                });
             });
         }
+
+        // Apply date filter if amount_withdraw_date_ad is provided
+        if ($amount_withdraw_date_ad) {
+            $query->whereDate('created_at', $amount_withdraw_date_ad);
+        }
+
+        // Sum the amount of all matched transactions
+        $sumAmount = $query->sum('amount');
+
+        // Convert sum to Nepali number format
+        return \App\Helpers\NumberHelper::toNepaliNumber($sumAmount);
+    }
+
+    // fetch auth user deposit transactions
+    public function depositAuthUserTransactions($entries, $amount_deposit_date_ad = null)
+    {
+        $account = Account::where('user_id', Auth::user()->id)->first();
+        // Start the query for transactions and join with accounts
+        $query = Transaction::where('account_id', $account->id)->with('account')
+            ->where('type', 'deposit')
+            ->orderBy('created_at', 'desc');
+
+
+        // Apply date filter if amount_deposit_date_ad is provided
+        if ($amount_deposit_date_ad) {
+            $query->whereDate('created_at', $amount_deposit_date_ad);
+        }
+
+        // Apply pagination logic
+        $transactions = ($entries === 'all') ? $query->get() : $query->paginate($entries);
+
+        // Convert 'amount' to Nepali numbers for each transaction
+        $transactions->transform(function ($transaction, $key) {
+            $transaction->nepali_amount = \App\Helpers\NumberHelper::toNepaliNumber($transaction->amount);
+            $transaction->nepali_count = NumberHelper::toNepaliNumber($key + 1); // +1 to start count from 1
+            return $transaction;
+        });
+
+        return $transactions;
+    }
+
+    // sum of auth user deposit amount
+    public function AuthUserSumDepositAmount($amount_deposit_date_ad = null)
+    {
+        $account = Account::where('user_id', Auth::user()->id)->first();
+        // Start the query for deposit transactions and join with accounts
+        $query = Transaction::where('account_id', $account->id)->with('account')
+            ->where('type', 'deposit');
+
+        // Apply date filter if amount_deposit_date_ad is provided
+        if ($amount_deposit_date_ad) {
+            $query->whereDate('created_at', $amount_deposit_date_ad);
+        }
+
+        // Sum the amount of all matched transactions
+        $sumAmount = $query->sum('amount');
+
+        // Convert sum to Nepali number format
+        return \App\Helpers\NumberHelper::toNepaliNumber($sumAmount);
+    }
+
+    // fetch auth user withdraw transactions
+    public function withdrawAuthUserTransactions($entries, $amount_withdraw_date_ad = null)
+    {
+        $account = Account::where('user_id', Auth::user()->id)->first();
+        // Start the query for transactions and join with accounts
+        $query = Transaction::where('account_id', $account->id)->with('account')
+            ->where('type', 'withdrawal')
+            ->orderBy('created_at', 'desc');
+
+        // Apply date filter if amount_withdraw_date_ad is provided
+        if ($amount_withdraw_date_ad) {
+            $query->whereDate('created_at', $amount_withdraw_date_ad);
+        }
+
+        // Apply pagination logic
+        $transactions = ($entries === 'all') ? $query->get() : $query->paginate($entries);
+
+        // Convert 'amount' to Nepali numbers for each transaction
+        $transactions->transform(function ($transaction, $key) {
+            $transaction->nepali_amount = \App\Helpers\NumberHelper::toNepaliNumber($transaction->amount);
+            $transaction->nepali_count = NumberHelper::toNepaliNumber($key + 1); // +1 to start count from 1
+            return $transaction;
+        });
+
+        return $transactions;
+    }
+    // sum auth user withdraw amount
+    public function sumAuthWithdrawAmount($amount_withdraw_date_ad = null)
+    {
+        $account = Account::where('user_id', Auth::user()->id)->first();
+        // Start the query for withdraw transactions and join with accounts
+        $query = Transaction::where('account_id', $account->id)->with('account')
+            ->where('type', 'withdrawal');
+
 
         // Apply date filter if amount_withdraw_date_ad is provided
         if ($amount_withdraw_date_ad) {

@@ -158,24 +158,23 @@ class Product extends Component
     }
     public function updateProduct()
     {
+        // Validate the incoming request data
+        $this->validate([
+            'name' => ['required'],
+            'price_per_kg' => ['required'],
+            'status' => ['required'],
+            'image' => 'nullable|mimes:png,jpg,jpeg,webp',
+        ], [
+            'name.required' => 'प्रोडक्टको नाम आवश्यक छ',
+            'price_per_kg.required' => 'प्रति किलो मूल्य आवश्यक छ',
+            'status.required' => 'स्थिति चयन गर्नुहोस्',
+            'image.image' => 'कृपया एक मान्य फोटो अपलोड गर्नुहोस्',
+            'image.mimes' => 'केवल jpeg, png, jpg, र webp प्रकारका फोटो मात्र स्वीकार्य छन्',
+        ]);
+
         try {
             // Retrieve the product from the database
             $product = ModelsProduct::findOrFail($this->product_id);
-    
-            // Validate the incoming request data
-            $this->validate([
-                'name' => ['required'],
-                'price_per_kg' => ['required'],
-                'status' => ['required'],
-                'image' => 'nullable|mimes:png,jpg,jpeg,webp',
-            ], [
-                'name.required' => 'प्रोडक्टको नाम आवश्यक छ',
-                'price_per_kg.required' => 'प्रति किलो मूल्य आवश्यक छ',
-                'status.required' => 'स्थिति चयन गर्नुहोस्',
-                'image.image' => 'कृपया एक मान्य फोटो अपलोड गर्नुहोस्',
-                'image.mimes' => 'केवल jpeg, png, jpg, र webp प्रकारका फोटो मात्र स्वीकार्य छन्',
-                'image.max' => 'फोटोको आकार 200KB भन्दा सानो हुनु पर्छ',
-            ]);
     
             // Handle Image Upload & Conversion
             if ($this->image) {

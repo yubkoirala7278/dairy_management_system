@@ -10,8 +10,8 @@ use Livewire\Component;
 
 class OrderDetail extends Component
 {
-    public $page = 'my-order';
-    public $sub_page;
+    public $page="pages";
+    public $sub_page="order";
     public $slug;
     public $order_id;
 
@@ -72,6 +72,10 @@ class OrderDetail extends Component
     {
         try {
             $order = Order::findOrFail($this->order_id);
+            if($order->status!='pending'){
+                $this->dispatch('warningMessage', title: 'अर्डर रद्द गर्न सकिँदैन!');
+                return;
+            }
             $order->update(['status' => 'cancelled']);
             $this->dispatch('success', title: 'अर्डर सफलतापूर्वक रद्ध गरिएको छ!');
         } catch (\Throwable $th) {

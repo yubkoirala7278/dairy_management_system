@@ -3,11 +3,9 @@
 namespace App\Livewire\Admin\Dairy;
 
 use Livewire\WithPagination;
-use Barryvdh\DomPDF\Facade\Pdf;
 use App\Helpers\NumberHelper;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use Livewire\Component;
-use Illuminate\Support\Facades\View;
 
 class MilkReport extends Component
 {
